@@ -41,7 +41,7 @@ const string FILENAMES[NUMBER_OF_FILES] =
 // ----------------------------------------------------------------------
 template <class T>
 T IDGenerator(
-    const string &type,     // in
+    const char &type,     // in
                             // type of entity that wants the ID (Product, Complaint, Customer, Change)
     const int &precision    // in
                             // Number of digits or characters in the ID
