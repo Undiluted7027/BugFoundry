@@ -20,16 +20,16 @@ Types:
 
 --------------------------------------------------------------------*/
 
-class Complaint
+class Complaint : public Record <const char *>
 {
     public:
 
         Complaint(
-            const string& description,      // in  
+            const char *description,      // in  
                                             // description of complaint
-            const string& dateOfComplaint,  // in 
+            const char *dateOfComplaint,  // in 
                                             // date the complaint was created
-            const string& changeID,         // in 
+            const char *changeID,         // in 
                                             // change id of complaint
             const int& releaseID,           // in  
                                             // release id of complaint
@@ -51,20 +51,20 @@ class Complaint
         This function will fail if the calling Complaint object is a dangling pointer.
         ----------------------------------------------------------------------*/
     private:
-        string complaintID;
-        string description;
-        string dateOfComplaint;
-        string changeID;
+        char complaintID[6];
+        char description[31];
+        char dateOfComplaint[9];
+        char changeID[6];
         int releaseID;
         int custID;
 };
 //----------------------------------------------------------------------
 int ValidateComplaint(
-    const string &description = "",      // in
+    const char *description = "",      // in
                                     // Description of complaint
-    const string &dateOfComplaint = "",  // in
+    const char *dateOfComplaint = "",  // in
                                     // Date of Complaint
-    const string &changeID = "",         // in
+    const char *changeID = "",         // in
                                     // ChangeID the complaint is related to
     const int &releaseID = 0,           // in
                                     // ReleaseID of the product the complaint concerns
@@ -79,11 +79,11 @@ This function performs checks on formats of complaint description, dateOfComplai
 Call this function with details of the complaint to check whether the complaint info is valid.
 ----------------------------------------------------------------------*/
 void CreateComplaint(
-    const string &description,      // in 
+    const char *description,      // in 
                                     // description of complaint
-    const string &dateOfComplaint,  // in 
+    const char *dateOfComplaint,  // in 
                                     // date the complaint was created
-    const string &changeID,         // in 
+    const char *changeID,         // in 
                                     // changeID of complaint
     const int &releaseID,           // in 
                                     // releaseID of product
