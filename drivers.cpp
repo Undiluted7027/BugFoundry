@@ -38,21 +38,3 @@ void writeFile(const string &filename, streampos &fileptr, const Record<T> &reco
 }
 
 
-int main()
-{
-    // streampos fileptr = 2;
-    const string filename = "Customers.bin";
-    Record<Customer> c();
-
-    for (int i = 0; i < 2; i++){
-        if (i == 0){
-            writeFile(filename, CUSTOMERFILEPOINTER);
-        }
-        else{
-            Record<Customer> rec = readFile(filename, CUSTOMERFILEPOINTER);
-        }
-    }
-            
-
-    return 0;
-}

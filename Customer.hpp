@@ -12,6 +12,7 @@ Customer.hpp keeps its high cohesion by encapsulating all possible customer entr
 #include <filesystem>
 #include <string>
 #include "Globals.hpp"
+#include "Record.hpp"
 
 using namespace std;
 
@@ -43,7 +44,7 @@ class Customer: public Record<const char*>
         This function will fail if the calling Customer object is a dangling pointer.
         ----------------------------------------------------------------------*/
     private:
-        char custID[10]; 
+        // char custID[10]; 
         char name[31];
         char email[31];
         char phone[14];
@@ -93,7 +94,7 @@ FileWriteFailed: There was an error in writing to the file.
 Otherwise, the Customer object is added into the file. 
 ----------------------------------------------------------------------*/
 Customer GetCustomerDetails(
-    streampos startPos = CUSTOMERFILEPOINTER,   // in
+    const streampos startPos = CUSTOMERFILEPOINTER,   // in
                                                 // startPos is the position in Customers.bin for reading the file (CUSTOMERFILEPOINTER).
     const string &FILENAME = FILENAMES[0]       // in
                                                 // FILENAME is the name of the file to read from. By default it is FILENAMES[0] which is "Customers.bin"
