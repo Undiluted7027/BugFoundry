@@ -21,13 +21,13 @@ Tpyes:
  - Object of Class Product
 
 ----------------------------------------------------------------------*/
-class Product
+class Product: public Record <const int>
 {
     public:
         Product(
-            int &ReleaseID,     // in
-                                // ReleaseID of the product
-            string &ReleaseDate // in
+            // int &ReleaseID,     // in
+            //                     // ReleaseID of the product
+            char *ReleaseDate // in
                                 // ReleaseDate of the product
         );
         /* Product(int &ReleaseID, string &ReleaseDate) creates a Product object. 
@@ -43,14 +43,14 @@ class Product
         ----------------------------------------------------------------------*/
     private:
         int ReleaseID;
-        string ReleaseDate;
+        char ReleaseDate[9];
 };
 
 //----------------------------------------------------------------------
 int ValidateProduct(
     const int &ReleaseID,       // in
                                 // ReleaseID of the product
-    const string &ReleaseDate   // in
+    const char *ReleaseDate   // in
                                 // ReleaseDate of the product
 );
 /* int validateProduct() checks if ReleaseID has 4 digits and ReleaseDate is of the form YY/MM/DD and matches the naming convention. 
@@ -59,7 +59,7 @@ If it doesn't match, it returns false otherwise it returns true. ReleaseID must 
 Product CreateProduct(
     const int &ReleaseID,       // in
                                 // ReleaseID of the product
-    const string &ReleaseDate   // in
+    const char *ReleaseDate   // in
                                 // ReleaseDate of the product
     );
 /* Product CreateProduct(int &ReleaseID, string &ReleaseDate) is a function used for creating a product object. 
