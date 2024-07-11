@@ -27,7 +27,7 @@ class Product: public Record <const int>
         Product(
             // int &ReleaseID,     // in
             //                     // ReleaseID of the product
-            char *ReleaseDate // in
+            const char *ReleaseDate // in
                                 // ReleaseDate of the product
         );
         /* Product(int &ReleaseID, string &ReleaseDate) creates a Product object. 
