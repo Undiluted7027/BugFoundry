@@ -6,7 +6,7 @@ class Record{
         T id;
         Q data;
     public:
-        Record(T id): id(id){}
+        Record(T id, Q data): id(id), data(data){}
         virtual ~Record() {}
 
         T getId() const{

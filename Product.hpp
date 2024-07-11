@@ -21,7 +21,7 @@ Tpyes:
  - Object of Class Product
 
 ----------------------------------------------------------------------*/
-class Product: public Record <const int>
+class Product
 {
     public:
         Product(

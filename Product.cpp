@@ -6,7 +6,8 @@
 
 using namespace std;
 
-Product::Product(const char *ReleaseDate): Record<const int>(IDGenerator<const int>('9',9)){
+Product::Product(const char *ReleaseDate){
+    this->ReleaseID = IDGenerator<int>('9', 8);
     strcpy(this->ReleaseDate, ReleaseDate);
     this->ReleaseDate[sizeof(this->ReleaseDate) - 1] = '\0';
 }
@@ -17,7 +18,7 @@ void Product::DisplayDetails(ostream &out) const{
         // RAISE ERROR
         // exit(1);
     else{
-        out << "ReleaseID : " << getId() << endl;
+        out << "ReleaseID : " << ReleaseID << endl;
         out << "ReleaseDate : " << ReleaseDate << endl;
     }
 }   
@@ -76,11 +77,10 @@ Product CreateProduct(const int &ReleaseID, const char *ReleaseDate){
 }
 
 void CommitProduct(const Product &product, streampos &startPos = PRODUCTFILEPOINTER, const string &FILENAME = FILENAMES[3]){
-    writeFile(FILENAME, startPos, product);
+    writeRecord(FILENAME, startPos, product);
 }
 
 Product GetProductDetails(streampos &startPos = PRODUCTFILEPOINTER, const string &FILENAME = FILENAMES[3]){
-    Record<Product> newprodRecord = readFile<Product>(FILENAME, startPos);
-    Product newprod = newprodRecord.getId();
+    Product newprod = readRecord<Product>(FILENAME, startPos);
     return newprod;
 }
