@@ -12,6 +12,7 @@ Customer.hpp keeps its high cohesion by encapsulating all possible customer entr
 #include <filesystem>
 #include <string>
 #include "Globals.hpp"
+#include "Record.hpp"
 
 using namespace std;
 
@@ -24,11 +25,11 @@ class Customer
 {
     public:
         Customer(
-            const string &name, // in
+            const char *name, // in
                                 // Name of the customer
-            const string &email,// in
+            const char *email,// in
                                 // Email of the customer
-            const string &phone // in
+            const char *phone // in
                                 // Phone number of the customer
         );
         /* Customer(string &name, string &email, int &phone) is the non-default constructor for the Customer class. It takes in details of a customer, and creates the customer object (validation also happens). CustID generation is automatic and handled by templated function T IDGenerator(string &type, int &precision) from Globals.hpp.
@@ -42,20 +43,21 @@ class Customer
         This will come handy when displaying reports or details from the UI. 
         This function will fail if the calling Customer object is a dangling pointer.
         ----------------------------------------------------------------------*/
+        bool operator==(const Customer &other) const;
     private:
-        int custID; 
-        string name;
-        string email;
-        string phone;
+        char custID[10]; 
+        char name[31];
+        char email[31];
+        char phone[14];
         
 };
 // ----------------------------------------------------------------------
 int ValidateCustomer(
-    const string &name,     // in
+    const char *name,     // in
                             // Name of the customer
-    const string &email,    // in
+    const char *email,    // in
                             // Email of the customer
-    const string &phone     // Phone number of the customer
+    const char *phone     // Phone number of the customer
     
 );
 /* int ValidateCustomer(const string &name, const string &email, const string &phone) is a function used for validating the inputs provided by the user i.e; Customer Support Person or a Software Developer. 
@@ -64,11 +66,11 @@ This function performs checks on formats of phone number, email, and name of the
 Call this function with details of the user to check whether the user info is valid.
 ----------------------------------------------------------------------*/
 Customer CreateCustomer(
-    const string &name,     // in
+    const char *name,     // in
                             // Name of the customer
-    const string &email,    // in
+    const char *email,    // in
                             // Email of the customer
-    const string &phone     // in
+    const char *phone     // in
                             // Phone number of the customer
 );
 /* Customer CreateCustomer(string &name, string &email, int &phone) is a function used for creating a customer object. CustID generation is automatic and handled by templated function T IDGenerator(string &type, int &precision) from Globals.hpp.
