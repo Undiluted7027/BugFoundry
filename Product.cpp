@@ -12,7 +12,7 @@ Product::Product(const char *ReleaseDate): Record<const int>(IDGenerator<const i
 }
 
 void Product::DisplayDetails(ostream &out) const{
-    if (strlen(ReleaseDate) == 0 || strlen(ReleaseDate) < 8)
+    if (strlen(ReleaseDate) != 8)
         out << "Error in reading Release Date : Does not have valid value" << endl;
         // RAISE ERROR
         // exit(1);
@@ -23,7 +23,8 @@ void Product::DisplayDetails(ostream &out) const{
 }   
 
 int ValidateProduct(const int &ReleaseID, const char *ReleaseDate){
-    if (strlen(ReleaseDate) < 8) return -1;
+    if (strlen(ReleaseDate) != 8) return -1;
+    if (ReleaseDate[2] != '-' || ReleaseDate[5] != '-') return -1;
     string date = string(ReleaseDate);
     //01 2 34 5 67
     string yy, mm, dd;
