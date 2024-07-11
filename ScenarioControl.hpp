@@ -3,6 +3,7 @@
 
 /* ScenarioControl.hpp
 REVISION HISTORY:
+Rev. 2 - 24/07/11 Added several helper functions and comments by Jason Lee
 Rev. 1 - 24/07/03 Original by Jason Lee
 ----------------------------------------------------------------------
 This module, ScenarioControl.hpp, hides the implementation of the 
@@ -12,6 +13,8 @@ all event calls for customer, complaint, change, and product objects.
 Furthermore, it has a scenariocontrol function that controls the flow 
 of the system with the event calls.
 --------------------------------------------------------------------*/
+#include <iostream>
+#include <bits/stdc++.h>
 #include "Customer.hpp"
 #include "Complaint.hpp"
 #include "Change.hpp"
@@ -39,16 +42,16 @@ The choice and the subchoice must have a match to call the appropriate event.
 However, the UI module checks the restriction. 
 
 Main menu 1, Submenu 1: New User
-Main menu 2, Submenu 1: Create Complaint
-Main menu 2, Submenu 2: Create Product
-Main menu 2, Submenu 3: Create Product Release
+Main menu 1, Submenu 2: Create Complaint
+Main menu 1, Submenu 3: Create Product
+Main menu 1, Submenu 4: Create Product Release
+Main menu 1, Submenu 0: Go back to main menu
+Main menu 2, Submenu 1: Update Specific Change
+Main menu 2, Submenu 2: Update one of the latest Change
 Main menu 2, Submenu 0: Go back to main menu
-Main menu 3, Submenu 1: Update Specific Change
-Main menu 3, Submenu 2: Update one of the latest Change
-Main menu 3, Submenu 0: Go back to main menu
-Main menu 4, Submenu 1: Report of Changes
-Main menu 4, Submenu 2: Report of Anticipated Changes for a product
-Main menu 4, Submenu 3: Report of Users to be informed on Update on Change
+Main menu 3, Submenu 1: Report of Changes
+Main menu 3, Submenu 2: Report of Anticipated Changes for a product
+Main menu 3, Submenu 3: Report of Users to be informed on Update on Change
 Main menu 0, Submenu 0: Shutdown
 --------------------------------------------------------------------*/
 int InitControl(
@@ -65,6 +68,14 @@ void Shutdown(
 /*
 Shutdown is used to exit the whole system. The restriction is not applicable
 --------------------------------------------------------------------*/
+Customer NewCustomer(
+
+);
+/*
+NewCustomer is used to create a new customer by retrieving the customer information
+through the input from the user.
+The restriction for each attributes for a user is mentioned in the User Manual.
+--------------------------------------------------------------------*/
 Complaint CreateNewComplaint(
 
 );
@@ -80,6 +91,14 @@ Product CreateNewProduct(
 CreateNewProduct is used to create a new product by retrieving the 
 product information through the input from user.
 The restriction for each attributes for a product is mentioned in the User Manual
+--------------------------------------------------------------------*/
+Product CreateNewProductRel(
+
+);
+/*
+CreateNewProductRel is used to create a new product release by retrieving the 
+product release information through the input from user.
+The restriction for each attributes for a product release is mentioned in the User Manual
 ----------------------------------------------------------------------*/
 Change CreateNewChange(
 
@@ -89,9 +108,16 @@ CreateNewChange is used to create a new change by retrieving the change
 information through the input from user. 
 The restriction for each attributes for a change is mentioned in the User Manual
 ----------------------------------------------------------------------*/
+int UpdateSpecificChange(   
+                        
+);
+/*
+UpdateSpecificChange is used to get and validate the changeID that the user wants to update. 
+The restriction for the changeID is mentioned in the User Manual.
+----------------------------------------------------------------------*/
 int UpdateChangeInfo(
-    Change aChange      // inout
-                        // A change element to update its attributes
+    int changeID     // in
+                    // A changeID to update its attributes
 );
 /*
 UpdateChangeInfo is used to update the attribute of the 'change' in the
@@ -125,9 +151,18 @@ the user input of an option of displaying the next 10 latest changes,
 or exit the event. For the user input restriction, refer to the
 Report Changes event in the User Manual.
 ----------------------------------------------------------------------*/
+int ProductOnChange(
+
+);
+/*
+ProductOnChange is used to get a particular product to display its 
+next 10 anticipated changes with DisplayProductChangeReport 
+For the user input restriction, refer to the
+format of changeID in the User Manual.
+----------------------------------------------------------------------*/
 int DisplayProductChangeReport(
-    Product aProduct    // in
-                        // a product to display its changes
+    char* releaseID     // in
+                        // a releaseID for a product to display its changes
 );
 /*
 DisplayProductChangeReport is used to display the next 10 latest changes 
@@ -136,8 +171,17 @@ display the next 10 latest changes, or exit the event.
 For the user input restriction, refer to the
 Report Anticipated Changes for a Product event in the User Manual.
 ----------------------------------------------------------------------*/
+int UserOnChange(
+    
+);
+/*
+UserOnChange is used to get a change to display the next 10 users that are
+related to the change the user inputted. 
+For the user input restriction, refer to the 
+changeID format in the User Manual.
+----------------------------------------------------------------------*/
 int DisplayUsersOnUpdateChange(
-    Change aChange     // in
+    int changeID        // in
                         // a change to display all related users
 );
 /*

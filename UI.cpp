@@ -30,24 +30,16 @@ int ActivateUI()
         {
             case 1:
                 subchoice = Create_Menu();
-                cout << "Main: " << choice << " " << "Submenu: "<< subchoice << endl;
-                ScenarioControl(choice, subchoice);
                 break;
             case 2:
                 subchoice = Update_Menu();
-                cout << "Main: " << choice << " " << "Submenu: "<< subchoice << endl;
-                ScenarioControl(choice, subchoice);
                 break;
             case 3:
                 subchoice = Report_Menu();
-                cout << "Main: " << choice << " " << "Submenu: "<< subchoice << endl;
-                ScenarioControl(choice, subchoice);
                 break;
             case 0:
                 subchoice = 0;
                 cout << "Thank you for using Bug Foundry." << endl;
-                cout << "Main: " << choice << " " << "Submenu: "<< subchoice << endl;
-                ScenarioControl(choice, subchoice);
                 break;
             default:
                 cout << "Error: Your option is not an available choice" << endl;
@@ -55,7 +47,7 @@ int ActivateUI()
         }
     } while (choice != 0);
     cin.ignore();
-    return 0;
+    return 1;
 }
 
 int Main_Menu()
@@ -77,47 +69,62 @@ int Main_Menu()
 int Create_Menu()
 {
     int choice;
-    cout << "===Create===" << endl;
-    cout << "1) Create User" << endl;
-    cout << "2) Create Complaint" << endl;
-    cout << "3) Create Product" << endl;
-    cout << "4) Create Product Release" << endl;
-    cout << "0) Go back to main menu" << endl;
+    do
+    {
+        cout << "===Create===" << endl;
+        cout << "1) Create User" << endl;
+        cout << "2) Create Complaint" << endl;
+        cout << "3) Create Product" << endl;
+        cout << "4) Create Product Release" << endl;
+        cout << "0) Go back to main menu" << endl;
 
-    cout << "Choose an option and enter (0-3): ";
-    cin >> choice;
-    cout << endl;
+        cout << "Choose an option and enter (0-3): ";
+        cin >> choice;
+        cout << endl;
 
-    return choice;
+        ScenarioControl(1, choice);
+    } while (choice != 0);
+    
+    return 1;
 };
 
 int Update_Menu()
 {
     int choice;
-    cout << "===Update===" << endl;
-    cout << "1) Update Specific Change" << endl;
-    cout << "2) Update one of the latest Change" << endl;
-    cout << "0) Go back to main menu" << endl;
+    do
+    {
+        cout << "===Update===" << endl;
+        cout << "1) Update Specific Change" << endl;
+        cout << "2) Update one of the latest Change" << endl;
+        cout << "0) Go back to main menu" << endl;
 
-    cout << "Choose an option and enter (0-2): ";
-    cin >> choice;
-    cout << endl;
+        cout << "Choose an option and enter (0-2): ";
+        cin >> choice;
+        cout << endl;
 
-    return choice;
+        ScenarioControl(2, choice);
+    } while (choice != 0);
+    
+    return 2;
 };
 
 int Report_Menu()
 {
     int choice;
-    cout << "===Report===" << endl;
-    cout << "1) Report of Changes" << endl;
-    cout << "2) Report of Anticipated Changes for a product" << endl;
-    cout << "3) Report of Users to be informed on update on Change" << endl;
-    cout << "0) Go back to main menu" << endl;
+    do
+    {
+        cout << "===Report===" << endl;
+        cout << "1) Report of Changes" << endl;
+        cout << "2) Report of Anticipated Changes for a product" << endl;
+        cout << "3) Report of Users to be informed on update on Change" << endl;
+        cout << "0) Go back to main menu" << endl;
 
-    cout << "Choose an option and enter (0-3): ";
-    cin >> choice;
-    cout << endl;
+        cout << "Choose an option and enter (0-3): ";
+        cin >> choice;
+        cout << endl;
 
-    return choice;
+        ScenarioControl(3, choice);
+    } while (choice != 0);
+    
+    return 3;
 };
