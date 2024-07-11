@@ -23,7 +23,7 @@ Exported constants/types/variables
 Types:
  - Object of Class Change
 ----------------------------------------------------------------------*/
-class Change : public Record<const char*>
+class Change
 {
     public: 
         Change (
