@@ -41,6 +41,7 @@ class Product
         This will come handy when displaying reports or details from the UI. 
         This function will fail if the calling Customer object is a dangling pointer.
         ----------------------------------------------------------------------*/
+        bool operator==(const Product &other) const;
     private:
         int ReleaseID;
         char ReleaseDate[9];
