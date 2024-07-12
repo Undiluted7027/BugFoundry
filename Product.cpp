@@ -28,10 +28,10 @@ int ValidateProduct(const int &ReleaseID, const char *ReleaseDate){
     if (ReleaseDate[2] != '-' || ReleaseDate[5] != '-') return -1;
     string date = string(ReleaseDate);
     //01 2 34 5 67
-    string yy, mm, dd;
-    yy = date.substr(0, 2);
-    mm = date.substr(3, 5);
-    dd = date.substr(6, 8);
+    
+    string yy = date.substr(0, 2);
+    string mm = date.substr(3, 2);
+    string dd = date.substr(6, 2);
 
     int year, month, day;
     year = stoi(yy);
@@ -41,25 +41,23 @@ int ValidateProduct(const int &ReleaseID, const char *ReleaseDate){
     if (year < 24 || year > 99 || month < 1 || month > 12 || day < 1 || day > 31){
         return -1;
     }
-    else {
-        if (month == 2){
-            if (year % 4 == 0 && day > 29) return -1;
-            else if (day > 28) return -1;
-        }
-        //2,4,6,9,11
-        if (day == 31){
-            switch(month){
-                case 4:
-                    return -1;
-                case 6:
-                    return -1;
-                case 9:
-                    return -1;
-                case 11:
-                    return -1;
-            };
+    if (month == 2){
+        bool isLeapYear = (year % 4 == 0);
+        if (isLeapYear && day > 29) return -1;
+        if (!isLeapYear && day > 28) return -1;
+    }
+    //2,4,6,9,11
+    if (day == 31){
+        switch(month){
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                return -1;
         }
     }
+    
+    
 
     //check if record already exists
     Product *dataptr = readFile<Product>(FILENAMES[0], PRODUCTFILEPOINTER);
