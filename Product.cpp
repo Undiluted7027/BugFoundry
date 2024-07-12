@@ -61,6 +61,23 @@ int ValidateProduct(const int &ReleaseID, const char *ReleaseDate){
         }
     }
 
+    //check if record already exists
+    Product *dataptr = readFile<Product>(FILENAMES[0], PRODUCTFILEPOINTER);
+    Product dummy(ReleaseDate);
+
+    size_t size = sizeof(dataptr) / sizeof(dataptr[0]);
+
+    for(int i = 0; i < size; i++){
+        if(dataptr[i] == dummy){
+            delete[] dataptr;
+            cout << "Record already exists" << endl;
+            return 0;
+            //break;
+        }
+    }
+    delete[] dataptr;
+    cout << "Record is Valid" << endl;
+
     return 1;
 
 }
