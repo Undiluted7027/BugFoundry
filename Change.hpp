@@ -41,11 +41,13 @@ class Change
                                             // date for lastupdate, null by default
              
             ); 
-
         /* Change(const string& changeID, const string& description, const string& status, const string& priority, 
         const string& lastUpdate, const string& productName, const int &releaseID) is a non-default constructor to 
         intilize its variables and create a Change object This function fails when a variable inputted is invalid. ChangeID generation is automatic and handled by templated function T IDGenerator(string &type, int &precision) from Globals.hpp.
         ----------------------------------------------------------------------*/
+        bool operator==(const Change &other) const;
+        // Add comments for this fn
+        /*----------------------------------------------------------------------*/
         void UpdateChange(
             const char *changeID,         // in
                                             // id for change, changeID has to be 6 digits with the first digit being 1

@@ -40,7 +40,7 @@ class Complaint
         is the non-default constructor for the Complaint class. 
         It takes in details of a complaint, and creates the complaint object. ComplaintID generation is automatic and handled by templated function T IDGenerator(string &type, int &precision) from Globals.hpp.
         ----------------------------------------------------------------------*/
-        
+        bool operator==(const Complaint &other) const;
         void DisplayDetails(
             ostream &out       // in/out
                                // ostream object to handle << operation

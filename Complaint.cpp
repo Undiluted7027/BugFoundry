@@ -29,6 +29,10 @@ Complaint::Complaint(const char *description, const char *dateOfComplaint, const
     this->custID[sizeof(this->custID)-1] = '\0';
 }
 
+bool Complaint::operator==(const Complaint &other) const{
+    return (complaintID == other.complaintID || description == other.description || dateOfComplaint == other.dateOfComplaint);
+}
+
 void Complaint::DisplayDetails(ostream &out) const{
     if (strlen(description) == 0 || strlen(dateOfComplaint) == 0 || strlen(changeID) == 0 || releaseID == nullptr || custID == nullptr)
         out << "Error in reading Complaint information. One or more attributes of complaint do not have value(s)" << endl;
@@ -73,16 +77,27 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
     if(changeID[0] != '1'){
         return -1;
     }
-    if (releaseID < 10000000 || releaseID > 99999999){
+    if (strlen(releaseID) != 8){
         return -1;
     }
-    if (custID < 100000000 || custID > 999999999){
+    if (strlen(custID) != 10){
         return -1;
     }
-    return 1;
     // how to check if this complaint is a duplicate?
+    Complaint *dataptr = readFile<Complaint>(FILENAMES[2], COMPLAINTFILEPOINTER);
+    Complaint dummy(description, dateOfComplaint, changeID, releaseID, custID);
+    size_t size = sizeof(dataptr)/sizeof(dataptr[0]);
+    for (int i = 0; i < size; i++){
+        if (dataptr[i] == dummy){
+            delete [] dataptr;
+            cout << "Record already exists :/" << endl;
+            return 0;
+        }
+    }
+    delete [] dataptr;
+    cout << "Record is valid!" << endl;
+    return 1;
 }
-
 
 Complaint CreateComplaint (const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID){
     if (ValidateComplaint(description, dateOfComplaint, changeID, releaseID, custID) == 1){

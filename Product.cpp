@@ -14,6 +14,11 @@ Product::Product(const char *ReleaseDate){
     this->releaseDate[sizeof(this->releaseDate) - 1] = '\0';
 }
 
+bool Product::operator==(const Product &other) const{
+    // assuming 2 products can be released on same date
+    return (releaseID == other.releaseID || releaseDate == other.releaseDate);
+}
+
 void Product::DisplayDetails(ostream &out) const{
     if (strlen(releaseDate) != 8)
         out << "Error in reading Release Date : Does not have valid value" << endl;
