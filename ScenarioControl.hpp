@@ -20,6 +20,7 @@ of the system with the event calls.
 #include "Change.hpp"
 #include "Product.hpp"
 #include "Globals.hpp"
+#include "ErrorMessages.hpp"
 /*--------------------------------------------------------------------
 // Exported constants/types/variables
 This module does not export any constant/types/variables
@@ -68,7 +69,7 @@ void Shutdown(
 /*
 Shutdown is used to exit the whole system. The restriction is not applicable
 --------------------------------------------------------------------*/
-Customer NewCustomer(
+int NewCustomer(
 
 );
 /*
@@ -76,7 +77,7 @@ NewCustomer is used to create a new customer by retrieving the customer informat
 through the input from the user.
 The restriction for each attributes for a user is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-Complaint CreateNewComplaint(
+int CreateNewComplaint(
 
 );
 /*
@@ -84,7 +85,7 @@ CreateNewComplaint is used to create a new complaint by retrieving the
 complaint information through the input from the user. 
 The restriction for each attributes for a complaint is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-Product CreateNewProduct(
+int CreateNewProduct(
 
 );
 /*
@@ -92,7 +93,7 @@ CreateNewProduct is used to create a new product by retrieving the
 product information through the input from user.
 The restriction for each attributes for a product is mentioned in the User Manual
 --------------------------------------------------------------------*/
-Product CreateNewProductRel(
+int CreateNewProductRel(
 
 );
 /*
@@ -100,7 +101,7 @@ CreateNewProductRel is used to create a new product release by retrieving the
 product release information through the input from user.
 The restriction for each attributes for a product release is mentioned in the User Manual
 ----------------------------------------------------------------------*/
-Change CreateNewChange(
+int CreateNewChange(
 
 );
 /*
@@ -156,29 +157,14 @@ int ProductOnChange(
 );
 /*
 ProductOnChange is used to get a particular product to display its 
-next 10 anticipated changes with DisplayProductChangeReport 
-For the user input restriction, refer to the
-format of changeID in the User Manual.
-----------------------------------------------------------------------*/
-int DisplayProductChangeReport(
-    char* releaseID     // in
-                        // a releaseID for a product to display its changes
-);
-/*
-DisplayProductChangeReport is used to display the next 10 latest changes 
-of the 'product' in the parameter. The user input is either 
-display the next 10 latest changes, or exit the event.
-For the user input restriction, refer to the
-Report Anticipated Changes for a Product event in the User Manual.
+next 10 anticipated. The function input restriction is not applicable
 ----------------------------------------------------------------------*/
 int UserOnChange(
     
 );
 /*
 UserOnChange is used to get a change to display the next 10 users that are
-related to the change the user inputted. 
-For the user input restriction, refer to the 
-changeID format in the User Manual.
+related to the change the user inputted. The function input restriction is not applicable
 ----------------------------------------------------------------------*/
 int DisplayUsersOnUpdateChange(
     int changeID        // in
