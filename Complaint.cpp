@@ -11,26 +11,31 @@ This CPP file called Complaint.cpp handles the complaints of the program.
 #include<cstring>
 #include<iostream>
 
-using typename std;
+using namespace std;
 
-Complaint::Complaint(const char *description, const char *dateOfComplaint, const char *changeID, const int& releaseID, const int& custID)Record<const char *>(IDGenerator<const char*>('2', 6)){
+Complaint::Complaint(const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID){
+    const char *generatedID = IDGenerator<const char *>('2', 6);
+    strcpy(this->complaintID, generatedID);
+    this->complaintID[sizeof(this->complaintID)-1] = '\0';
     strcpy(this->description, description);
     this->description[sizeof(this->description) - 1] = '\0';
     strcpy(this->dateOfComplaint, dateOfComplaint);
     this->dateOfComplaint[sizeof(this->dateOfComplaint) - 1] = '\0';
     strcpy(this->changeID, changeID);
     this->changeID[sizeof(this->changeID) - 1] = '\0';
-    this->releaseID = releaseID;
-    this->custID = custID; 
+    strcpy(this->releaseID, releaseID);
+    this->releaseID[sizeof(this->releaseID)-1] = '\0';
+    strcpy(this->custID, custID);
+    this->custID[sizeof(this->custID)-1] = '\0';
 }
 
-void Complaint::DisplayDetails()(ostream &out) const{
-    if (strlen(description) == 0 || strlen(dateOfComplaint) == 0 || strlen(changeID) == 0 || releaseID = nullptr || custID = nullptr)
+void Complaint::DisplayDetails(ostream &out) const{
+    if (strlen(description) == 0 || strlen(dateOfComplaint) == 0 || strlen(changeID) == 0 || releaseID == nullptr || custID == nullptr)
         out << "Error in reading Complaint information. One or more attributes of complaint do not have value(s)" << endl;
         // RAISE ERROR
         // exit(1);
     else{
-        out << "complaintID: " << getId() << endl;
+        out << "complaintID: " << complaintID << endl;
         out << "description: " << description << endl;
         out << "dateOfComplaint: " << dateOfComplaint << endl;
         out << "changeID: " << changeID << endl;
@@ -40,14 +45,14 @@ void Complaint::DisplayDetails()(ostream &out) const{
 }
 
 int ValidateComplaint(const char *description, const char *dateOfComplaint, const char *changeID, const int& releaseID, const int& custID){
-    if (strlen(descrption) > 30){
+    if (strlen(description) > 30){
         return -1;
     }
     if (strlen(dateOfComplaint) != 8){
-        return -1
+        return -1;
     }
     if (dateOfComplaint[2] != '-' ||  dateOfComplaint[5] != '-'){
-        return -1
+        return -1;
     }
     int year = (dateOfComplaint[0] - '0') * 10 + (dateOfComplaint[1] - '0');
     if (year < 24 || year > 99){
@@ -79,7 +84,7 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
 }
 
 
-void Complaint::CreateComplaint (const char *description, const char *dateOfComplaint, const char *changeID, const int& releaseID, const int& custID){
+Complaint CreateComplaint (const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID){
     if (ValidateComplaint(description, dateOfComplaint, changeID, releaseID, custID) == 1){
         Complaint newComplaint(description, dateOfComplaint, changeID, releaseID, custID);
         return newComplaint;
@@ -91,10 +96,11 @@ void Complaint::CreateComplaint (const char *description, const char *dateOfComp
 }
 
 void CommitComplaint(const Complaint &complaint, streampos &startPos = COMPLAINTFILEPOINTER, const string &FILENAME = FILENAMES[2]){
-    writeFile(FILENAME, startPos, complaint);
+    writeRecord(FILENAME, startPos, complaint);
 }
 
-Customer GetComplaintDetails(const streampos startpos = COMPLAINTFILEPOINTER, const string &FILENAME = FILENAMES[2]){
-    Customer newComplaint = readFile(FILENAME, startPos);
+Complaint GetComplaintDetails(streampos &startPos = COMPLAINTFILEPOINTER, const string &FILENAME = FILENAMES[2]){
+    Complaint newComplaint = readRecord<Complaint>(FILENAME, startPos);
+    return newComplaint;
 }
 

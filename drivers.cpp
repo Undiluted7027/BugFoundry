@@ -51,6 +51,11 @@ void writeRecord(const string &filename, streampos &fileptr, const T &record){
     f.close();
 }
 
+template <class T, class Q>
+void updateRecord(const string &filename, streampos &fileptr, const T &record, const Q *id){
+    // work in progress
+}
+
 template <typename T>
 void writeFile(const string &filename, streampos &fileptr, const T* &records){
     fstream f("data/"+filename, ios::out);
@@ -66,5 +71,6 @@ void writeFile(const string &filename, streampos &fileptr, const T* &records){
     f.seekp(fileptr);
     f.close();
 }
+
 
 

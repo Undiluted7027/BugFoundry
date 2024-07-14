@@ -20,7 +20,7 @@ Types:
 
 --------------------------------------------------------------------*/
 
-class Complaint : public Record <const char *>
+class Complaint
 {
     public:
 
@@ -31,9 +31,9 @@ class Complaint : public Record <const char *>
                                             // date the complaint was created
             const char *changeID,         // in 
                                             // change id of complaint
-            const int& releaseID,           // in  
+            const char *releaseID,           // in  
                                             // release id of complaint
-            const int& custID               // in  
+            const char *custID               // in  
                                             // customer id of complaint
         );
         /* Complaint(string &complaintID, string &description, string &dateOfComplaint, string &changeID, int &releaseID, int &custID) 
@@ -55,8 +55,8 @@ class Complaint : public Record <const char *>
         char description[31];
         char dateOfComplaint[9];
         char changeID[6];
-        int releaseID;
-        int custID;
+        char releaseID[9];
+        char custID[10];
 };
 //----------------------------------------------------------------------
 int ValidateComplaint(
@@ -66,9 +66,9 @@ int ValidateComplaint(
                                     // Date of Complaint
     const char *changeID = "",         // in
                                     // ChangeID the complaint is related to
-    const int &releaseID = 0,           // in
+    const char *releaseID = "",           // in
                                     // ReleaseID of the product the complaint concerns
-    const int &custID = 0               // in
+    const char *custID = ""               // in
                                     // UserID of the user the complaint is related to
 );
     
@@ -78,16 +78,16 @@ If same data already exists in system it returns 0, if the format is invalid it 
 This function performs checks on formats of complaint description, dateOfComplaint, among others. 
 Call this function with details of the complaint to check whether the complaint info is valid.
 ----------------------------------------------------------------------*/
-void CreateComplaint(
+Complaint CreateComplaint(
     const char *description,      // in 
                                     // description of complaint
     const char *dateOfComplaint,  // in 
                                     // date the complaint was created
     const char *changeID,         // in 
                                     // changeID of complaint
-    const int &releaseID,           // in 
+    const char *releaseID,           // in 
                                     // releaseID of product
-    const int &custID               //in 
+    const char *custID               //in 
                                     // custID of customer
 );
 /* void CreateComplaint(const string &description, const string &dateOfComplaint, const string &changeID, const int &releaseID, const int &custID) is a function used for creating new complaint.
