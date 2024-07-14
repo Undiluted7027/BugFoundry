@@ -25,7 +25,7 @@ void Product::DisplayDetails(ostream &out) const{
     }
 }   
 
-int ValidateProduct(const int &ReleaseID, const char *ReleaseDate){
+int ValidateProduct(const char *ReleaseID, const char *ReleaseDate){
     if (strlen(ReleaseDate) != 10) return -1;
     if (ReleaseDate[4] != '-' || ReleaseDate[7] != '-') return -1;
     string date = string(ReleaseDate);
@@ -82,7 +82,7 @@ int ValidateProduct(const int &ReleaseID, const char *ReleaseDate){
 
 }
 
-Product CreateProduct(const int &ReleaseID, const char *ReleaseDate){
+Product CreateProduct(const char *ReleaseID, const char *ReleaseDate){
     if (ValidateProduct(ReleaseID, ReleaseDate)){
         Product newProd(ReleaseDate);
         return newProd;

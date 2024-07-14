@@ -55,7 +55,7 @@ class Change
                                             // status for change, status has to be "-", "X", or "P"
             const char &priority,         // in
                                             // priority for change, priority level range is 1-5
-            const int &releaseID         // in
+            const char *releaseID         // in
                                             // release ID of the product for the change requested, release ID is 8 characters 
         );
         /* void UpdateChange(const string &changeID, const string &description, const string &status, const string &priority, const int &releaseID) is used to update any change object specified by the user through its changeID. 
@@ -68,7 +68,7 @@ class Change
         char status;
         char priority;
         char lastUpdate[9];
-        int releaseID;
+        char releaseID[9];
 };
 // ----------------------------------------------------------------------
 Change CreateChange(
@@ -80,7 +80,7 @@ Change CreateChange(
                                 // priority level of a particular change
     const char *lastUpdate,    // in
                                 // date when the change had its last update
-    const int &releaseID      // in
+    const char *releaseID      // in
                                 // specific releaseID that the change is targeting to
 );
 /* Change CreateChange(const string &description, const string &status, const string &priority, const string &lastUpdate, const int &releaseID) is used to create a new change with all the information given in the parameter. ValidateChange is called inside this function. For each attribute's restriction, please refer to the User Manual. ChangeID generation is automatic and handled by templated function T IDGenerator(string &type, int &precision) from Globals.hpp.
@@ -94,7 +94,7 @@ int ValidateChange(
                                     // priority level of a particular change
     const char *lastUpdate,        // in
                                     // date when the change had its last update
-    const int &releaseID          // specific releaseID that the change is targeting to
+    const char *releaseID          // specific releaseID that the change is targeting to
 );
 /* int ValidateChange(const string &description, const string &status, const string &priority, const string &lastUpdate, const int &releaseID) is used to check if all the information given in the parameter has the correct format. If same data already exists in system it returns 0, if the format is invalid it returns -1 else 1.
 For each attribute's restriction, please refer to the User Manual.
@@ -106,7 +106,7 @@ void UpdateLatestChange(
                                     // status for change, status has to be "-", "X", or "P"
     const char &priority,         // in 
                                     // priority for change, priority level range is 1-5
-    const int &releaseID            // in
+    const char *releaseID            // in
                                     // release ID of the product for the change requested, release ID is 8 characters 
 
 );
@@ -119,7 +119,7 @@ int CreateChangesReport();
 show the next 10 changes from the list or "0" to go back to the previous menus.
 ----------------------------------------------------------------------*/
 void CreateAnticipatedChangesProduct(
-    const int &releaseID  // in
+    const char *releaseID  // in
                     // ReleaseID for change requested, ReleaseID is 4 characters or less
 
 );
