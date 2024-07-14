@@ -52,8 +52,63 @@ void writeRecord(const string &filename, streampos &fileptr, const T &record){
 }
 
 template <class T, class Q>
-void updateRecord(const string &filename, streampos &fileptr, const T &record, const Q *id){
+void updateRecord(const string &filename, streampos fileptr, const T &newRecord, const Q *id){
     // work in progress
+    fstream f("data/" + filename, ios::in || ios::out);
+    if (!f.good())
+        exit(1);
+    T record;
+    Q recordId;
+    while (f.read(reinterpret_cast<char *>(&record), sizeof(T))){
+        recordID = extractID(record);
+        if (recordID == id){
+            fileptr = file.tellg() - streampos(sizeof(T));
+            f.seekp(fileptr);
+            f.write(reinterpret_cast<const char *>(&newRecord), sizeof(T));
+        }
+        break;
+    }
+    f.flush();
+    f.close();
+}
+
+template <typename T, typename Q>
+void deleteRecord(const string &filename, streampos fileptr, const Q *id){
+    fstream f("data/" + filename, ios::in || ios::out);
+    fstream temp("data/temp_"+filename, ios::in||ios::out);
+    if (!temp.is_open()){
+        cerr << "Error opening file: " << filename << endl;
+        exit(1);
+    }
+    if (!f.good())
+        exit(1);
+    T record;
+    Q recordID;
+    bool dound = true;
+    while (f.read(reinterpret_cast<char *>(&record), sizeof(T))){
+        recordID = extractID(record);
+        if (recordID == id)
+            found = true;
+        else
+            temp.write(reinterpret_cast<const char*>(&record), sizeof(T));
+    }
+    temp.flush();
+    f.close();
+    temp.close();
+    if (found){
+        if (remove((("data/"+filename).c_str()) != 0){
+            cerr << "Error deleting original file" << endl;
+            exit(1);
+        }
+        if (rename(("data/temp_" + filename).c_str(), ("data/" + filename).c_str()) != 0) {
+            cerr << "Error renaming temporary file." << std::endl;
+            exit(1);
+        }
+    } else {
+        // If the record was not found, delete the temporary file
+        remove(("data/temp_" + filename).c_str());
+        cerr << "Record not found." << endl;
+    }
 }
 
 template <typename T>

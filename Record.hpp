@@ -23,3 +23,8 @@ class Record{
         }
 };
 
+
+template <typename T, typename Q>
+Q extractID(const Record<T, Q> &record){
+    return record.getId();
+}
