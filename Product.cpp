@@ -7,19 +7,21 @@
 using namespace std;
 
 Product::Product(const char *ReleaseDate){
-    this->ReleaseID = IDGenerator<int>('9', 8);
-    strcpy(this->ReleaseDate, ReleaseDate);
-    this->ReleaseDate[sizeof(this->ReleaseDate) - 1] = '\0';
+    const char *generatedID = IDGenerator<const char *>('9', 9);
+    strcpy(this->releaseID, generatedID);
+    this->releaseID[sizeof(this->releaseID) - 1] = '\0';
+    strcpy(this->releaseDate, ReleaseDate);
+    this->releaseDate[sizeof(this->releaseDate) - 1] = '\0';
 }
 
 void Product::DisplayDetails(ostream &out) const{
-    if (strlen(ReleaseDate) != 8)
+    if (strlen(releaseDate) != 8)
         out << "Error in reading Release Date : Does not have valid value" << endl;
         // RAISE ERROR
         // exit(1);
     else{
-        out << "ReleaseID : " << ReleaseID << endl;
-        out << "ReleaseDate : " << ReleaseDate << endl;
+        out << "ReleaseID : " << releaseID << endl;
+        out << "ReleaseDate : " << releaseDate << endl;
     }
 }   
 

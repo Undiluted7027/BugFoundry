@@ -43,8 +43,8 @@ class Product
         ----------------------------------------------------------------------*/
         bool operator==(const Product &other) const;
     private:
-        int ReleaseID;
-        char ReleaseDate[9];
+        char releaseID[9];
+        char releaseDate[11];
 };
 
 //----------------------------------------------------------------------
