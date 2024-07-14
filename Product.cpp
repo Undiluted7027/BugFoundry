@@ -24,17 +24,17 @@ void Product::DisplayDetails(ostream &out) const{
 }   
 
 int ValidateProduct(const int &ReleaseID, const char *ReleaseDate){
-    if (strlen(ReleaseDate) != 8) return -1;
-    if (ReleaseDate[2] != '-' || ReleaseDate[5] != '-') return -1;
+    if (strlen(ReleaseDate) != 10) return -1;
+    if (ReleaseDate[4] != '-' || ReleaseDate[7] != '-') return -1;
     string date = string(ReleaseDate);
-    //01 2 34 5 67
+    //0123 4 56 7 89
     
-    string yy = date.substr(0, 2);
-    string mm = date.substr(3, 2);
-    string dd = date.substr(6, 2);
+    string yyyy = date.substr(0, 4);
+    string mm = date.substr(5, 2);
+    string dd = date.substr(8, 2);
 
     int year, month, day;
-    year = stoi(yy);
+    year = stoi(yyyy);
     month = stoi(mm);
     day = stoi(dd);
 

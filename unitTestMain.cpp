@@ -15,8 +15,8 @@ int main()
     If the test passes, the system recognizes correct format of product
     If not, the system does not recognizes.*/
     int anID = 12345;
-    string aDate = "24-04-02";
-    string badDate = "141241";
+    char* aDate = "24-04-02";
+    char* badDate = "141241";
 
     if (ValidateProduct(anID, aDate))
     {
