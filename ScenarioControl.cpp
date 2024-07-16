@@ -54,27 +54,33 @@ int NewCustomer()
     char dept;
 
     cout << "===Creating a User===" << endl;
+
+    // Get user's name and checks the format 
     cout << "Enter full name (30 max characters): ";
     cin.getline(name, 30);
     if (NameError(name)) return 0;
     cout << endl;
 
+    // Get user's email and checks the format
     cout << "Enter email (24 max characters): ";
     cin.getline(email, 24);
     if (EmailError(email)) return 0;
     cout << endl;
 
+    // Get user's phone and checks the format
     cout << "Enter phone (eg. [1]6047231023): ";
     cin.getline(phone, 11);
     if (PhoneError(phone)) return 0;
     cout << endl;
 
+    // Get user's department and checks the format
     cout << "Enter department (software engineer, marketer, customer)" << endl;
     cout << "(S/M/∅): ";
     cin >> dept;
     if (DeptError(dept)) return 0;
     cout << endl;
 
+    // Confirm the action
     char choice;
     cout << "Confirm to create user (Y/N): ";
     cin >> choice;
@@ -84,13 +90,14 @@ int NewCustomer()
         return 0;
     }
 
-    // if (ValidateCustomer(name, email, phone)) 
-    // {
-    //     CommitCustomer(CreateCustomer(name, email, phone), CUSTOMERFILEPOINTER, FILENAMES[0]);
-    //     cout << "New UserID: " << endl;
-    //     cout << "User Successfully Created" << endl;
-    //     return 1;
-    // }
+    // Write the new user to the file after user duplication check
+    if (ValidateCustomer(name, email, phone)) 
+    {
+        CommitCustomer(CreateCustomer(name, email, phone), CUSTOMERFILEPOINTER, FILENAMES[0]);
+        cout << "New UserID: " << endl;
+        cout << "User Successfully Created" << endl;
+        return 1;
+    }
     cout << "User already exists!" << endl;
     return 0;
 }
@@ -108,29 +115,35 @@ int CreateNewComplaint()
     char product[11];
 
     cout << "===Creating a Complaint===" << endl;
+
+    // Get requester's userID and checks the existance
     cout << "Enter your UserID (9 digit): ";
     cin.getline(userID ,9);
-    // UserID exist check
+    ValidateCustomer(userID);
     cout << endl;
 
+    // Get the specific product to be complained and checks the existance
     cout << "Enter the Product the bug was found on: ";
     cin.getline(product, 10);
-    // Product exist check
+    // ValidateProduct(product);
     cout << endl;
 
+    // Get the product's releaseID and checks the existance
     cout << "Enter the Product ReleaseID that the bug was found on" << endl;
     cout << "(max 8 letters releaseID): ";
     cin.getline(relID, 8);
-    // ReleaseID exist check
+    // ValidateProduct()
     cout << endl;
 
     // Check if releaseID and Product match
 
+    // Get the description of complaint and checks the format
     cout << "Enter Description of your complaint (30 max characters):" << endl;
     cin.getline(desc, 30);
     if (DescError(desc)) return 0;
     cout << endl;
     
+    // Confirm the action
     char choice;
     cout << "Confirm to create complaint (Y/N): ";
     cin >> choice;
@@ -140,9 +153,12 @@ int CreateNewComplaint()
         return 0;
     }
 
-    if (ValidateComplaint(desc, "date", NULL, relID, atoi(userID)))
+    // Write the complaint and create the change after existance check
+    CommitComplaint(CreateComplaint(desc, "date", NULL, relID, userID));
+    if (ValidateChange(desc, '-', 1, "date", NULL))
     {
-        CommitComplaint(CreateComplaint(desc, "date", NULL, relID, atoi(userID)));
+        Change newChange = CreateChange(desc, '-', 1, "date", NULL);
+        CommitChange(newChange, CHANGEFILEPOINTER, FILENAMES[1]);
         cout << "Complaint Created Successfully" << endl;
         return 1;
     }
@@ -158,11 +174,14 @@ int CreateNewProduct()
 {
     char product[11];
     cout << "===Create Product===" << endl;
+    
+    // Get the product name and checks the format
     cout << "Enter the new product name (10 max characters): ";
     cin.getline(product, 10);
     if (ProductError(product)) return 0;
     cout << endl;
 
+    // Confirm the action
     char choice;
     cout << "Confirm to create product (Y/N): ";
     cin >> choice;
@@ -172,6 +191,7 @@ int CreateNewProduct()
         return 0;
     }
 
+    // Write the product to the file after duplication check
     // if (ValidateProduct(CreateProduct(NULL, NULL)))
     // {
     //     CommitProduct(CreateProduct(NULL, NULL));
@@ -194,22 +214,27 @@ int CreateNewProductRel()
     char relID[9];
 
     cout << "===Create Product Release===" << endl;
+
+    // Get the product name and check the existance
     cout << "Enter the product name (10 max characters): ";
     cin.getline(product, 10);
     if (ProductError(product)) return 0;
-    // if (ValidateProduct() == 0) return 0;
+    // if (!ValidateProduct(product)) return 0;
     cout << endl;
 
+    // Get the anticipated release date and check the format
     cout << "Enter the anticipated release date (YYYY-MM-DD): ";
     cin.getline(date,10);
     if (DateError(date)) return 0;
     cout << endl;
 
+    // Get the releaseID and check the format
     cout << "Enter the new releaseID (8 max characters): " << endl;
     cin.getline(relID, 8);
     if (ReleaseIDError(relID)) return 0;
     cout << endl;
 
+    // Confirm the action
     char choice;
     cout << "Confirm to create product release (Y/N): ";
     cin >> choice;
@@ -219,6 +244,7 @@ int CreateNewProductRel()
         return 0;
     }
 
+    // Write the releaseID to the file after duplication check
     // if (ValidateProduct(relID, date))
     // {
     //     CommitProduct(CreateProduct(product, relID, date));
@@ -237,9 +263,12 @@ int UpdateSpecificChange()
 {
     char changeID[7];
     cout << "===ChangeID===" << endl;
+
+    // Get the changeID and check for existance
     cout << "Enter the ChangeID (6 Digit ID): ";
     cin.getline(changeID,6);
     if (ChangeIDError(changeID)) return 0;
+    // if (!ValidateChange()) return 0;
 
     return UpdateChangeInfo(atoi(changeID));
 }
@@ -535,7 +564,7 @@ void PrintChangeB(int number, char *Description, char *ChangeID, char *Date, cha
     }
     else
     {
-        cout.width(2); cout << left << number << " ";
+        cout.width(2); cout << left << number;
     }
     cout.width(32); cout << left << Description;
     cout.width(10); cout << left << ChangeID;
