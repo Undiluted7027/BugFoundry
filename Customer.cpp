@@ -19,6 +19,10 @@ Customer::Customer(const char *name, const char *email, const char *phone)
     this->phone[sizeof(this->phone) - 1] = '\0';
 }
 
+bool Customer::operator==(const Customer &other) const{
+    return (custID == other.custID || email == other.email || phone == other.phone);
+}
+
 void Customer::DisplayDetails(ostream &out) const
 {
     if (strlen(name) == 0 || strlen(email) == 0 || strlen(phone) == 0)
