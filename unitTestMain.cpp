@@ -1,6 +1,7 @@
 /* unitTestMain.cpp 
 REVISION HISTORY:
 Rev. 1 - 24/07/03 Original by Jason Lee
+Rev. 1 - 24/07/14 Revised by Seoyoung Kim
 --------------------------------------------------------------------*/
 #include <iostream>
 #include <string.h>
@@ -14,11 +15,12 @@ int main()
     /* Test case for validating a Product.
     If the test passes, the system recognizes correct format of product
     If not, the system does not recognizes.*/
-    int anID = 12345;
-    string aDate = "24-04-02";
-    string badDate = "141241";
+    char *aReleaseID = "12345678"; // releaseID
+    char* aDate = "24-04-02"; //date
+    char* badDate = "141241";
+    char *aCID = "12345"; //changeid
 
-    if (ValidateProduct(anID, aDate))
+    if (ValidateProduct(aReleaseID, aDate))
     {
         cout << "Test Passed: Detected Valid product" << endl;
     }
@@ -26,7 +28,7 @@ int main()
     {
         cout << "Test Failed: Did not detect Valid product" << endl;
     }
-    if (ValidateProduct(anID, badDate))
+    if (ValidateProduct(aReleaseID, badDate))
     {
         cout << "Test Failed: Did not detect Invalid product" << endl;
     }
@@ -38,10 +40,10 @@ int main()
     /* Test case for validating a Customer.
     If the test passes, the system recognizes correct format of customer
     If not, the system does not recognizes.*/
-    string aName = "Bob";
-    string anEmail = "Bob@gmail.com";
-    string aPhone = "1-778-123-4567";
-    string badEmail = "abcdefg";
+    char* aName = "Bob";
+    char* anEmail = "Bob@gmail.com";
+    char* aPhone = "1-778-123-4567";
+    char* badEmail = "abcdefg";
 
     if (ValidateCustomer(aName, anEmail, aPhone))
     {
@@ -63,9 +65,12 @@ int main()
     /* Test case for validating a Complaint.
     If the test passes, the system recognizes correct format of customer
     If not, the system does not recognizes.*/
-    string userID = "123456789";
+    char *userID = "123456789"; // userid
+    char* aDesc = "NOT WORKING"; //desc
+    char* badDesc = "NOT WORKING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
 
-    if (ValidateComplaint(userID))
+
+    if (ValidateComplaint(aDesc, aDate, aCID, aReleaseID, userID))
     {
         cout << "Test Passed: Detected Invalid Complaint" << endl;
     }
@@ -77,13 +82,10 @@ int main()
     /* Test case for validating a Change.
     If the test passes, the system recognizes correct format of change
     If not, the system does not recognizes.*/
-    string aStatus = "P";
-    string aPriority = "1";
-    int releaseID = 1111;
-    string aDesc = "NOT WORKING";
-    string badDesc = "NOT WORKING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
-
-    if (ValidateChange(aDesc, aStatus, aPriority, aDate, releaseID))
+    char aStatus = 'P';
+    char aPriority = '1';
+    
+    if (ValidateChange(aDesc, aStatus, aPriority, aDate, aReleaseID))
     {
         cout << "Test Passed: Detected Valid Change" << endl;
     }
@@ -91,7 +93,7 @@ int main()
     {
         cout << "Test Failed: Did not detect Valid Change" << endl;
     }
-    if (ValidateChange(badDesc, aStatus, aPriority, aDate, releaseID))
+    if (ValidateChange(badDesc, aStatus, aPriority, aDate, aReleaseID))
     {
         cout << "Test Failed: Did not detect Invalid Change" << endl;
     }
