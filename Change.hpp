@@ -33,10 +33,12 @@ class Change
                                             // status for change, status has to be "-", "X", or "P"
             const char &priority,         // in
                                             // priority for change, priority level range is 1-5
-            const char &releaseID,           // in
+            const char *releaseID,           // in
                                             // release ID of the product for the change requested, release ID is 8 characters
-            const char *lastUpdate = ""   // in
+            const char *lastUpdate = "",   // in
                                             // date for lastupdate, null by default
+            const char *changeID = ""         // in
+                                            // id for change, changeID has to be 6 digits with the first digit being 1
              
             ); 
         /* Change(const string& changeID, const string& description, const string& status, const string& priority, 
@@ -62,8 +64,10 @@ class Change
         It can change the description, state, priority, and anticipated release ID of a change object. 
         ----------------------------------------------------------------------*/
 
+        char *getChangeID() const;
+        
     private:
-        char changeID[6]; 
+        char *changeID; 
         char description[31];
         char status;
         char priority;
@@ -80,8 +84,9 @@ Change CreateChange(
                                 // priority level of a particular change
     const char *lastUpdate,    // in
                                 // date when the change had its last update
-    const char *releaseID      // in
+    const char *releaseID,      // in
                                 // specific releaseID that the change is targeting to
+    const char *changeID
 );
 /* Change CreateChange(const string &description, const string &status, const string &priority, const string &lastUpdate, const int &releaseID) is used to create a new change with all the information given in the parameter. ValidateChange is called inside this function. For each attribute's restriction, please refer to the User Manual. ChangeID generation is automatic and handled by templated function T IDGenerator(string &type, int &precision) from Globals.hpp.
 ----------------------------------------------------------------------*/
@@ -106,8 +111,10 @@ void UpdateLatestChange(
                                     // status for change, status has to be "-", "X", or "P"
     const char &priority,         // in 
                                     // priority for change, priority level range is 1-5
-    const char *releaseID            // in
+    const char *releaseID,            // in
                                     // release ID of the product for the change requested, release ID is 8 characters 
+    const char *lastUpdate        // in
+                                    // lsatUpdate for change, has to be less than 30 characters
 
 );
 /* void UpdateLatestChanges(const string &description, const string &status, const string &priority, const int &releaseID) displays a list of all changes and is specified which change is to be updated

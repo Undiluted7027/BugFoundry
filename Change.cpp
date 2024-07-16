@@ -13,16 +13,23 @@ This CPP file called Changes.cpp handles the changes of the program.
 
 using namespace std;
 
-Change::Change(const char *description, const char &status, const char &priority, const char &releaseID, const char *lastUpdate){
-    const char *generatedID = IDGenerator<const char *>('1', 6); // idk what the type should be help me 
-    strcpy(this->changeID, generatedID);
+Change::Change(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate, const char *changeID=""){
+    if (changeID == nullptr || changeID == ""){
+        const char *generatedID = IDGenerator<const char *>('1', 6); // idk what the type should be help me
+        strcpy(this->changeID, generatedID);
+    }
+    else{
+        strcpy(this->changeID, changeID);
+    }
     this->changeID[sizeof(this->changeID)-1] = '\0';
     strcpy(this->description, description);
     this->description[sizeof(this->description) - 1] = '\0';
 
     this->status = status;
     this->priority = priority;
-    this->releaseID = releaseID;
+    
+    strcpy(this->releaseID, releaseID);
+    this->releaseID[sizeof(this->releaseID)-1] = '\0';
 
     strcpy(this->lastUpdate, lastUpdate);
     this->lastUpdate[sizeof(this->lastUpdate)-1] = '\0';
@@ -32,11 +39,15 @@ bool Change::operator==(const Change &other) const{
     return (changeID == other.changeID || description == other.description);
 }
 
-void Change::UpdateChange(const char *changeID, const char *description, const char &status, const char &priority, const char &releaseID){
+void Change::UpdateChange(const char *changeID, const char *description, const char &status, const char &priority, const char *releaseID){
 
 }
 
-int ValidateChange(const char *description, const char &status, const char &priority, const char &releaseID, const char *lastUpdate){
+char *Change::getChangeID() const{
+    return changeID;
+}
+
+int ValidateChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
     if (strlen(description) > 30){
         return -1;
     }
@@ -46,7 +57,7 @@ int ValidateChange(const char *description, const char &status, const char &prio
     if (priority != '1' ||  priority != '2' ||  priority != '3' ||  priority != '4' ||  priority != '5'){
         return -1;
     }
-    if (strlen(&releaseID) != 8){
+    if (strlen(releaseID) != 8){
         return -1;
     }
     if (strlen(lastUpdate) > 30){
@@ -67,7 +78,7 @@ int ValidateChange(const char *description, const char &status, const char &prio
     return 1;
 }
 
-Change CreateChange(const char *description, const char &status, const char &priority, const char &releaseID, const char *lastUpdate){
+Change CreateChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
     if (ValidateChange(description, status, priority, releaseID, lastUpdate) == 1){
         Change newChange(description, status, priority, releaseID, lastUpdate);
         return newChange;
@@ -78,20 +89,23 @@ Change CreateChange(const char *description, const char &status, const char &pri
     }
 }
 
-void UpdateLatestChange(const char *description, const char &status, const char &priority, const char &releaseID){
-
+void UpdateLatestChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
+    Change lastChange = readRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER);
+    char *latestChangeID = lastChange.getChangeID();
+    Change newChange(description, status, priority, releaseID, lastUpdate, latestChangeID);
+    updateRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER, newChange, latestChangeID);
 }
 
 int CreateChangesReport(){
-
+// DONE IN SCENARIO CONTROL
 }
 
-void CreateAnticipatedChangesProduct(const char &releaseID){
-
+void CreateAnticipatedChangesProduct(const char *releaseID){
+ // DONE IN SCENARIO CONTROL
 }
 
 void CreateUsersInformedOnUpdateReport(const char *changeID){
-
+ // DONE IN SCENARIO CONTROL
 }
 
 void CommitChange(const Change &change, streampos &startPos = CHANGEFILEPOINTER, const string &FILENAME = FILENAMES[1]){
