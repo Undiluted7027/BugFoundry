@@ -28,6 +28,7 @@ class Product
         Product(
             // int &ReleaseID,     // in
             //                     // ReleaseID of the product
+            const char *productName,
             const char *ReleaseDate // in
                                 // ReleaseDate of the product
         );
@@ -44,12 +45,14 @@ class Product
         ----------------------------------------------------------------------*/
         bool operator==(const Product &other) const;
     private:
+        char productName[11];
         char releaseID[9];
         char releaseDate[11];
 };
 
 //----------------------------------------------------------------------
 int ValidateProduct(
+    const char *productName,
     const char *ReleaseID,       // in
                                 // ReleaseID of the product
     const char *ReleaseDate   // in
@@ -59,6 +62,7 @@ int ValidateProduct(
 If it doesn't match, it returns false otherwise it returns true. ReleaseID must not be NULL for this function to work. If same data already exists in system it returns 0, if the format is invalid it returns -1 else 1.
 ----------------------------------------------------------------------*/
 Product CreateProduct(
+    const char *productName,
     const char *ReleaseID,       // in
                                 // ReleaseID of the product
     const char *ReleaseDate   // in

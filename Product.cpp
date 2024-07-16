@@ -6,8 +6,10 @@
 
 using namespace std;
 
-Product::Product(const char *ReleaseDate){
-    const char *generatedID = IDGenerator<const char *>('9', 9);
+Product::Product(const char *productName, const char *ReleaseDate){
+    strcpy(this->productName, productName);
+    this->productName[sizeof(this->productName) - 1] = '\0';
+    const char *generatedID = IDGenerator<const char *>('4', 9);
     strcpy(this->releaseID, generatedID);
     this->releaseID[sizeof(this->releaseID) - 1] = '\0';
     strcpy(this->releaseDate, ReleaseDate);
@@ -25,12 +27,13 @@ void Product::DisplayDetails(ostream &out) const{
         // RAISE ERROR
         // exit(1);
     else{
+        out << "ProductName: " << productName << endl;
         out << "ReleaseID : " << releaseID << endl;
         out << "ReleaseDate : " << releaseDate << endl;
     }
 }   
 
-int ValidateProduct(const char *ReleaseID, const char *ReleaseDate){
+int ValidateProduct(const char *productName, const char *ReleaseID, const char *ReleaseDate){
     if (strlen(ReleaseDate) != 10) return -1;
     if (ReleaseDate[4] != '-' || ReleaseDate[7] != '-') return -1;
     string date = string(ReleaseDate);
@@ -68,7 +71,7 @@ int ValidateProduct(const char *ReleaseID, const char *ReleaseDate){
 
     //check if record already exists
     Product *dataptr = readFile<Product>(FILENAMES[0], PRODUCTFILEPOINTER);
-    Product dummy(ReleaseDate);
+    Product dummy(productName, ReleaseDate);
 
     size_t size = sizeof(dataptr) / sizeof(dataptr[0]);
 
@@ -87,9 +90,9 @@ int ValidateProduct(const char *ReleaseID, const char *ReleaseDate){
 
 }
 
-Product CreateProduct(const char *ReleaseID, const char *ReleaseDate){
-    if (ValidateProduct(ReleaseID, ReleaseDate)){
-        Product newProd(ReleaseDate);
+Product CreateProduct(const char* productName, const char *ReleaseID, const char *ReleaseDate){
+    if (ValidateProduct(productName, ReleaseID, ReleaseDate)){
+        Product newProd(productName, ReleaseDate);
         return newProd;
     }
     else{
