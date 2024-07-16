@@ -6,7 +6,8 @@ Rev. 1 - 24/07/03 Original by Jason Lee
 #include "ScenarioControl.hpp"
 
 /*
-
+Executes the selected function by obtaining user's choice and subchoice.
+No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 int ScenarioControl(int choice, int subchoice)
 {
@@ -34,12 +35,17 @@ int ScenarioControl(int choice, int subchoice)
             break;
         
         default:
-            cout << "Error message" << endl;
+            cout << "Error: Your option is not an available choice" << endl;
             break;
     }
     return 1;
 }
 
+/*
+Gathers new user's info. 
+Checks if each of info attributes are in the correct format.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int NewCustomer()
 {
     char name[31];
@@ -89,6 +95,11 @@ int NewCustomer()
     return 0;
 }
 
+/*
+Gathers new complaint's info. 
+Checks if each of info attributes are in the correct format.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int CreateNewComplaint()
 {
     char userID[11];
@@ -139,6 +150,10 @@ int CreateNewComplaint()
     return 0;
 }   
 
+/*
+Create a product by getting product name input from the user.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int CreateNewProduct()
 {
     char product[11];
@@ -167,6 +182,11 @@ int CreateNewProduct()
     return 0;
 }
 
+/*
+Create a new product releaseID by getting product name input from the user.
+Checks if each of info attributes are in the correct format.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int CreateNewProductRel()
 {
     char product[11];
@@ -208,6 +228,11 @@ int CreateNewProductRel()
     return 0;
 }
 
+/*
+Gets a specific changeID input from the user to update the change.
+Checks if it exists and in right format
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int UpdateSpecificChange()
 {
     char changeID[7];
@@ -219,6 +244,11 @@ int UpdateSpecificChange()
     return UpdateChangeInfo(atoi(changeID));
 }
 
+/*
+Lists out 10 latest changes. 
+Allow users to see more changes, select a change, or quit
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int ListAndSelectChange()
 {
     int changeID;
@@ -229,6 +259,11 @@ int ListAndSelectChange()
     return UpdateChangeInfo(changeID);;
 }
 
+/*
+Let user update the attributes of change
+Checks if it exists and in right format
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int UpdateChangeInfo(int changeID)
 {
     char product[11];
@@ -295,6 +330,11 @@ int UpdateChangeInfo(int changeID)
     return 1;
 }
 
+/*
+Displays 10 latest changes.
+Allow user to see more changes or quit.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int DisplayChangeReport()
 {
     int start = 1;
@@ -302,28 +342,38 @@ int DisplayChangeReport()
     int choice;
 
     cout << "CHANGE REPORT" << endl << endl;
-    // if (end of line)
-    // {
-    //     cout << "No changes to show!" << endl;
-    //     return 0;
-    // }
-    while (start < end /*&& !EOL*/ )
+    PrintChangeA(0, "Product", "Description", "ChangeID", "Date", "State", 0, "ReleaseID");
+    do 
     {
-        // display upto 10 items 
+        // if (CHANGEFILEPOINTER == Dummy)
+        // {
+        //     cout << "No changes to show!" << endl;
+        //     return 0;
+        // }
+        while (start < end /*&& CHANGEFILEPOINTER != Dummy*/ )
+        {
+            Change getChange = GetChangeDetails(CHANGEFILEPOINTER - start * sizeof(Change), FILENAMES[1]);
+            // PrintChangeA(start, getChange.productname, getChage.description, getChange.changeID, getChange.date, getChange.state, getChange.priority, getChange.ReleaseID);
+            start++;
+        }
         cout << "Type 1 to show next list, 0 to quit: ";
         cin >> choice;
         cout << endl;
-        if (DisplayPageError(choice) != 1) break;
-        start = end;
         end = end + 10;
-    }
+    } while (DisplayPageError(choice) == 1);
     return 1;
 }
 
+/*
+Display changes for a specific releaseID.
+Allow user to input a specific releaseID and look at the changes. 
+This function uses linear search to find all changes that are related to the releaseID
+--------------------------------------------------------------------*/
 int ProductOnChange()
 {
     char relID[9];
     int start = 1;
+    int count = 1;
     int end = 11;
     int choice;
 
@@ -336,25 +386,34 @@ int ProductOnChange()
     cout << "ANTICIPATED CHANGES FOR " << "Product Name" << endl << endl;
     do 
     {
-        // if (end of line)
+        // if (CHANGEFILEPOINTER == Dummy)
         // {
         //     cout << "No changes to show!" << endl;
         //     return 0;
         // }
-        while (start < end /*&& !EOL*/ )
+        while (count < end /*&& CHANGEFILEPOINTER != Dummy*/ )
         {
-            // display upto 10 changes
+            Change getChange = GetChangeDetails(CHANGEFILEPOINTER - start * sizeof(Change), FILENAMES[1]);
+            // if (getChange.releaseID == relID)
+            // {
+            //     PrintChangeB(count, getChage.description, getChange.changeID, getChange.date, getChange.state, getChange.priority, getChange.ReleaseID);
+            //     count++;
+            // }
+            start++;
         }
         cout << "Type 1 to show next list, 0 to quit: ";
         cin >> choice;
         cout << endl;
-
-        start = end;
         end = end + 10;
     } while (DisplayPageError(choice) == 1);
     return 1;
 }
 
+/*
+Gets a specific changeID input from the user and see people associated with the change.
+User can see the list of people.
+This function uses linear search to find all users that are related to the releaseID
+--------------------------------------------------------------------*/
 int UserOnChange()
 {
     char product[9];
@@ -362,6 +421,7 @@ int UserOnChange()
     char input[3];
     int choice;
     int start = 1;
+    int count = 1;
     int end = 11;
 
     cout << "===Product Name===" << endl;
@@ -378,9 +438,15 @@ int UserOnChange()
         //     cout << "No changes to show!" << endl;
         //     return 0;
         // }
-        while (start < end /*&& !EOL*/ )
+        while (start < end /*&& CHANGEFILEPOINTER != Dummy*/ )
         {
-            // display upto 10 changes
+            Change getChange = GetChangeDetails(CHANGEFILEPOINTER - start * sizeof(Change), FILENAMES[1]);
+            // if (getChange.ProductName == product)
+            // {
+            //     PrintChangeB(count, getChage.description, getChange.changeID, getChange.date, getChange.state, getChange.priority, getChange.ReleaseID);
+            //     count++;
+            // }
+            start++;
         }
         cout << "Type the number to the left of Change to select. ('1' to show the next list, '0' to quit): ";
         cin.getline(input, 3);
@@ -388,23 +454,32 @@ int UserOnChange()
         cout << endl;
         
         choice = SearchPageError(choice, start, end);
-        start = end;
         end = end + 10;
     } while (choice == 1);
 
     if (choice == -1) return 0;
+    Change theChange = GetChangeDetails(CHANGEFILEPOINTER - choice * sizeof(Change), FILENAMES[1]);
     choice = 0;
+    count = 1;
+    start = 1;
+    end = 11;
 
     do 
     {
-        // if (end of line)
+        // if (COMPLAINTFILEPOINTER == Dummy)
         // {
-        //     cout << "No changes to show!" << endl;
+        //     cout << "No users to show!" << endl;
         //     return 0;
         // }
-        while (start < end /*&& !EOL*/ )
+        while (start < end /*&& COMPLAINTFILEPOINTER != Dummy*/ )
         {
-            // display upto 10 users
+            Complaint getComplaint = GetComplaintDetails(COMPLAINTFILEPOINTER - sizeof(Complaint) * start, FILENAMES[2]);
+            // if (getComplaint.changeID == theChange.changeID)
+            // {
+            //     PrintUser(getComplaint.UserID.name, getComplaint.UserID.email);
+            //     count++;
+            // }
+            start++;
         }
         cout << "Press '1' to go to the next page or '1' to quit viewing ";
         cin >> choice;
@@ -414,4 +489,76 @@ int UserOnChange()
         end = end + 10;
     } while (DisplayPageError(choice) == 1);
     return 1;
+}
+
+/*
+Display template for a change.
+Displays the product name, description, changeID, expected release date, state, priority, and releaseID.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+void PrintChangeA(int number, char *Product, char *Description, char *ChangeID, char *Date, char *State, int Priority, char *ReleaseID)
+{
+    if (number == 0) 
+    {
+        cout.width(2); cout << left << " ";
+    }
+    else
+    {
+        cout.width(2); cout << left << number << " ";
+    }
+    cout.width(12); cout << left << Product;
+    cout.width(32); cout << left << Description;
+    cout.width(10); cout << left << ChangeID;
+    cout.width(12); cout << left << Date;
+    cout.width(11); cout << left << State;
+    if (number == 0) 
+    {
+        cout.width(10); cout << left << "Priority";
+    }
+    else
+    {
+        cout.width(10); cout << left << Priority;
+    }
+    cout.width(9); cout << left << ReleaseID << endl;
+}
+
+/*
+Display template for a change.
+Displays the description, changeID, expected release date, state, priority, and releaseID.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+void PrintChangeB(int number, char *Description, char *ChangeID, char *Date, char *State, int Priority, char *ReleaseID)
+{
+    if (number == 0) 
+    {
+        cout.width(2); cout << left << " ";
+    }
+    else
+    {
+        cout.width(2); cout << left << number << " ";
+    }
+    cout.width(32); cout << left << Description;
+    cout.width(10); cout << left << ChangeID;
+    cout.width(11); cout << left << Date;
+    cout.width(11); cout << left << State;
+    if (number == 0) 
+    {
+        cout.width(10); cout << left << "Priority";
+    }
+    else
+    {
+        cout.width(10); cout << left << Priority;
+    }
+    cout.width(9); cout << left << ReleaseID << endl;
+}
+
+/*
+Display template for a user.
+Displays the name, and email.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+void PrintUser(char *name, char *email)
+{
+    cout.width(32); cout << left << name;
+    cout.width(24); cout << left << email << endl;
 }

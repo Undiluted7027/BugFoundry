@@ -118,7 +118,7 @@ The restriction for the changeID is mentioned in the User Manual.
 ----------------------------------------------------------------------*/
 int UpdateChangeInfo(
     int changeID     // in
-                    // A changeID to update its attributes
+                     // A changeID to update its attributes
 );
 /*
 UpdateChangeInfo is used to update the attribute of the 'change' in the
@@ -166,15 +166,56 @@ int UserOnChange(
 UserOnChange is used to get a change to display the next 10 users that are
 related to the change the user inputted. The function input restriction is not applicable
 ----------------------------------------------------------------------*/
-int DisplayUsersOnUpdateChange(
-    int changeID        // in
-                        // a change to display all related users
+void PrintChangeA(
+    int number,             // in
+                            // line number in the display 
+    char *Product,          // in
+                            // name of the product
+    char *Description,      // in
+                            // description of the change
+    char *ChangeID,         // in
+                            // changeID of the change
+    char *Date,             // in
+                            // expected release date of the change
+    char *State,            // in 
+                            // current state of the change
+    int Priority,           // in
+                            // current priority level of the change
+    char *ReleaseID         // in
+                            // releaseID of the product
 );
 /*
-DisplayProductChangeReport is used to display the next 10 users that are 
-related to the 'change' parameter.  The user input is either 
-display the next 10 users, or exit the event.
-For the user input restriction, refer to the
-Report of the Users to be informed on Update on Change event in the User Manual.
+PrintChangeA is used to display the information of a change.
+Displays the description, changeID, expected release date, state, priority, and releaseID.
+----------------------------------------------------------------------*/
+void PrintChangeA(
+    int number,             // in
+                            // line number in the display 
+    char *Description,      // in
+                            // description of the change
+    char *ChangeID,         // in
+                            // changeID of the change
+    char *Date,             // in
+                            // expected release date of the change
+    char *State,            // in 
+                            // current state of the change
+    int Priority,           // in
+                            // current priority level of the change
+    char *ReleaseID         // in
+                            // releaseID of the product
+);
+/*
+PrintChangeB is used to display the information of a change.
+Displays the changeID, expected release date, state, priority, and releaseID.
+----------------------------------------------------------------------*/
+void PrintUser(
+    char *name,     // in 
+                    // the name of user 
+    char *email     // in
+                    // the email of user
+);
+/*
+PrintUser is used to display the information of a change.
+Displays the name and email.
 ----------------------------------------------------------------------*/
 #endif
