@@ -4,6 +4,7 @@
 /* Product.hpp
 REVISION HISTORY:
 Rev. 1 - 24/07/03 Original by Sanchit Jain
+Rev. 2 - 24/07/14 Revised by Seoyoung Kim
 ----------------------------------------------------------------------
 This module, Customer.hpp, hides the implementation of Product class. 
 Customer.hpp keeps its high cohesion by encapsulating all possible product entries in the system.
@@ -21,7 +22,7 @@ Tpyes:
  - Object of Class Product
 
 ----------------------------------------------------------------------*/
-class Product: public Record <const int>
+class Product
 {
     public:
         Product(
@@ -41,14 +42,15 @@ class Product: public Record <const int>
         This will come handy when displaying reports or details from the UI. 
         This function will fail if the calling Customer object is a dangling pointer.
         ----------------------------------------------------------------------*/
+        bool operator==(const Product &other) const;
     private:
-        int ReleaseID;
-        char ReleaseDate[9];
+        char releaseID[9];
+        char releaseDate[11];
 };
 
 //----------------------------------------------------------------------
 int ValidateProduct(
-    const int &ReleaseID,       // in
+    const char *ReleaseID,       // in
                                 // ReleaseID of the product
     const char *ReleaseDate   // in
                                 // ReleaseDate of the product
@@ -57,7 +59,7 @@ int ValidateProduct(
 If it doesn't match, it returns false otherwise it returns true. ReleaseID must not be NULL for this function to work. If same data already exists in system it returns 0, if the format is invalid it returns -1 else 1.
 ----------------------------------------------------------------------*/
 Product CreateProduct(
-    const int &ReleaseID,       // in
+    const char *ReleaseID,       // in
                                 // ReleaseID of the product
     const char *ReleaseDate   // in
                                 // ReleaseDate of the product
