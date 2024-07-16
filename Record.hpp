@@ -7,24 +7,12 @@ class Record{
         Q data;
     public:
         Record(T id, Q data): id(id), data(data){}
-        virtual ~Record() {}
 
-        T getId() const{
-            return id;
-        };
-        Q getData() const{
-            return data;
-        }
-        void setID(T id){
-            this->id = id;
-        }
-        void setData(Q data){
-            this->data = data;
-        }
+        T getId() const;
+        Q getData() const;
+        void setID(T id);
+        void setData(Q data);
 };
 
 
-template <typename T, typename Q>
-Q extractID(const Record<T, Q> &record){
-    return record.getId();
-}
+
