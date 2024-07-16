@@ -27,15 +27,13 @@ class Change
 {
     public: 
         Change (
-            const char *changeID,         // in
-                                            // id for change, changeID has to be 6 digits with the first digit being 1
             const char *description,      // in
                                             // description for change, description has to be less than 30 characters
             const char &status,           // in
                                             // status for change, status has to be "-", "X", or "P"
             const char &priority,         // in
                                             // priority for change, priority level range is 1-5
-            const int &releaseID,           // in
+            const char &releaseID,           // in
                                             // release ID of the product for the change requested, release ID is 8 characters
             const char *lastUpdate = ""   // in
                                             // date for lastupdate, null by default
@@ -58,14 +56,14 @@ class Change
             const char &priority,         // in
                                             // priority for change, priority level range is 1-5
             const char *releaseID         // in
-                                            // release ID of the product for the change requested, release ID is 8 characters 
+                                         // release ID of the product for the change requested, release ID is 8 characters 
         );
         /* void UpdateChange(const string &changeID, const string &description, const string &status, const string &priority, const int &releaseID) is used to update any change object specified by the user through its changeID. 
         It can change the description, state, priority, and anticipated release ID of a change object. 
         ----------------------------------------------------------------------*/
 
     private:
-        // string changeID; 
+        char changeID[6]; 
         char description[31];
         char status;
         char priority;

@@ -3,6 +3,7 @@
 
 /* UI.hpp 
 REVISION HISTORY:
+Rev. 2 - 24/07/13 Added function declaration: Start by Jason Lee
 Rev. 1 - 24/07/03 Original by Jason Lee
 ----------------------------------------------------------------------
 This module, UI.hpp, hides the implementation of the main menu, 
@@ -28,6 +29,12 @@ Variables
 //This module does not include any classes
 
 //------------------------------------------------------------------//
+int Start(
+
+);
+/*
+Start is used for the main module to activate the UI.
+--------------------------------------------------------------------*/
 int ActivateUI(
 
 );

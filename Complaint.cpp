@@ -114,8 +114,8 @@ void CommitComplaint(const Complaint &complaint, streampos &startPos = COMPLAINT
     writeRecord(FILENAME, startPos, complaint);
 }
 
+
 Complaint GetComplaintDetails(streampos &startPos = COMPLAINTFILEPOINTER, const string &FILENAME = FILENAMES[2]){
     Complaint newComplaint = readRecord<Complaint>(FILENAME, startPos);
     return newComplaint;
 }
-
