@@ -22,6 +22,9 @@ Customer::Customer(const char *name, const char *email, const char *phone)
 bool Customer::operator==(const Customer &other) const{
     return (custID == other.custID || email == other.email || phone == other.phone);
 }
+bool Customer::operator==(const char *userID) const{
+    return (custID == userID)
+}
 
 void Customer::DisplayDetails(ostream &out) const
 {

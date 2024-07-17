@@ -44,6 +44,9 @@ class Customer
         This function will fail if the calling Customer object is a dangling pointer.
         ----------------------------------------------------------------------*/
         bool operator==(const Customer &other) const;
+
+        bool operator==(const char *userID) const;
+
     private:
         char custID[10]; 
         char name[31];

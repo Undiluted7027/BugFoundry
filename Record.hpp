@@ -1,7 +1,15 @@
+/* Record.hpp
+REVISION HISTORY:
+Rev. 1 - 24/07/04 Original by Sanchit Jain
+----------------------------------------------------------------------
+This module, Record.hpp, hides the implementation of the class template. 
+Record.hpp keeps its high cohesion by encapsulating all possible product entries in the system.
+----------------------------------------------------------------------*/
 #include "Globals.hpp"
 
 template <class T, class Q>
-class Record{
+class Record
+{
     private:
         T id;
         Q data;

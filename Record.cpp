@@ -1,3 +1,7 @@
+/* Record.cpp
+REVISION HISTORY:
+Rev. 1 - 24/07/04 Original by Sanchit Jain
+-------------------------------------------------------*/
 #include "Globals.hpp"
 #include "Record.hpp"
 

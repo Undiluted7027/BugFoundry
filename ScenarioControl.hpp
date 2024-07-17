@@ -3,7 +3,7 @@
 
 /* ScenarioControl.hpp
 REVISION HISTORY:
-Rev. 2 - 24/07/11 Added several helper functions and comments by Jason Lee
+Rev. 2 - 24/07/11 Edited several display function parameters and added more comments by Jason Lee
 Rev. 1 - 24/07/03 Original by Jason Lee
 ----------------------------------------------------------------------
 This module, ScenarioControl.hpp, hides the implementation of the 

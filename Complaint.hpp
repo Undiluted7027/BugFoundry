@@ -50,13 +50,15 @@ class Complaint
         This will come handy when displaying reports or details from the UI. 
         This function will fail if the calling Complaint object is a dangling pointer.
         ----------------------------------------------------------------------*/
+        char *getCustID() const;
+
     private:
         char complaintID[6];
         char description[31];
         char dateOfComplaint[9];
         char changeID[6];
         char releaseID[9];
-        char custID[10];
+        char *custID;
 };
 //----------------------------------------------------------------------
 int ValidateComplaint(
