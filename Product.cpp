@@ -9,7 +9,7 @@ using namespace std;
 Product::Product(const char *productName, const char *ReleaseDate){
     strcpy(this->productName, productName);
     this->productName[sizeof(this->productName) - 1] = '\0';
-    const char *generatedID = IDGenerator<const char *>('4', 9);
+    const char *generatedID = IDGenerator('4', 9);
     strcpy(this->releaseID, generatedID);
     this->releaseID[sizeof(this->releaseID) - 1] = '\0';
     strcpy(this->releaseDate, ReleaseDate);

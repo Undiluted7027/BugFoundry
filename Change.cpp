@@ -15,7 +15,7 @@ using namespace std;
 
 Change::Change(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate, const char *changeID=""){
     if (changeID == nullptr || changeID == ""){
-        const char *generatedID = IDGenerator<const char *>('1', 6); // idk what the type should be help me
+        const char *generatedID = IDGenerator('1', 6); // idk what the type should be help me
         strcpy(this->changeID, generatedID);
     }
     else{
