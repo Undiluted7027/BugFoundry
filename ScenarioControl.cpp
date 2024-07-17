@@ -119,7 +119,7 @@ int CreateNewComplaint()
     // Get requester's userID and checks the existance
     cout << "Enter your UserID (9 digit): ";
     cin.getline(userID ,9);
-    ValidateCustomer(userID);
+    //ValidateCustomer(userID);
     cout << endl;
 
     // Get the specific product to be complained and checks the existance
@@ -157,7 +157,7 @@ int CreateNewComplaint()
     CommitComplaint(CreateComplaint(desc, "date", NULL, relID, userID));
     if (ValidateChange(desc, '-', 1, "date", NULL))
     {
-        Change newChange = CreateChange(desc, '-', 1, "date", NULL);
+        Change newChange = CreateChange(desc, '-', 1, "date", NULL, NULL);
         CommitChange(newChange, CHANGEFILEPOINTER, FILENAMES[1]);
         cout << "Complaint Created Successfully" << endl;
         return 1;
@@ -192,12 +192,12 @@ int CreateNewProduct()
     }
 
     // Write the product to the file after duplication check
-    // if (ValidateProduct(CreateProduct(NULL, NULL)))
-    // {
-    //     CommitProduct(CreateProduct(NULL, NULL));
-    //     cout << "Product Created Successfully" << endl;
-    //     return 1;
-    // }
+    if (ValidateProduct(product, NULL, NULL))
+    {
+        CommitProduct(CreateProduct(product, NULL, NULL));
+        cout << "Product Created Successfully" << endl;
+        return 1;
+    }
     cout << "Product already exists!" << endl;
     return 0;
 }
@@ -245,12 +245,12 @@ int CreateNewProductRel()
     }
 
     // Write the releaseID to the file after duplication check
-    // if (ValidateProduct(relID, date))
-    // {
-    //     CommitProduct(CreateProduct(product, relID, date));
-    //     cout << "Product Release Created Successfully" << endl;
-    //     return 1;
-    // }
+    if (ValidateProduct(product, relID, NULL))
+    {
+        CommitProduct(CreateProduct(product, relID, NULL));
+        cout << "Product Release Created Successfully" << endl;
+        return 1;
+    }
     return 0;
 }
 
@@ -268,7 +268,7 @@ int UpdateSpecificChange()
     cout << "Enter the ChangeID (6 Digit ID): ";
     cin.getline(changeID,6);
     if (ChangeIDError(changeID)) return 0;
-    // if (!ValidateChange()) return 0;
+    // if (!ValidateChange(changeID)) return 0;
 
     return UpdateChangeInfo(atoi(changeID));
 }
@@ -280,12 +280,38 @@ No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 int ListAndSelectChange()
 {
-    int changeID;
+    int start = 1;
+    int end = 11;
+    char input[3];
+    int choice;
+    
     cout << "LATEST CHANGES" << endl << endl;
     
-    // display 10 changes
+    do 
+    {
+        if (CHANGEFILEPOINTER == NULL)
+        {
+            cout << "No changes to show!" << endl;
+            return 0;
+        }
+        while (start < end || CHANGEFILEPOINTER == NULL)
+        {
+            Change getChange = GetChangeDetails(CHANGEFILEPOINTER - start * sizeof(Change), FILENAMES[1]);
+            cout.width(2); cout << left << start << " ";
+            getChange.DisplayDetails(cout);
+            start++;
+        }
+        cout << "Type the number to the left of Change to select. ('1' to show the next list, '0' to quit): ";
+        cin.getline(input, 3);
+        choice = atoi(input);
+        cout << endl;
+        
+        choice = SearchPageError(choice, start, end);
+        end = end + 10;
+    } while (DisplayPageError(choice) == 1);
 
-    return UpdateChangeInfo(changeID);;
+    Change theChange = GetChangeDetails(CHANGEFILEPOINTER - choice * sizeof(Change), FILENAMES[1]);
+    return UpdateChangeInfo(theChange.getChangeID(), choice);;
 }
 
 /*
@@ -293,8 +319,9 @@ Let user update the attributes of change
 Checks if it exists and in right format
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-int UpdateChangeInfo(int changeID)
+int UpdateChangeInfo(char* changeID, int location)
 {
+    Change theChange = GetChangeDetails(CHANGEFILEPOINTER - location * sizeof(Change), FILENAMES[1]);
     char product[11];
     char desc[31];
     char state[11];
@@ -302,7 +329,9 @@ int UpdateChangeInfo(int changeID)
     char relID[9];
     char choice;
 
-    cout << "Updating product " << " Product Name" << endl << endl;
+    cout << "Updating product ";
+    theChange.change_displayProductName();
+    cout << endl << endl;
     cin.getline(product, 10);
     // if (!ValidateProduct()) return 0;
     
@@ -311,15 +340,18 @@ int UpdateChangeInfo(int changeID)
     cout << endl;
     if (choice == 'Y')
     {
-        cout << "Old Description: " << "[old description]" << endl;
+        cout << "Old Description: ";
+        theChange.change_displayDesc();
+        cout << endl;
         cout << "New Description: ";
         cin.getline(desc, 30);
         if (DescError(desc)) return 0;
-        // Update desc
     }
     cout << endl;
 
-    cout << "Current state: " << "[current state]" << " Update the state (Y/N)? ";
+    cout << "Current state: "; 
+    theChange.change_displayStatus();
+    cout << " Update the state (Y/N)? ";
     cin >> choice;
     cout << endl;
     if (choice == 'Y')
@@ -327,11 +359,12 @@ int UpdateChangeInfo(int changeID)
         cout << "New State (CANCELED/INPROGRESS/DONE): ";
         cin.getline(state, 10);
         if (StateError(state)) return 0;
-        // Update status
     }
     cout << endl;
 
-    cout << "Current priority: " << "[current priority]" << ". Update the priority (Y/N)? ";
+    cout << "Current priority: "; 
+    theChange.change_displayPriority();
+    cout << ". Update the priority (Y/N)? ";
     cin >> choice;
     cout << endl;
     if (choice == 'Y')
@@ -339,11 +372,12 @@ int UpdateChangeInfo(int changeID)
         cout << "New Priority (Number between 1 and 5): ";
         cin >> priority;
         if (PriorityError(priority)) return 0;
-        // Update priority
     }
     cout << endl;
 
-    cout << "Current anticipated releaseID: " << "[current releaseID]" << ". Update anticipated releaseID (Y/N)? ";
+    cout << "Current anticipated releaseID: "; 
+    theChange.change_displayRelID();
+    cout << ". Update anticipated releaseID (Y/N)? ";
     cin >> choice;
     cout << endl;
     if (choice == 'Y')
@@ -351,11 +385,14 @@ int UpdateChangeInfo(int changeID)
         cout << "New releaseID (maximum 8 characters): ";
         cin >> relID;
         if (ReleaseIDError(relID)) return 0;
-        // Update relID
     }
     cout << endl;
 
-    cout << "Updated product " << "[Product Name]" << " successfully" << endl;
+    // theChange.UpdateChange(changeID, desc, status, priority, relID);
+
+    cout << "Updated product ";
+    theChange.change_displayProductName();
+    cout << " successfully" << endl;
     return 1;
 }
 
@@ -371,18 +408,28 @@ int DisplayChangeReport()
     int choice;
 
     cout << "CHANGE REPORT" << endl << endl;
-    PrintChangeA(0, "Product", "Description", "ChangeID", "Date", "State", 0, "ReleaseID");
+    
+    cout.width(2); cout << left << " ";
+    cout.width(12); cout << left << "Product";
+    cout.width(32); cout << left << "Description";
+    cout.width(10); cout << left << "ChangeID";
+    cout.width(12); cout << left << "Date";
+    cout.width(11); cout << left << "Status";
+    cout.width(10); cout << left << "Priority";
+    cout.width(9); cout << left << "ReleaseID" << endl;
+    
     do 
     {
-        // if (CHANGEFILEPOINTER == Dummy)
-        // {
-        //     cout << "No changes to show!" << endl;
-        //     return 0;
-        // }
-        while (start < end /*&& CHANGEFILEPOINTER != Dummy*/ )
+        if (CHANGEFILEPOINTER == NULL)
+        {
+            cout << "No changes to show!" << endl;
+            return 0;
+        }
+        while (start < end || CHANGEFILEPOINTER == NULL)
         {
             Change getChange = GetChangeDetails(CHANGEFILEPOINTER - start * sizeof(Change), FILENAMES[1]);
-            // PrintChangeA(start, getChange.productname, getChage.description, getChange.changeID, getChange.date, getChange.state, getChange.priority, getChange.ReleaseID);
+            cout.width(2); cout << left << start << " ";
+            getChange.DisplayDetails(cout);
             start++;
         }
         cout << "Type 1 to show next list, 0 to quit: ";
@@ -410,24 +457,35 @@ int ProductOnChange()
     cout << "Enter the ReleaseID (max 8 characters): ";
     cin.getline(relID, 8);
     if (ReleaseIDError(relID)) return 0;
+    Change dummy = Change("", ' ', '-', relID, "", "", "");
     cout << endl;
 
     cout << "ANTICIPATED CHANGES FOR " << "Product Name" << endl << endl;
+
+    cout.width(2); cout << left << " ";
+    cout.width(32); cout << left << "Description";
+    cout.width(10); cout << left << "ChangeID";
+    cout.width(12); cout << left << "Date";
+    cout.width(11); cout << left << "Status";
+    cout.width(10); cout << left << "Priority";
+    cout.width(9); cout << left << "ReleaseID" << endl;
+
     do 
     {
-        // if (CHANGEFILEPOINTER == Dummy)
-        // {
-        //     cout << "No changes to show!" << endl;
-        //     return 0;
-        // }
-        while (count < end /*&& CHANGEFILEPOINTER != Dummy*/ )
+        if (CHANGEFILEPOINTER == NULL)
+        {
+            cout << "No changes to show!" << endl;
+            return 0;
+        }
+        while (count < end || CHANGEFILEPOINTER == NULL)
         {
             Change getChange = GetChangeDetails(CHANGEFILEPOINTER - start * sizeof(Change), FILENAMES[1]);
-            // if (getChange.releaseID == relID)
-            // {
-            //     PrintChangeB(count, getChage.description, getChange.changeID, getChange.date, getChange.state, getChange.priority, getChange.ReleaseID);
-            //     count++;
-            // }
+            if (getChange == dummy)
+            {
+                cout.width(2); cout << left << count << " ";
+                getChange.DisplayDetails(cout);
+                count++;
+            }
             start++;
         }
         cout << "Type 1 to show next list, 0 to quit: ";
@@ -456,25 +514,27 @@ int UserOnChange()
     cout << "===Product Name===" << endl;
     cout << "Enter the product name: ";
     cin.getline(product, 10);
-    // if (!ValidateProduct()) return 0
+    // if (!ValidateProduct()) return 0;
+    Change dummy = Change("", ' ', ' ', "", "", "", product);
     cout << endl;
 
     cout << "List of changes" << endl;
     do 
     {
-        // if (end of line)
-        // {
-        //     cout << "No changes to show!" << endl;
-        //     return 0;
-        // }
+        if (CHANGEFILEPOINTER == NULL)
+        {
+            cout << "No changes to show!" << endl;
+            return 0;
+        }
         while (start < end /*&& CHANGEFILEPOINTER != Dummy*/ )
         {
             Change getChange = GetChangeDetails(CHANGEFILEPOINTER - start * sizeof(Change), FILENAMES[1]);
-            // if (getChange.ProductName == product)
-            // {
-            //     PrintChangeB(count, getChage.description, getChange.changeID, getChange.date, getChange.state, getChange.priority, getChange.ReleaseID);
-            //     count++;
-            // }
+            if (getChange == dummy)
+            {
+                cout.width(2); cout << left << count << " ";
+                getChange.DisplayDetails(cout);
+                count++;
+            }
             start++;
         }
         cout << "Type the number to the left of Change to select. ('1' to show the next list, '0' to quit): ";
@@ -495,12 +555,12 @@ int UserOnChange()
 
     do 
     {
-        // if (COMPLAINTFILEPOINTER == Dummy)
-        // {
-        //     cout << "No users to show!" << endl;
-        //     return 0;
-        // }
-        while (start < end /*&& COMPLAINTFILEPOINTER != Dummy*/ )
+        if (CHANGEFILEPOINTER == NULL)
+        {
+            cout << "No changes to show!" << endl;
+            return 0;
+        }
+        while (start < end || COMPLAINTFILEPOINTER == NULL )
         {
             Complaint getComplaint = GetComplaintDetails(COMPLAINTFILEPOINTER - sizeof(Complaint) * start, FILENAMES[2]);
             // if (getComplaint.changeID == theChange.changeID)
@@ -518,76 +578,4 @@ int UserOnChange()
         end = end + 10;
     } while (DisplayPageError(choice) == 1);
     return 1;
-}
-
-/*
-Display template for a change.
-Displays the product name, description, changeID, expected release date, state, priority, and releaseID.
-No noticeable algorithm or data structure used.
---------------------------------------------------------------------*/
-void PrintChangeA(int number, char *Product, char *Description, char *ChangeID, char *Date, char *State, int Priority, char *ReleaseID)
-{
-    if (number == 0) 
-    {
-        cout.width(2); cout << left << " ";
-    }
-    else
-    {
-        cout.width(2); cout << left << number << " ";
-    }
-    cout.width(12); cout << left << Product;
-    cout.width(32); cout << left << Description;
-    cout.width(10); cout << left << ChangeID;
-    cout.width(12); cout << left << Date;
-    cout.width(11); cout << left << State;
-    if (number == 0) 
-    {
-        cout.width(10); cout << left << "Priority";
-    }
-    else
-    {
-        cout.width(10); cout << left << Priority;
-    }
-    cout.width(9); cout << left << ReleaseID << endl;
-}
-
-/*
-Display template for a change.
-Displays the description, changeID, expected release date, state, priority, and releaseID.
-No noticeable algorithm or data structure used.
---------------------------------------------------------------------*/
-void PrintChangeB(int number, char *Description, char *ChangeID, char *Date, char *State, int Priority, char *ReleaseID)
-{
-    if (number == 0) 
-    {
-        cout.width(2); cout << left << " ";
-    }
-    else
-    {
-        cout.width(2); cout << left << number;
-    }
-    cout.width(32); cout << left << Description;
-    cout.width(10); cout << left << ChangeID;
-    cout.width(11); cout << left << Date;
-    cout.width(11); cout << left << State;
-    if (number == 0) 
-    {
-        cout.width(10); cout << left << "Priority";
-    }
-    else
-    {
-        cout.width(10); cout << left << Priority;
-    }
-    cout.width(9); cout << left << ReleaseID << endl;
-}
-
-/*
-Display template for a user.
-Displays the name, and email.
-No noticeable algorithm or data structure used.
---------------------------------------------------------------------*/
-void PrintUser(char *name, char *email)
-{
-    cout.width(32); cout << left << name;
-    cout.width(24); cout << left << email << endl;
 }

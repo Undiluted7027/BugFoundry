@@ -31,10 +31,8 @@ void Customer::DisplayDetails(ostream &out) const
     // exit(1);
     else
     {
-        out << "CustID: " << custID << endl;
-        out << "name: " << name << endl;
-        out << "email: " << email << endl;
-        out << "phone: " << phone << endl;
+        cout.width(32); cout << left << name;
+        cout.width(24); cout << left << email << endl;
     }
 }
 

@@ -13,7 +13,7 @@ This CPP file called Changes.cpp handles the changes of the program.
 
 using namespace std;
 
-Change::Change(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate, const char *changeID=""){
+Change::Change(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate, const char *changeID="", const char *productName){
     if (changeID == nullptr || changeID == ""){
         const char *generatedID = IDGenerator<const char *>('1', 6); // idk what the type should be help me
         strcpy(this->changeID, generatedID);
@@ -33,6 +33,9 @@ Change::Change(const char *description, const char &status, const char &priority
 
     strcpy(this->lastUpdate, lastUpdate);
     this->lastUpdate[sizeof(this->lastUpdate)-1] = '\0';
+
+    strcpy(this->productName, productName);
+    this->productName[sizeof(this->productName)-1] = '\0';
 }
 
 bool Change::operator==(const Change &other) const{
@@ -45,6 +48,39 @@ void Change::UpdateChange(const char *changeID, const char *description, const c
 
 char *Change::getChangeID() const{
     return changeID;
+}
+
+void Change::change_displayProductName() const{
+    cout << productName;
+}
+
+void Change::change_displayStatus() const{
+    cout << status;
+} 
+
+void Change::change_displayPriority() const{
+    cout << priority;
+} 
+
+void Change::change_displayRelID() const{
+    cout << releaseID;
+} 
+
+void Change::DisplayDetails(ostream &out) const
+{
+    if (strlen(changeID) == 0 || strlen(description) == 0 || status == ' ' || priority == ' ' || strlen(releaseID) == 0)
+        out << "Error in reading Complaint information. One or more attributes of complaint do not have value(s)" << endl;
+        // RAISE ERROR
+        // exit(1);
+    else{
+        cout.width(12); cout << left << productName;
+        cout.width(32); cout << left << description;
+        cout.width(10); cout << left << changeID;
+        cout.width(12); cout << left << lastUpdate;
+        cout.width(11); cout << left << status;
+        cout.width(10); cout << left << priority;
+        cout.width(9); cout << left << releaseID << endl;
+    }
 }
 
 int ValidateChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
