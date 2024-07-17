@@ -38,10 +38,18 @@ Change::Change(const char *description, const char &status, const char &priority
     this->productName[sizeof(this->productName)-1] = '\0';
 }
 
+/*
+Create Change object using attrbibutes provided. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 bool Change::operator==(const Change &other) const{
     return (changeID == other.changeID || description == other.description);
 }
 
+/*
+Checks if two Change objects are equal based on changeID or description. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void Change::UpdateChange(const char *changeID, const char *description, const char &status, const char &priority, const char *releaseID){
 
 }
@@ -50,22 +58,42 @@ char *Change::getChangeID() const{
     return changeID;
 }
 
+/*
+Get the changeID of a Change object.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void Change::change_displayProductName() const{
     cout << productName;
 }
 
+/*
+Print the productName of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void Change::change_displayStatus() const{
     cout << status;
 } 
 
+/*
+Print the status of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void Change::change_displayPriority() const{
     cout << priority;
 } 
 
+/*
+Print the priority of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void Change::change_displayRelID() const{
     cout << releaseID;
 } 
 
+/*
+Print the releaseID of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void Change::DisplayDetails(ostream &out) const
 {
     if (strlen(changeID) == 0 || strlen(description) == 0 || status == ' ' || priority == ' ' || strlen(releaseID) == 0)
@@ -83,6 +111,10 @@ void Change::DisplayDetails(ostream &out) const
     }
 }
 
+/*
+Print the attribute details of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int ValidateChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
     if (strlen(description) > 30){
         return -1;
@@ -114,6 +146,10 @@ int ValidateChange(const char *description, const char &status, const char &prio
     return 1;
 }
 
+/*
+Validates that the Change object attributes are acceptable and makes sure no duplicate Change records exists.
+A linear search algorithm is used to iterate through the Change records.
+--------------------------------------------------------------------*/
 Change CreateChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
     if (ValidateChange(description, status, priority, releaseID, lastUpdate) == 1){
         Change newChange(description, status, priority, releaseID, lastUpdate);
@@ -125,6 +161,10 @@ Change CreateChange(const char *description, const char &status, const char &pri
     }
 }
 
+/*
+Create new Change object and also validates it.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void UpdateLatestChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
     Change lastChange = readRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER);
     char *latestChangeID = lastChange.getChangeID();
@@ -132,6 +172,10 @@ void UpdateLatestChange(const char *description, const char &status, const char 
     updateRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER, newChange, latestChangeID);
 }
 
+/*
+Print the status of the Change object to the console.
+Uses the unsorted records data structure to retrieve the latest change.
+--------------------------------------------------------------------*/
 int CreateChangesReport(){
 // DONE IN SCENARIO CONTROL
 }
@@ -148,7 +192,16 @@ void CommitChange(const Change &change, streampos &startPos = CHANGEFILEPOINTER,
     writeRecord(FILENAME, startPos, change);
 }
 
+/*
+Writes a Change object to a specified file at a given position.
+Uses the unsorted records data structure to add the Change object.
+--------------------------------------------------------------------*/
 Change GetChangeDetails(streampos &startPos = CHANGEFILEPOINTER, const string &FILENAME = FILENAMES[1]){
     Change newChange = readRecord<Change>(FILENAME, startPos);
     return newChange;
 }
+
+/*
+Reads a Change object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Change object.
+--------------------------------------------------------------------*/

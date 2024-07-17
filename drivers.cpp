@@ -31,6 +31,12 @@ T* readFile(const string &filename, streampos fileptr){
     return dataptr;
 }
 
+
+/*
+Reads data of type 'T' from a specified file starting at a given position, 
+returning a dynamically allocated array of the read data and resetting the file pointer to the beginning.
+Uses the unsorted records data structure to read the file.
+--------------------------------------------------------------------*/
 template <class T>
 T readRecord(const string &filename, streampos &fileptr)
 {
@@ -44,6 +50,10 @@ T readRecord(const string &filename, streampos &fileptr)
     return data;
 }
 
+/*
+Reads a single record of type 'T' from a specified file at a given position and outputs it to the console and returns it.
+Uses the unsorted records data structure to read the records.
+--------------------------------------------------------------------*/
 template <class T>
 void writeRecord(const string &filename, streampos &fileptr, const T &record){
     fstream f("data/"+filename, ios::out);
@@ -56,6 +66,10 @@ void writeRecord(const string &filename, streampos &fileptr, const T &record){
     f.close();
 }
 
+/*
+Writes a single record of type 'T' to a specified file at a given position and updating the file pointer after writing.
+Uses the unsorted records data structure to write the records.
+--------------------------------------------------------------------*/
 template <class T, class Q>
 void updateRecord(const string &filename, streampos fileptr, const T &newRecord, const Q *id)
 {
@@ -78,6 +92,10 @@ void updateRecord(const string &filename, streampos fileptr, const T &newRecord,
     f.close();
 }
 
+/*
+Updates a single record of type 'T' in a file by replacing record with matching ID with a new record.
+Uses the unsorted records data structure to update the records.
+--------------------------------------------------------------------*/
 template <typename T, typename Q>
 void deleteRecord(const string &filename, streampos fileptr, const Q *id){
     fstream f("data/" + filename, ios::in || ios::out);
@@ -121,6 +139,10 @@ void deleteRecord(const string &filename, streampos fileptr, const Q *id){
     }
 }
 
+/*
+Deletes a record of type 'T' in a file by removing entries with matching ID and replacing it with a temp file containing remaining records.
+Uses the unsorted records data structure to delete a record.
+--------------------------------------------------------------------*/
 template <typename T>
 void writeFile(const string &filename, streampos &fileptr, const T* &records)
 {
@@ -137,3 +159,8 @@ void writeFile(const string &filename, streampos &fileptr, const T* &records)
     f.seekp(fileptr);
     f.close();
 }
+
+/*
+Writes a record of type 'T' to a specified file starting at a given position and updates the file pointer afer writing.
+Uses the unsorted records data structure to write a file.
+--------------------------------------------------------------------*/

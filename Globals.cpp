@@ -33,3 +33,8 @@ char* IDGenerator(const char &type, const int &precision){
     }
     return id;
 }
+
+/*
+Generates a random ID of a specific length based on a type character, intializing the ID with a leading digit 
+depending on the type and filling the rest with random digits.
+--------------------------------------------------------------------*/

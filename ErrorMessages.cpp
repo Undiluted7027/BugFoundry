@@ -14,6 +14,9 @@ int YesNoError(char msg)
     return 0;
 }
 
+/*
+Checks if the provided msg is neither 'Y' or 'N'.
+--------------------------------------------------------------------*/
 int NameError(char *msg)
 {
     if (strlen(msg) == 0)
@@ -24,6 +27,9 @@ int NameError(char *msg)
     return 0;
 }
 
+/*
+Checks if the provided msg is empty.
+--------------------------------------------------------------------*/
 int EmailError(char *msg)
 {
     if (strlen(msg) == 0)
@@ -39,6 +45,9 @@ int EmailError(char *msg)
     return 1;
 }
 
+/*
+Checks if the provided msg is empty or does not contain the '@' chracter.
+--------------------------------------------------------------------*/
 int PhoneError(char *msg)
 {
     if (strlen(msg) > 11) 
@@ -57,6 +66,9 @@ int PhoneError(char *msg)
     return 0;
 }
 
+/*
+Checks if the provided msg exceeds 11 characters or contains non-digit characters.
+--------------------------------------------------------------------*/
 int DeptError(char msg)
 {
     if (msg != 'S' || msg != 'M' || msg != ' ')
@@ -67,6 +79,9 @@ int DeptError(char msg)
     return 0;
 }
 
+/*
+Checks if the provided msg is not 'S' or 'M' or ' '.
+--------------------------------------------------------------------*/
 int DescError(char *msg)
 {
     if (strlen(msg) == 0)
@@ -77,6 +92,9 @@ int DescError(char *msg)
     return 0;
 }
 
+/*
+Checks if the provided msg is empty for Description.
+--------------------------------------------------------------------*/
 int ProductError(char *msg)
 {
     if (strlen(msg) == 0)
@@ -87,6 +105,9 @@ int ProductError(char *msg)
     return 0;
 }
 
+/*
+Checks if the provided msg is empty for Product name.
+--------------------------------------------------------------------*/
 int DateError(char *msg)
 {
     for (int i = 0; i < 4; i++)
@@ -131,6 +152,9 @@ int DateError(char *msg)
     return 0;
 }
 
+/*
+Validates if msg correctly follows 'YYYY-MM-DD' format, checking each charater's position and range to verify its correctness.
+--------------------------------------------------------------------*/
 int ReleaseIDError(char *msg)
 {
     if (strlen(msg) == 0)
@@ -141,6 +165,9 @@ int ReleaseIDError(char *msg)
     return 0;
 }
 
+/*
+Checks if the provided msg is empty for releaseID.
+--------------------------------------------------------------------*/
 int ChangeIDError(char *msg)
 {
     if (strlen(msg) == 0)
@@ -159,6 +186,9 @@ int ChangeIDError(char *msg)
     return 0;
 }
 
+/*
+Checks if the provided msg is empty or contains non-digit characters for releaseID.
+--------------------------------------------------------------------*/
 int StateError(char *msg)
 {
     char *state = msg;
@@ -171,6 +201,9 @@ int StateError(char *msg)
     return 0;
 }
 
+/*
+Validates the msg matches one of the valid states ("CANCELED", "INPROGRESS", or "DONE").
+--------------------------------------------------------------------*/
 int PriorityError(int level)
 {
     if (level > 5 || level < 1)
@@ -181,6 +214,9 @@ int PriorityError(int level)
     return 0;
 }
 
+/*
+Checks if the provided level falls within the range of 1-5.
+--------------------------------------------------------------------*/
 int DisplayPageError(int choice)
 {
     if (choice != 0 && choice != 1)
@@ -191,6 +227,9 @@ int DisplayPageError(int choice)
     return choice;
 }
 
+/*
+Validates if the provided integer choice is either 0 or 1.
+--------------------------------------------------------------------*/
 int SearchPageError(int choice, int lowest, int highest)
 {
     if (choice != 0 && choice != 1 && (choice > highest || choice < lowest))
@@ -200,3 +239,7 @@ int SearchPageError(int choice, int lowest, int highest)
     }
     return choice;
 }
+
+/*
+Checks if choice is either 0 or 1 and choice falls within the range of what is defined from 'highest' to 'lowest'.
+--------------------------------------------------------------------*/

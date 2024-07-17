@@ -21,12 +21,20 @@ Product::Product(const char *productName, const char *ReleaseDate)
     this->releaseDate[sizeof(this->releaseDate) - 1] = '\0';
 }
 
+/*
+Create Product object using attrbibutes provided. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 bool Product::operator==(const Product &other) const
 {
     // assuming 2 products can be released on same date
     return (releaseID == other.releaseID || releaseDate == other.releaseDate);
 }
 
+/*
+Checks if two Product objects are equal based on releaseID or releaseDate.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void Product::DisplayDetails(ostream &out) const
 {
     if (strlen(releaseDate) != 8)
@@ -41,6 +49,10 @@ void Product::DisplayDetails(ostream &out) const
     }
 }   
 
+/*
+Print the attribute details of the Product object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int ValidateProduct(const char *productName, const char *ReleaseID, const char *ReleaseDate)
 {
     if (strlen(ReleaseDate) != 10) return -1;
@@ -100,9 +112,12 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
     cout << "Record is Valid" << endl;
 
     return 1;
-
 }
 
+/*
+Validates that the Product object attributes are acceptable and makes sure no duplicate Product records exists.
+A linear search algorithm is used to iterate through the Product records.
+--------------------------------------------------------------------*/
 Product CreateProduct(const char* productName, const char *ReleaseID, const char *ReleaseDate)
 {
     if (ValidateProduct(productName, ReleaseID, ReleaseDate))
@@ -117,13 +132,26 @@ Product CreateProduct(const char* productName, const char *ReleaseID, const char
     }
 }
 
+/*
+Create new Product object and also validates it.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void CommitProduct(const Product &product, streampos &startPos = PRODUCTFILEPOINTER, const string &FILENAME = FILENAMES[3])
 {
     writeRecord(FILENAME, startPos, product);
 }
 
+/*
+Writes a Product object to a specified file at a given position.
+Uses the unsorted records data structure to add the Product object.
+--------------------------------------------------------------------*/
 Product GetProductDetails(streampos &startPos = PRODUCTFILEPOINTER, const string &FILENAME = FILENAMES[3])
 {
     Product newprod = readRecord<Product>(FILENAME, startPos);
     return newprod;
 }
+
+/*
+Reads a Product object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Product object.
+--------------------------------------------------------------------*/

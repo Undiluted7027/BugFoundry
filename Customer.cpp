@@ -19,18 +19,35 @@ Customer::Customer(const char *name = "", const char *email = "", const char *ph
     this->phone[sizeof(this->phone) - 1] = '\0';
 }
 
+/*
+Create Customer object using attrbibutes provided. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 bool Customer::operator==(const Customer &other) const{
     return (custID == other.custID || email == other.email || phone == other.phone);
 }
+
+/*
+Checks if two Customer objects are equal based on custID or email or phone. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 bool Customer::operator==(const char *userID) const{
     return (custID == userID);
 }
 
+/*
+Checks if a Customer object is equal to a given userID string.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 ostream& operator<< (ostream &out, const Customer &c){
     c.DisplayDetails(out);
     return out;
 }
 
+/*
+Overload the Customer class and outputs the details of Customer object and returns output stream
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void Customer::DisplayDetails(ostream &out) const
 {
     if (strlen(name) == 0 || strlen(email) == 0 || strlen(phone) == 0)
@@ -44,7 +61,10 @@ void Customer::DisplayDetails(ostream &out) const
     }
 }
 
-
+/*
+Print the attribute details of the Customer object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 Customer CreateCustomer(const char *name, const char *email, const char *phone)
 {
     cout << ValidateCustomer(name, email, phone) << endl;
@@ -61,17 +81,29 @@ Customer CreateCustomer(const char *name, const char *email, const char *phone)
     }
 }
 
+/*
+Create new Customer object and also validates it.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void CommitCustomer(const Customer &customer, streampos &startPos, const string &FILENAME)
 {
     writeRecord(FILENAME, startPos, customer);
 }
 
+/*
+Writes a Customer object to a specified file at a given position.
+Uses the unsorted records data structure to add the Complaint object.
+--------------------------------------------------------------------*/
 Customer GetCustomerDetails(streampos &startPos, const string &FILENAME)
 {
     Customer newCust = readRecord<Customer>(FILENAME, startPos);
     return newCust;
 }
 
+/*
+Reads a Customer object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Customer object.
+--------------------------------------------------------------------*/
 int ValidateCustomer(const char *name, const char *email, const char *phone)
 {
 
@@ -139,5 +171,9 @@ int ValidateCustomer(const char *name, const char *email, const char *phone)
     delete [] dataptr;
     cout << "Record is valid!" << endl;
     return 1;
-    
 }
+
+/*
+Validates that the Customer object attributes are acceptable and makes sure no duplicate Customer records exists.
+A linear search algorithm is used to iterate through the Customer records.
+--------------------------------------------------------------------*/

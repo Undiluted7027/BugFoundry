@@ -29,10 +29,18 @@ Complaint::Complaint(const char *description, const char *dateOfComplaint, const
     this->custID[sizeof(this->custID)-1] = '\0';
 }
 
+/*
+Create Complaint object using attrbibutes provided. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 bool Complaint::operator==(const Complaint &other) const{
     return (complaintID == other.complaintID || description == other.description || dateOfComplaint == other.dateOfComplaint);
 }
 
+/*
+Checks if two Complaint objects are equal based on complaintID or description or dateOfComplaint. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void Complaint::DisplayDetails(ostream &out) const{
     if (strlen(description) == 0 || strlen(dateOfComplaint) == 0 || strlen(changeID) == 0 || releaseID == nullptr || custID == nullptr)
         out << "Error in reading Complaint information. One or more attributes of complaint do not have value(s)" << endl;
@@ -48,10 +56,18 @@ void Complaint::DisplayDetails(ostream &out) const{
     }
 }
 
+/*
+Print the attribute details of the Complaint object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 char *Complaint::getCustID() const{
     return custID;
 }
 
+/*
+Get the custID of a Complaint object.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int ValidateComplaint(const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID){
     if (strlen(description) > 30){
         return -1;
@@ -87,7 +103,7 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
     if (strlen(custID) != 10){
         return -1;
     }
-    // how to check if this complaint is a duplicate?
+
     Complaint *dataptr = readFile<Complaint>(FILENAMES[2], COMPLAINTFILEPOINTER);
     Complaint dummy(description, dateOfComplaint, changeID, releaseID, custID);
     size_t size = sizeof(dataptr)/sizeof(dataptr[0]);
@@ -103,6 +119,10 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
     return 1;
 }
 
+/*
+Validates that the Complaint object attributes are acceptable and makes sure no duplicate Complaint records exists.
+A linear search algorithm is used to iterate through the Complaint records.
+--------------------------------------------------------------------*/
 Complaint CreateComplaint (const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID){
     if (ValidateComplaint(description, dateOfComplaint, changeID, releaseID, custID) == 1){
         Complaint newComplaint(description, dateOfComplaint, changeID, releaseID, custID);
@@ -114,12 +134,24 @@ Complaint CreateComplaint (const char *description, const char *dateOfComplaint,
     }
 }
 
+/*
+Create new Complaint object and also validates it.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void CommitComplaint(const Complaint &complaint, streampos &startPos = COMPLAINTFILEPOINTER, const string &FILENAME = FILENAMES[2]){
     writeRecord(FILENAME, startPos, complaint);
 }
 
-
+/*
+Writes a Complaint object to a specified file at a given position.
+Uses the unsorted records data structure to add the Complaint object.
+--------------------------------------------------------------------*/
 Complaint GetComplaintDetails(streampos &startPos = COMPLAINTFILEPOINTER, const string &FILENAME = FILENAMES[2]){
     Complaint newComplaint = readRecord<Complaint>(FILENAME, startPos);
     return newComplaint;
 }
+
+/*
+Reads a Complaint object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Complaint object.
+--------------------------------------------------------------------*/
