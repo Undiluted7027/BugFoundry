@@ -23,7 +23,7 @@ bool Customer::operator==(const Customer &other) const{
     return (custID == other.custID || email == other.email || phone == other.phone);
 }
 bool Customer::operator==(const char *userID) const{
-    return (custID == userID)
+    return (custID == userID);
 }
 
 ostream& operator<< (ostream &out, const Customer &c){
