@@ -37,8 +37,9 @@ class Change
                                             // release ID of the product for the change requested, release ID is 8 characters
             const char *lastUpdate = "",   // in
                                             // date for lastupdate, null by default
-            const char *changeID = ""         // in
+            const char *changeID = "",         // in
                                             // id for change, changeID has to be 6 digits with the first digit being 1
+            const char *productName = ""
              
             ); 
         /* Change(const string& changeID, const string& description, const string& status, const string& priority, 
@@ -63,8 +64,22 @@ class Change
         /* void UpdateChange(const string &changeID, const string &description, const string &status, const string &priority, const int &releaseID) is used to update any change object specified by the user through its changeID. 
         It can change the description, state, priority, and anticipated release ID of a change object. 
         ----------------------------------------------------------------------*/
-
+        void DisplayDetails(
+            ostream &out       // in/out
+                               // ostream object to handle << operation
+        ) const;
+        /* void DisplayDetails(ostream &out) handles printing of change type objects. 
+        The data of each customer object is properly formatted, and indented with spaces. 
+        This will come handy when displaying reports or details from the UI. 
+        This function will fail if the calling Customer object is a dangling pointer.
+        ----------------------------------------------------------------------*/
         char *getChangeID() const;
+        void change_displayProductName() const;
+        void change_displayDesc() const;
+        void change_displayStatus() const;
+        void change_displayPriority() const;
+        void change_displayRelID() const;
+
         
     private:
         char *changeID; 
@@ -73,6 +88,7 @@ class Change
         char priority;
         char lastUpdate[9];
         char releaseID[9];
+        char productName[11];
 };
 // ----------------------------------------------------------------------
 Change CreateChange(

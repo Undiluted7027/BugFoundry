@@ -1,7 +1,7 @@
 /* unitTestMain.cpp 
 REVISION HISTORY:
+Rev. 2 - 24/07/14 Revised by Seoyoung Kim
 Rev. 1 - 24/07/03 Original by Jason Lee
-Rev. 1 - 24/07/14 Revised by Seoyoung Kim
 --------------------------------------------------------------------*/
 #include <iostream>
 #include <string.h>
@@ -15,12 +15,13 @@ int main()
     /* Test case for validating a Product.
     If the test passes, the system recognizes correct format of product
     If not, the system does not recognizes.*/
+    char *aProduct = "SmartLight";
     char *aReleaseID = "12345678"; // releaseID
-    char* aDate = "24-04-02"; //date
+    char* aDate = "2024-04-02"; //date
     char* badDate = "141241";
     char *aCID = "12345"; //changeid
 
-    if (ValidateProduct(aReleaseID, aDate))
+    if (ValidateProduct(aProduct, aReleaseID, aDate))
     {
         cout << "Test Passed: Detected Valid product" << endl;
     }
@@ -28,7 +29,7 @@ int main()
     {
         cout << "Test Failed: Did not detect Valid product" << endl;
     }
-    if (ValidateProduct(aReleaseID, badDate))
+    if (ValidateProduct(aProduct, aReleaseID, badDate))
     {
         cout << "Test Failed: Did not detect Invalid product" << endl;
     }

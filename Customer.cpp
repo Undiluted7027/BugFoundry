@@ -22,6 +22,9 @@ Customer::Customer(const char *name = "", const char *email = "", const char *ph
 bool Customer::operator==(const Customer &other) const{
     return (custID == other.custID || email == other.email || phone == other.phone);
 }
+bool Customer::operator==(const char *userID) const{
+    return (custID == userID)
+}
 
 ostream& operator<< (ostream &out, const Customer &c){
     c.DisplayDetails(out);
@@ -36,10 +39,8 @@ void Customer::DisplayDetails(ostream &out) const
     // exit(1);
     else
     {
-        out << "CustID: " << custID << endl;
-        out << "name: " << name << endl;
-        out << "email: " << email << endl;
-        out << "phone: " << phone << endl;
+        cout.width(32); cout << left << name;
+        cout.width(24); cout << left << email << endl;
     }
 }
 

@@ -48,6 +48,10 @@ void Complaint::DisplayDetails(ostream &out) const{
     }
 }
 
+char *Complaint::getCustID() const{
+    return custID;
+}
+
 int ValidateComplaint(const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID){
     if (strlen(description) > 30){
         return -1;

@@ -5,20 +5,16 @@ Rev. 1 - 24/07/03 Original by Jason Lee
 --------------------------------------------------------------------*/
 #include "UI.hpp"
 #include "ScenarioControl.hpp"
-
-int Main_Menu();
-void New_User();
-int Create_Menu();
-int Update_Menu();
-int Report_Menu();
-int ActivateUI();
-
+//--------------------------------------------------------------------
 int Start()
 {
     int run = ActivateUI();
     return run;
 }
-
+/*
+To activate the UI from the main module.
+No noticeable algorithm or data structure used.
+-------------------------------------------------*/
 int ActivateUI()
 {
     int choice; int subchoice;
@@ -49,6 +45,10 @@ int ActivateUI()
     cin.ignore();
     return 1;
 }
+/*
+Controling the menu UI
+No noticeable algorithm or data structure used.
+-------------------------------------------------*/
 
 int Main_Menu()
 {
@@ -65,7 +65,10 @@ int Main_Menu()
 
     return choice;
 };
-
+/*
+To display the main menu and get choice from the user
+No noticeable algorithm or data structure used.
+-------------------------------------------------*/
 int Create_Menu()
 {
     int choice;
@@ -87,7 +90,10 @@ int Create_Menu()
     
     return 1;
 };
-
+/*
+To display the create submenu and get choice from the user
+No noticeable algorithm or data structure used.
+-------------------------------------------------*/
 int Update_Menu()
 {
     int choice;
@@ -107,7 +113,10 @@ int Update_Menu()
     
     return 2;
 };
-
+/*
+To display the update submenu and get choice from the user 
+No noticeable algorithm or data structure used.
+-------------------------------------------------*/
 int Report_Menu()
 {
     int choice;
@@ -128,3 +137,7 @@ int Report_Menu()
     
     return 3;
 };
+/*
+To display the report submenu and get choice from the user 
+No noticeable algorithm or data structure used.
+-------------------------------------------------*/
