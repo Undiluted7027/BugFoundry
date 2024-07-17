@@ -12,7 +12,6 @@ Customer.hpp keeps its high cohesion by encapsulating all possible customer entr
 #include <filesystem>
 #include <string>
 #include "Globals.hpp"
-#include "Record.hpp"
 
 using namespace std;
 
@@ -44,6 +43,7 @@ class Customer
         This function will fail if the calling Customer object is a dangling pointer.
         ----------------------------------------------------------------------*/
         bool operator==(const Customer &other) const;
+        friend ostream& operator<<(ostream &out, const Customer &c);
     private:
         char custID[10]; 
         char name[31];

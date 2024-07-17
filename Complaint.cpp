@@ -14,7 +14,7 @@ This CPP file called Complaint.cpp handles the complaints of the program.
 using namespace std;
 
 Complaint::Complaint(const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID){
-    const char *generatedID = IDGenerator<const char *>('2', 6);
+    const char *generatedID = IDGenerator('2', 6);
     strcpy(this->complaintID, generatedID);
     this->complaintID[sizeof(this->complaintID)-1] = '\0';
     strcpy(this->description, description);

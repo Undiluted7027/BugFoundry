@@ -1,17 +1,17 @@
 #include "Globals.hpp"
 
-template <class T, class Q>
+template <class T>
 class Record{
     private:
-        T id;
-        Q data;
+        char *id;
+        T data;
     public:
-        Record(T id, Q data): id(id), data(data){}
+        Record(const char *id, T data): id(id), data(data){}
 
-        T getId() const;
-        Q getData() const;
-        void setID(T id);
-        void setData(Q data);
+        char *getId() const;
+        T getData() const;
+        void setID(const char *id);
+        void setData(T &data);
 };
 
 

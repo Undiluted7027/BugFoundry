@@ -1,14 +1,14 @@
-#include "Customer.hpp"
-#include "Globals.hpp"
 #include "drivers.cpp"
+#include "Customer.hpp"
+#include "Globals.cpp"
 #include <cstring>
 #include <iostream>
 
 using namespace std;
 
-Customer::Customer(const char *name, const char *email, const char *phone)
+Customer::Customer(const char *name = "", const char *email = "", const char *phone = "")
 { // using a dummy ID
-    const char *generatedID = IDGenerator<const char *>('1', 10);
+    const char *generatedID = IDGenerator('1', 10);
     strcpy(this->custID, generatedID);
     this->custID[sizeof(this->custID) - 1] = '\0';
     strcpy(this->name, name);
@@ -21,6 +21,11 @@ Customer::Customer(const char *name, const char *email, const char *phone)
 
 bool Customer::operator==(const Customer &other) const{
     return (custID == other.custID || email == other.email || phone == other.phone);
+}
+
+ostream& operator<< (ostream &out, const Customer &c){
+    c.DisplayDetails(out);
+    return out;
 }
 
 void Customer::DisplayDetails(ostream &out) const
@@ -36,15 +41,12 @@ void Customer::DisplayDetails(ostream &out) const
     }
 }
 
-bool Customer::operator==(const Customer &other) const
-{
-    return name == other.name && email == other.email && phone == other.phone;
-}
 
 Customer CreateCustomer(const char *name, const char *email, const char *phone)
 {
+    cout << ValidateCustomer(name, email, phone) << endl;
 
-    if (ValidateCustomer(name, email, phone))
+    if (ValidateCustomer(name, email, phone) == 1)
     {
         Customer newCust(name, email, phone);
         return newCust;
@@ -56,12 +58,12 @@ Customer CreateCustomer(const char *name, const char *email, const char *phone)
     }
 }
 
-void CommitCustomer(const Customer &customer, streampos &startPos = CUSTOMERFILEPOINTER, const string &FILENAME = FILENAMES[0])
+void CommitCustomer(const Customer &customer, streampos &startPos, const string &FILENAME)
 {
     writeRecord(FILENAME, startPos, customer);
 }
 
-Customer GetCustomerDetails(streampos &startPos = CUSTOMERFILEPOINTER, const string &FILENAME = FILENAMES[0])
+Customer GetCustomerDetails(streampos &startPos, const string &FILENAME)
 {
     Customer newCust = readRecord<Customer>(FILENAME, startPos);
     return newCust;
@@ -88,7 +90,10 @@ int ValidateCustomer(const char *name, const char *email, const char *phone)
         for (const char *p = email; p < atSign; ++p)
         {
             if (!std::isalnum(*p) && *p != '.' && *p != '-' && *p != '_')
+            
             {
+                cout << "Invalid character found in email" << endl;
+
                 return -1; // Invalid character found
             }
         }
@@ -98,13 +103,18 @@ int ValidateCustomer(const char *name, const char *email, const char *phone)
         {
             if (!std::isalnum(*p) && *p != '-' && *p != '_')
             {
+                cout << "Invalid character found in email" << endl;
                 return -1; // Invalid character found
             }
         }
 
         // validate phone num
-        if (phone[0] != '1' || phone[1] != ' ' || !isdigit(phone[2]) || isdigit(phone[3]) || !isdigit(phone[4]) || phone[5] != '-'|| !isdigit(phone[6]) || isdigit(phone[7]) || !isdigit(phone[8]) || phone[9] != '-'|| !isdigit(phone[10]) || isdigit(phone[11]) || !isdigit(phone[12]) ||!isdigit(phone[13]) || phone[14]!='\0')
-            return -1;
+        if (phone[0] != '1' || phone[1] != ' ' || !isdigit(phone[2]) || !isdigit(phone[3]) || !isdigit(phone[4]) || phone[5] != '-'|| !isdigit(phone[6]) || !isdigit(phone[7]) || !isdigit(phone[8]) || phone[9] != '-'|| !isdigit(phone[10]) || !isdigit(phone[11]) || !isdigit(phone[12]) ||!isdigit(phone[13]))
+            {
+                cout << "Invalid character found in phone" << endl;
+
+                return -1;
+            }
         
     }
 
