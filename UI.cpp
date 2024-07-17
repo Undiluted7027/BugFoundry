@@ -4,51 +4,8 @@ Rev. 2 - 24/07/11 Moved New User to be part of Create submenu by Jason Lee
 Rev. 1 - 24/07/03 Original by Jason Lee
 --------------------------------------------------------------------*/
 #include "UI.hpp"
-#include "ScenarioControl.hpp"
+#include "ScenarioControl.cpp"
 //--------------------------------------------------------------------
-int Start()
-{
-    int run = ActivateUI();
-    return run;
-}
-/*
-To activate the UI from the main module.
-No noticeable algorithm or data structure used.
--------------------------------------------------*/
-int ActivateUI()
-{
-    int choice; int subchoice;
-    do 
-    {
-        cout << endl;
-        choice = Main_Menu();
-        switch (choice)
-        {
-            case 1:
-                subchoice = Create_Menu();
-                break;
-            case 2:
-                subchoice = Update_Menu();
-                break;
-            case 3:
-                subchoice = Report_Menu();
-                break;
-            case 0:
-                subchoice = 0;
-                cout << "Thank you for using Bug Foundry." << endl;
-                break;
-            default:
-                cout << "Error: Your option is not an available choice" << endl;
-                break;
-        }
-    } while (choice != 0);
-    cin.ignore();
-    return 1;
-}
-/*
-Controling the menu UI
-No noticeable algorithm or data structure used.
--------------------------------------------------*/
 
 int Main_Menu()
 {
@@ -139,5 +96,49 @@ int Report_Menu()
 };
 /*
 To display the report submenu and get choice from the user 
+No noticeable algorithm or data structure used.
+-------------------------------------------------*/
+
+int ActivateUI()
+{
+    int choice; int subchoice;
+    do 
+    {
+        cout << endl;
+        choice = Main_Menu();
+        switch (choice)
+        {
+            case 1:
+                subchoice = Create_Menu();
+                break;
+            case 2:
+                subchoice = Update_Menu();
+                break;
+            case 3:
+                subchoice = Report_Menu();
+                break;
+            case 0:
+                subchoice = 0;
+                cout << "Thank you for using Bug Foundry." << endl;
+                break;
+            default:
+                cout << "Error: Your option is not an available choice" << endl;
+                break;
+        }
+    } while (choice != 0);
+    cin.ignore();
+    return 1;
+}
+/*
+Controling the menu UI
+No noticeable algorithm or data structure used.
+-------------------------------------------------*/
+int Start()
+{
+    int run = ActivateUI();
+    return run;
+}
+/*
+To activate the UI from the main module.
 No noticeable algorithm or data structure used.
 -------------------------------------------------*/

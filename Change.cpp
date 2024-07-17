@@ -6,16 +6,17 @@ This CPP file called Changes.cpp handles the changes of the program.
 --------------------------------------------------------------------*/
 
 #include "Change.hpp"
-#include "Complaint.cpp"
-#include "Customer.hpp"
-#include "Globals.hpp"
-// #include "drivers.cpp"
+#include "Complaint.cpp" // Include for handling Complaints (assuming Complaint class is defined here)
+#include "Customer.hpp" // Include for handling Customers (assuming Customer class is defined here)
+#include "Globals.hpp" // Include necessary global constants and declarations
+// #include "drivers.cpp" // Assuming this was commented out for not being used
 #include <cstring>
 #include <iostream>
 #include <set>
 
 using namespace std;
 
+// Default constructor for Change class
 Change::Change(): status('-'), priority('1'){
     memset(changeID, 0, sizeof(changeID));
     memset(description, 0, sizeof(description));
@@ -24,15 +25,17 @@ Change::Change(): status('-'), priority('1'){
     memset(productName, 0, sizeof(productName));
 }
 
+// Parameterized constructor for Change class
 Change::Change(const char *changeID, const char* description, const char& status, const char& priority,
                const char* releaseID, const char* lastUpdate,
                const char* productName)
     : status(status), priority(priority) {
     
+    // Generate a new changeID if not provided
     if (strlen(changeID) != 0) {
         safeStrCopy(this->changeID, changeID, sizeof(this->changeID));
     } else {
-        char* generatedID = IDGenerator('3', 7);
+        char* generatedID = IDGenerator('3', 7); // Assuming IDGenerator function is used to generate IDs
         safeStrCopy(this->changeID, generatedID, sizeof(this->changeID));
         delete[] generatedID;
     }
@@ -43,10 +46,12 @@ Change::Change(const char *changeID, const char* description, const char& status
     safeStrCopy(this->productName, productName, sizeof(this->productName));
 }
 
+// Equality operator overload for Change class
 bool Change::operator==(const Change& other) const {
     return (strcmp(changeID, other.changeID) == 0);
 }
 
+// UpdateChange method to update existing change details
 void Change::UpdateChange(const char* changeID, const char* description, const char& status,
                           const char& priority, const char* releaseID) {
     safeStrCopy(this->changeID, changeID, sizeof(this->changeID));
@@ -56,6 +61,7 @@ void Change::UpdateChange(const char* changeID, const char* description, const c
     safeStrCopy(this->releaseID, releaseID, sizeof(this->releaseID));
 }
 
+// DisplayDetails method to display change details
 void Change::DisplayDetails(std::ostream& out) const {
     out << std::left
         << std::setw(7) << changeID
@@ -67,6 +73,7 @@ void Change::DisplayDetails(std::ostream& out) const {
         << std::setw(11) << productName << std::endl;
 }
 
+// Accessor methods for Change class attributes
 const char* Change::getChangeID() const {
     return changeID;
 }
@@ -91,8 +98,10 @@ const char *Change::change_displayRelID() const {
     return releaseID;
 }
 
+// CreateChange function to create a new Change object
 Change CreateChange(const char* description, const char& status, const char& priority,
                     const char* lastUpdate, const char* releaseID, const char* changeID) {
+    // Validate change data before creating a new Change object
     if (ValidateChange(description, status, priority, lastUpdate, releaseID) == 1) {
         return Change("", description, status, priority, releaseID, lastUpdate, changeID);
     } else {
@@ -100,8 +109,10 @@ Change CreateChange(const char* description, const char& status, const char& pri
     }
 }
 
+// ValidateChange function to validate change data
 int ValidateChange(const char* description, const char& status, const char& priority,
                    const char* lastUpdate, const char* releaseID) {
+    // Check each attribute for validity
     if (strlen(description) == 0 || strlen(description) > 30) {
         std::cout << "Invalid description length" << std::endl;
         return -1;
@@ -127,8 +138,8 @@ int ValidateChange(const char* description, const char& status, const char& prio
         return -1;
     }
 
-    // Check for duplicate change
-    std::ifstream file(DIRECTORY + FILENAMES[1], std::ios::binary);
+    // Check for duplicate change in the file
+    std::ifstream file( FILENAMES[1], std::ios::binary);
     if (!file) {
         std::cerr << "Error: Could not open file for reading" << std::endl;
         return -1;
@@ -155,8 +166,9 @@ void UpdateLatestChange(const char* description, const char& status, const char&
     std::cout << "UpdateLatestChange: Not implemented" << std::endl;
 }
 
+// CreateChangesReport function to create a report of all changes
 int CreateChangesReport() {
-    std::ifstream file(DIRECTORY + FILENAMES[1], std::ios::binary);
+    std::ifstream file( FILENAMES[1], std::ios::binary);
     if (!file) {
         std::cerr << "Error: Could not open file for reading" << std::endl;
         return -1;
@@ -179,8 +191,9 @@ int CreateChangesReport() {
     return count;
 }
 
+// CreateAnticipatedChangesProduct function to create a report of anticipated changes for a product
 void CreateAnticipatedChangesProduct(const char* releaseID) {
-    std::ifstream file(DIRECTORY + FILENAMES[1], std::ios::binary);
+    std::ifstream file( FILENAMES[1], std::ios::binary);
     if (!file) {
         std::cerr << "Error: Could not open file for reading" << std::endl;
         return;
@@ -196,14 +209,15 @@ void CreateAnticipatedChangesProduct(const char* releaseID) {
     file.close();
 }
 
+// CreateUsersInformedOnUpdateReport function to create a report of users to be informed about an update on a change
 void CreateUsersInformedOnUpdateReport(const char* changeID) {
     if (strlen(changeID) != 6 || changeID[0] != '1') {
         std::cerr << "Invalid changeID format. It should be 5 digits starting with 1." << std::endl;
         return;
     }
 
-    // Find the Change object
-    std::ifstream changeFile(DIRECTORY + FILENAMES[1], std::ios::binary);
+    // Find the Change object with given changeID
+    std::ifstream changeFile( FILENAMES[1], std::ios::binary);
     if (!changeFile) {
         std::cerr << "Error: Could not open Changes file." << std::endl;
         return;
@@ -225,7 +239,7 @@ void CreateUsersInformedOnUpdateReport(const char* changeID) {
     }
 
     // Find all Complaints associated with this Change
-    std::ifstream complaintFile(DIRECTORY + FILENAMES[2], std::ios::binary);
+    std::ifstream complaintFile( FILENAMES[2], std::ios::binary);
     if (!complaintFile) {
         std::cerr << "Error: Could not open Complaints file." << std::endl;
         return;
@@ -245,8 +259,8 @@ void CreateUsersInformedOnUpdateReport(const char* changeID) {
         return;
     }
 
-    // Find and display Customer details
-    std::ifstream customerFile(DIRECTORY + FILENAMES[0], std::ios::binary);
+    // Find and display Customer details associated with the Complaints
+    std::ifstream customerFile( FILENAMES[0], std::ios::binary);
     if (!customerFile) {
         std::cerr << "Error: Could not open Customers file." << std::endl;
         return;
@@ -269,8 +283,9 @@ void CreateUsersInformedOnUpdateReport(const char* changeID) {
     std::cout << "Total customers to be informed: " << count << std::endl;
 }
 
+// CommitChange function to commit a Change object to file
 void CommitChange(const Change& change, std::streampos& startPos, const std::string& FILENAME) {
-    std::ofstream file(DIRECTORY + FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    std::ofstream file( FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file) {
         throw std::runtime_error("Could not open file for writing");
     }
@@ -279,8 +294,9 @@ void CommitChange(const Change& change, std::streampos& startPos, const std::str
     startPos = file.tellp();
 }
 
+// GetChangeDetails function to retrieve Change details from file
 Change GetChangeDetails(std::streampos startPos, const std::string& FILENAME) {
-    std::ifstream file(DIRECTORY + FILENAMES[1], std::ios::binary);
+    std::ifstream file( FILENAMES[1], std::ios::binary);
     if (!file) {
         throw std::runtime_error("Could not open file for reading");
     }
@@ -291,3 +307,26 @@ Change GetChangeDetails(std::streampos startPos, const std::string& FILENAME) {
     }
     return change;
 }
+
+int InitChange(){
+    filesystem::create_directory(DIRECTORY);
+    if (!filesystem::exists( FILENAMES[1]))
+    {
+        ofstream file( FILENAMES[1], ios::binary);
+        if (!file)
+        {
+            return -1;
+        } else
+        {
+            return 1;
+        } 
+        file.close();
+    } 
+    else
+    {
+        return 0;
+    }
+    return -1;
+}
+/* int InitChange() uses the global variables streampos CHANGEFILEPOINTER and FILENAMES[1] to check if binary file "Changes.bin" exist in the DIRECTORY to essentially check if the program is being run for the first time. If it does, then it returns 0, if it doesn't then the files is created. If file was created successfully, it returns 1 else -1. The function does not fail.
+----------------------------------------------------------------------*/

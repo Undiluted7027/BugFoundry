@@ -1,3 +1,9 @@
+/* Product.cpp
+REVISION HISTORY:
+Rev. 1 - 24/07/15 Original by Seoyoung Kim
+----------------------------------------------------------------------
+This CPP file called Changes.cpp handles the changes of the program.
+--------------------------------------------------------------------*/
 #include "Product.hpp"
 #include <cstring>
 #include <iostream>
@@ -51,14 +57,14 @@ int ValidateProduct(const char* productName, const char* ReleaseID, const char* 
         return -1;
     }
 
-    // Check ReleaseDate format (YY/MM/DD)
-    if (ReleaseDate[2] != '/' || ReleaseDate[5] != '/') {
+    // Check ReleaseDate format (YY-MM-DD)
+    if (ReleaseDate[2] != '-' || ReleaseDate[5] != '-') {
         std::cout << "Invalid ReleaseDate format" << std::endl;
         return -1;
     }
 
     // Check for duplicate product
-    std::ifstream file(DIRECTORY + FILENAMES[3], std::ios::binary);
+    std::ifstream file( FILENAMES[3], std::ios::binary);
     if (!file) {
         std::cerr << "Error: Could not open file for reading" << std::endl;
         return -1;
@@ -90,7 +96,7 @@ Product CreateProduct(const char* productName, const char* ReleaseID, const char
 }
 
 void CommitProduct(const Product& product, std::streampos& startPos, const std::string& FILENAME) {
-    std::ofstream file(DIRECTORY + FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    std::ofstream file( FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file) {
         throw std::runtime_error("FileWriteFailed: Could not open file for writing");
     }
@@ -103,7 +109,7 @@ void CommitProduct(const Product& product, std::streampos& startPos, const std::
 }
 
 Product GetProductDetails(std::streampos startPos, const std::string& FILENAME) {
-    std::ifstream file(DIRECTORY + FILENAME, std::ios::binary);
+    std::ifstream file( FILENAME, std::ios::binary);
     if (!file) {
         throw std::runtime_error("FileReadFailed: Could not open file for reading");
     }
@@ -117,8 +123,8 @@ Product GetProductDetails(std::streampos startPos, const std::string& FILENAME) 
 
 int InitProduct() {
     std::filesystem::create_directory(DIRECTORY);
-    if (!std::filesystem::exists(DIRECTORY + FILENAMES[3])) {
-        std::ofstream file(DIRECTORY + FILENAMES[3], std::ios::binary);
+    if (!std::filesystem::exists( FILENAMES[3])) {
+        std::ofstream file( FILENAMES[3], std::ios::binary);
         if (!file) {
             return -1;
         }

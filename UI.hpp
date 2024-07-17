@@ -13,8 +13,6 @@ menus display in the system.
 ---------------------------------------------------------------------*/
 #include <iostream>
 #include <string>
-#include "ScenarioControl.hpp"
-#include "UI.cpp"
 
 using namespace std;
 

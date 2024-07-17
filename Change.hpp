@@ -12,88 +12,68 @@ create a report of all changes, create a report for anticipated changes for a sp
 create a report of users to be informed on update on a change. Change.h is high in cohesion by encapsulating
 all change attributes, its helper functions, and related functions. 
 ----------------------------------------------------------------------*/
+
 #include <string>
 #include <iostream>
 #include <filesystem>
-#include "Globals.hpp"
-#include "Change.hpp"
+#include "Globals.hpp" // Include necessary global constants and declarations
 
 class Change {
 public:
-    Change();
+    Change(); // Default constructor
     Change(const char* changeID, const char *description, const char &status, const char &priority,
            const char *releaseID, const char *lastUpdate = "",
-           const char *productName = "");
+           const char *productName = ""); // Parameterized constructor
 
-    bool operator==(const Change &other) const;
+    bool operator==(const Change &other) const; // Equality operator overload
 
     void UpdateChange(const char *changeID, const char *description,
                       const char &status, const char &priority,
-                      const char *releaseID);
+                      const char *releaseID); // Update change details
 
-    void DisplayDetails(std::ostream &out) const;
+    void DisplayDetails(std::ostream &out) const; // Display change details
 
-    const char *getChangeID() const;
-    const char *change_displayProductName() const;
-    const char *change_displayDesc() const;
-    char change_displayStatus() const;
-    char change_displayPriority() const;
-    const char *change_displayRelID() const;
+    const char *getChangeID() const; // Accessor for changeID
+    const char *change_displayProductName() const; // Accessor for productName
+    const char *change_displayDesc() const; // Accessor for description
+    char change_displayStatus() const; // Accessor for status
+    char change_displayPriority() const; // Accessor for priority
+    const char *change_displayRelID() const; // Accessor for releaseID
 
 private:
-    char changeID[7];
-    char description[31];
-    char status;
-    char priority;
-    char lastUpdate[9];
-    char releaseID[9];
-    char productName[11];
+    char changeID[7]; // Change ID
+    char description[31]; // Description of the change
+    char status; // Status of the change
+    char priority; // Priority of the change
+    char lastUpdate[9]; // Last update date of the change
+    char releaseID[9]; // Release ID associated with the change
+    char productName[11]; // Product name associated with the change
 };
 
 Change CreateChange(const char *description, const char &status,
                     const char &priority, const char *lastUpdate,
-                    const char *releaseID, const char *changeID);
+                    const char *releaseID, const char *changeID); // Create a new Change object
 
 int ValidateChange(const char *description, const char &status,
                    const char &priority, const char *lastUpdate,
-                   const char *releaseID);
+                   const char *releaseID); // Validate change data
 
 void UpdateLatestChange(const char *description, const char &status,
                         const char &priority, const char *releaseID,
-                        const char *lastUpdate);
+                        const char *lastUpdate); // Update the latest change
 
-int CreateChangesReport();
+int CreateChangesReport(); // Create a report of all changes
 
-void CreateAnticipatedChangesProduct(const char *releaseID);
+void CreateAnticipatedChangesProduct(const char *releaseID); // Create a report of anticipated changes for a product from releaseID
 
-void CreateUsersInformedOnUpdateReport(const char *changeID);
+void CreateUsersInformedOnUpdateReport(const char *changeID); // Create a report of users to be informed on update from changeID
 
 void CommitChange(const Change &change, std::streampos &startPos = CHANGEFILEPOINTER,
-                  const std::string &FILENAME = FILENAMES[1]);
+                  const std::string &FILENAME = FILENAMES[1]); // Commit a Change object to file
 
 Change GetChangeDetails(std::streampos startPos = CHANGEFILEPOINTER,
-                        const std::string &FILENAME = FILENAMES[1]);
+                        const std::string &FILENAME = FILENAMES[1]); // Retrieve Change details from file
 
-int InitChange(){
-    filesystem::create_directory(DIRECTORY);
-    if (!filesystem::exists(DIRECTORY + FILENAMES[1]))
-    {
-        ofstream file(DIRECTORY + FILENAMES[1], ios::binary);
-        if (!file)
-        {
-            return -1;
-        } else
-        {
-            return 1;
-        } 
-        file.close();
-    } 
-    else
-    {
-        return 0;
-    }
-    return -1;
-}
-/* int InitChange() uses the global variables streampos CHANGEFILEPOINTER and FILENAMES[1] to check if binary file "Changes.bin" exist in the DIRECTORY to essentially check if the program is being run for the first time. If it does, then it returns 0, if it doesn't then the files is created. If file was created successfully, it returns 1 else -1. The function does not fail.
-----------------------------------------------------------------------*/
-#endif
+int InitChange(); // Initialize the Change module
+
+#endif // CHANGE_HPP

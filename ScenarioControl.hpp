@@ -117,8 +117,9 @@ UpdateSpecificChange is used to get and validate the changeID that the user want
 The restriction for the changeID is mentioned in the User Manual.
 ----------------------------------------------------------------------*/
 int UpdateChangeInfo(
-    int changeID     // in
-                     // A changeID to update its attributes
+    const char *changeID,     // in
+                        // A changeID to update its attributes
+    std::streampos position
 );
 /*
 UpdateChangeInfo is used to update the attribute of the 'change' in the

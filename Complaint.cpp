@@ -147,7 +147,7 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
     }
 
     // Check for duplicate complaint
-    std::ifstream file(DIRECTORY + FILENAMES[2], std::ios::binary);
+    std::ifstream file( FILENAMES[2], std::ios::binary);
     if (!file)
     {
         std::cerr << "Error: Could not open file for reading" << std::endl;
@@ -184,7 +184,7 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
 
     // Check if a matching Change record exists
     bool changeExists = false;
-    std::ifstream changeFile(DIRECTORY + FILENAMES[1], std::ios::binary);
+    std::ifstream changeFile( FILENAMES[1], std::ios::binary);
     if (changeFile)
     {
         Change change;
@@ -226,7 +226,7 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
 
 void CommitComplaint(const Complaint &complaint, std::streampos &startPos, const std::string &FILENAME)
 {
-    std::ofstream file(DIRECTORY + FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
+    std::ofstream file( FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
     if (!file)
     {
         throw std::runtime_error("Could not open file for writing");
@@ -238,7 +238,7 @@ void CommitComplaint(const Complaint &complaint, std::streampos &startPos, const
 
 Complaint GetComplaintDetails(std::streampos &startPos, const std::string &FILENAME)
 {
-    std::ifstream file(DIRECTORY+FILENAMES[2], std::ios::binary);
+    std::ifstream file(FILENAMES[2], std::ios::binary);
     if (!file)
     {
         throw std::runtime_error("Could not open file for reading");
@@ -252,7 +252,7 @@ Complaint GetComplaintDetails(std::streampos &startPos, const std::string &FILEN
 
 void PrintAllComplaints(const std::string &FILENAME)
 {
-    std::ifstream file(DIRECTORY+FILENAMES[2], std::ios::binary);
+    std::ifstream file(FILENAMES[2], std::ios::binary);
     if (!file)
     {
         std::cerr << "Error: Could not open file " << FILENAME << " for reading." << std::endl;
@@ -285,7 +285,7 @@ void PrintAllComplaints(const std::string &FILENAME)
 
 bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint, const std::string &FILENAME)
 {
-    std::fstream file(DIRECTORY+FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
+    std::fstream file(FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
     if (!file)
     {
         std::cerr << "Error: Could not open file " << FILENAME << " for reading and writing." << std::endl;
@@ -298,6 +298,7 @@ bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint,
 
     while (file.read(reinterpret_cast<char *>(&currentComplaint), sizeof(Complaint)))
     {
+        // read Complaints file
         if (strcmp(currentComplaint.getComplaintID(), complaintID) == 0)
         {
             found = true;
@@ -333,9 +334,9 @@ bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint,
 int InitComplaint()
 {
     std::filesystem::create_directory(DIRECTORY);
-    if (!std::filesystem::exists(DIRECTORY + FILENAMES[2]))
+    if (!std::filesystem::exists( FILENAMES[2]))
     {
-        std::ofstream file(DIRECTORY + FILENAMES[2], std::ios::binary);
+        std::ofstream file( FILENAMES[2], std::ios::binary);
         if (!file)
         {
             return -1;

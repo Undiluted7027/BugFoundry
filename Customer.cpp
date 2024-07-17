@@ -1,7 +1,15 @@
+/* Customer.cpp
+REVISION HISTORY:
+Rev. 1 - 24/07/17 Original by Sanchit Jain
+----------------------------------------------------------------------
+This module, Customer.cpp, implements the Customer class and associated functions.
+----------------------------------------------------------------------*/
+
 #include "Customer.hpp"
 #include "drivers.cpp"
 #include "Globals.cpp"
 
+// Constructor: Default
 Customer::Customer() {
     custID[0] = '\0';
     name[0] = '\0';
@@ -9,7 +17,17 @@ Customer::Customer() {
     phone[0] = '\0';
 }
 
-Customer::Customer(const char* custID, const char* name, const char* email, const char* phone) {
+// Constructor: Parameterized
+Customer::Customer(
+    const char* custID,   // in
+                          // Customer ID
+    const char* name,     // in
+                          // Customer name
+    const char* email,    // in
+                          // Customer email
+    const char* phone     // in
+                          // Customer phone number
+) {
     if (custID && *custID) {
         safeStrCopy(this->custID, custID, sizeof(this->custID));
     } else {
@@ -23,18 +41,27 @@ Customer::Customer(const char* custID, const char* name, const char* email, cons
     safeStrCopy(this->phone, phone, sizeof(this->phone));
 }
 
-Customer::Customer(const Customer& other) {
+// Constructor: Copy
+Customer::Customer(
+    const Customer& other // in
+                          // Another Customer object to copy from
+) {
     safeStrCopy(this->custID, other.custID, sizeof(this->custID));
     safeStrCopy(this->name, other.name, sizeof(this->name));
     safeStrCopy(this->email, other.email, sizeof(this->email));
     safeStrCopy(this->phone, other.phone, sizeof(this->phone));
 }
 
+// Destructor
 Customer::~Customer() {
     // No dynamic memory to clean up
 }
 
-Customer& Customer::operator=(const Customer& other) {
+// Operator: Assignment
+Customer& Customer::operator=(
+    const Customer& other // in
+                          // Another Customer object to assign from
+) {
     if (this != &other) {
         safeStrCopy(this->custID, other.custID, sizeof(this->custID));
         safeStrCopy(this->name, other.name, sizeof(this->name));
@@ -44,11 +71,19 @@ Customer& Customer::operator=(const Customer& other) {
     return *this;
 }
 
-bool Customer::operator==(const Customer& other) const {
+// Operator: Equality
+bool Customer::operator==(
+    const Customer& other // in
+                          // Another Customer object to compare to
+) const {
     return (strcmp(custID, other.custID) == 0 || strcmp(email, other.email) == 0 || strcmp(phone, other.phone) == 0);
 }
 
-void Customer::DisplayDetails(std::ostream& out) const {
+// DisplayDetails
+void Customer::DisplayDetails(
+    std::ostream& out  // in/out
+                       // ostream object to handle calling with << operator
+) const {
     if (name[0] == '\0' || email[0] == '\0' || phone[0] == '\0') {
         out << "Error: One or more attributes of customer do not have values." << std::endl;
     } else {
@@ -63,8 +98,44 @@ void Customer::DisplayDetails(std::ostream& out) const {
     }
 }
 
-void CommitCustomer(const Customer& customer, std::streampos& startPos, const std::string& FILENAME) {
-    std::ofstream file(DIRECTORY+FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+// CreateCustomer
+Customer CreateCustomer(
+    const char* name,  // in
+                       // Customer name
+    const char* email, // in
+                       // Customer email
+    const char* phone  // in
+                       // Customer phone number
+) {
+    int validationResult = ValidateCustomer(name, email, phone);
+    if (validationResult == 1) {
+        // Generate a new customer ID
+        char* generatedID = IDGenerator('0', 10);
+
+        // Create the customer object
+        Customer newCustomer(generatedID, name, email, phone);
+
+        // Clean up the generated ID
+        delete[] generatedID;
+
+        return newCustomer;
+    } else if (validationResult == 0) {
+        throw std::runtime_error("FailedToCreateCustomer: Customer with same email or phone already exists!");
+    } else {
+        throw std::runtime_error("FailedToCreateCustomer: Invalid name, email, or phone");
+    }
+}
+
+// CommitCustomer
+void CommitCustomer(
+    const Customer& customer, // in
+                              // Customer to add in binary file
+    std::streampos& startPos, // in/out
+                              // File pointer of the binary file
+    const std::string& FILENAME // in
+                              // Location-name of file
+) {
+    std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file) {
         throw std::runtime_error("Could not open file for writing");
     }
@@ -73,8 +144,14 @@ void CommitCustomer(const Customer& customer, std::streampos& startPos, const st
     startPos = file.tellp();
 }
 
-Customer GetCustomerDetails(std::streampos& startPos, const std::string& FILENAME) {
-    std::ifstream file(DIRECTORY+FILENAME, std::ios::binary);
+// GetCustomerDetails
+Customer GetCustomerDetails(
+    std::streampos& startPos,    // in/out
+                                 // File pointer of the binary file
+    const std::string& FILENAME  // in
+                                 // Location-name of file
+) {
+    std::ifstream file(FILENAME, std::ios::binary);
     if (!file) {
         throw std::runtime_error("Could not open file for reading");
     }
@@ -85,8 +162,12 @@ Customer GetCustomerDetails(std::streampos& startPos, const std::string& FILENAM
     return customer;
 }
 
-void PrintAllCustomers(const std::string& FILENAME) {
-    std::ifstream file(DIRECTORY+FILENAME, std::ios::binary);
+// PrintAllCustomers
+void PrintAllCustomers(
+    const std::string& FILENAME  // in
+                                 // Location-name of file
+) {
+    std::ifstream file(FILENAME, std::ios::binary);
     if (!file) {
         std::cerr << "Error: Could not open file " << FILENAME << " for reading." << std::endl;
         return;
@@ -124,8 +205,15 @@ void PrintAllCustomers(const std::string& FILENAME) {
     file.close();
 }
 
-
-int ValidateCustomer(const char* name, const char* email, const char* phone) {
+// ValidateCustomer
+int ValidateCustomer(
+    const char* name,  // in
+                       // Customer name
+    const char* email, // in
+                       // Customer email
+    const char* phone  // in
+                       // Customer phone number
+) {
     if (strlen(name) == 0 || strlen(email) == 0 || strlen(phone) == 0)
         return -1;
 
@@ -154,13 +242,14 @@ int ValidateCustomer(const char* name, const char* email, const char* phone) {
         return -1;
 
     // Check if record already exists
-    std::ifstream file(DIRECTORY+FILENAMES[0], std::ios::binary);
+    std::ifstream file(FILENAMES[0], std::ios::binary);
     if (!file) {
         throw std::runtime_error("Could not open file for reading");
     }
 
     Customer temp;
     while (file.read(reinterpret_cast<char*>(&temp), sizeof(Customer))) {
+        // read through the file
         if (strcmp(temp.getEmail(), email) == 0 || strcmp(temp.getPhone(), phone) == 0) {
             std::cout << "Record already exists :/" << std::endl;
             return 0;
@@ -171,10 +260,11 @@ int ValidateCustomer(const char* name, const char* email, const char* phone) {
     return 1;
 }
 
+// InitCustomer
 int InitCustomer() {
     std::filesystem::create_directory(DIRECTORY);
-    if (!std::filesystem::exists(DIRECTORY + FILENAMES[0])) {
-        std::ofstream file(DIRECTORY + FILENAMES[0], std::ios::binary);
+    if (!std::filesystem::exists(FILENAMES[0])) {
+        std::ofstream file(FILENAMES[0], std::ios::binary);
         if (!file) {
             return -1;
         } else {

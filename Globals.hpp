@@ -33,10 +33,10 @@ extern streampos PRODUCTFILEPOINTER;    //  fstream file pointer for "Products.b
 // ----------------------------------------------------------------------
 const string FILENAMES[NUMBER_OF_FILES] = 
 {
-        "Customers.bin",
-        "Changes.bin",
-        "Complaints.bin",
-        "Products.bin"
+        "data/Customers.bin",
+        "data/Changes.bin",
+        "data/Complaints.bin",
+        "data/Products.bin"
 };  // Array with names of binary files
 // ----------------------------------------------------------------------
 char *IDGenerator(
