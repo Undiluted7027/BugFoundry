@@ -3,6 +3,7 @@
 
 /* Customer.hpp
 REVISION HISTORY:
+Rev. 2 - 24/07/16 Added another class operator by Jason Lee
 Rev. 1 - 24/07/03 Original by Sanchit Jain
 ----------------------------------------------------------------------
 This module, Customer.hpp, hides the implementation of Customer class. 
