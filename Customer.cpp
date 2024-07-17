@@ -124,10 +124,6 @@ void PrintAllCustomers(const std::string& FILENAME) {
     file.close();
 }
 
-void safeStrCopy(char* dest, const char* src, size_t maxLen) {
-    std::strncpy(dest, src, maxLen - 1);
-    dest[maxLen - 1] = '\0';
-}
 
 int ValidateCustomer(const char* name, const char* email, const char* phone) {
     if (strlen(name) == 0 || strlen(email) == 0 || strlen(phone) == 0)

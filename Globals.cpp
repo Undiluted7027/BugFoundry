@@ -35,23 +35,7 @@ char* IDGenerator(const char &type, const int &precision){
     return id;
 }
 
-void copyString(char *&dest, const char *src, size_t length = 0)
-{
-    if (src)
-    {
-        size_t srcLength = strlen(src);
-        dest = new char[length];
-        strncpy(dest, src, length);  // Copy up to 'length' characters
-        dest[length] = '\0';         // Ensure null termination
-        if (srcLength < length)
-        {
-            // Fill the remaining space with null characters
-            memset(dest + srcLength, '\0', length - srcLength);
-        }
-    }
-    else
-    {
-        dest = new char[length + 1];
-        memset(dest, '\0', length + 1);  // Fill entire buffer with null characters
-    }
+void safeStrCopy(char* dest, const char* src, size_t maxLen) {
+    std::strncpy(dest, src, maxLen - 1);
+    dest[maxLen - 1] = '\0';
 }

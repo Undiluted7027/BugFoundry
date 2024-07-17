@@ -10,7 +10,7 @@
 
 class Customer {
 private:
-    char custID[11];
+    char custID[10];
     char name[31];
     char email[31];
     char phone[15];
@@ -32,7 +32,7 @@ public:
     const char* getPhone() const { return phone; }
 };
 
-void safeStrCopy(char* dest, const char* src, size_t maxLen);
+
 
 void CommitCustomer(const Customer& customer, std::streampos& startPos, const std::string& FILENAME);
 Customer GetCustomerDetails(std::streampos& startPos, const std::string& FILENAME);
