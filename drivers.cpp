@@ -6,24 +6,21 @@ Rev. 1 - 24/07/04 Original by Sanchit Jain
 #include <fstream>
 #include <cstdlib> //for exit() function.
 #include <string>
-#include "Globals.cpp"
-#include "Record.hpp"
-#include "Customer.hpp"
+
 using namespace std;
 
 template <class T>
-T* readFile(const string &filename, streampos fileptr)
-{
+T* readFile(const string &filename, streampos fileptr){
     int length = f.tell(g);
     fstream f("data/"+filename, ios::in);
+    int length = f.tellg();
     if (!f.good())
         exit(1);
     f.seekg(fileptr);
     T* dataptr = new T[length];
     T data;
     int i = 0;
-    while(f.read(reinterpret_cast<char *>(&data), sizeof data))
-    {
+    while(f.read(reinterpret_cast<char *>(&data), sizeof data)){
         cout << "Data read from file " << filename << " was " << data << endl;
         dataptr[i] = data;
         i++;
@@ -42,13 +39,13 @@ T readRecord(const string &filename, streampos &fileptr)
         exit(1);
     f.seekg(fileptr);
     T data;
-    f.read(reinterpret_cast<char *>(&data), sizeof data);
-    cout << "Data from file " << filename << " was " << data << end;
+    f.read(reinterpret_cast<char *>(&data), sizeof(data));
+    cout << "Data from file " << filename << " was " << data << endl;
+    return data;
 }
 
 template <class T>
-void writeRecord(const string &filename, streampos &fileptr, const T &record)
-{
+void writeRecord(const string &filename, streampos &fileptr, const T &record){
     fstream f("data/"+filename, ios::out);
     if (!f.good())
         exit(1);
@@ -68,11 +65,9 @@ void updateRecord(const string &filename, streampos fileptr, const T &newRecord,
         exit(1);
     T record;
     Q recordId;
-    while (f.read(reinterpret_cast<char *>(&record), sizeof(T)))
-    {
+    while (f.read(reinterpret_cast<char *>(&record), sizeof(T))){
         recordID = extractID(record);
-        if (recordID == id)
-        {
+        if (recordID == id){
             fileptr = file.tellg() - streampos(sizeof(T));
             f.seekp(fileptr);
             f.write(reinterpret_cast<const char *>(&newRecord), sizeof(T));
@@ -84,8 +79,7 @@ void updateRecord(const string &filename, streampos fileptr, const T &newRecord,
 }
 
 template <typename T, typename Q>
-void deleteRecord(const string &filename, streampos fileptr, const Q *id)
-{
+void deleteRecord(const string &filename, streampos fileptr, const Q *id){
     fstream f("data/" + filename, ios::in || ios::out);
     fstream temp("data/temp_"+filename, ios::in||ios::out);
     if (!temp.is_open())
@@ -98,8 +92,7 @@ void deleteRecord(const string &filename, streampos fileptr, const Q *id)
     T record;
     Q recordID;
     bool dound = true;
-    while (f.read(reinterpret_cast<char *>(&record), sizeof(T)))
-    {
+    while (f.read(reinterpret_cast<char *>(&record), sizeof(T))){
         recordID = extractID(record);
         if (recordID == id)
             found = true;
@@ -109,10 +102,8 @@ void deleteRecord(const string &filename, streampos fileptr, const Q *id)
     temp.flush();
     f.close();
     temp.close();
-    if (found)
-    {
-        if (remove((("data/"+filename).c_str()) != 0)
-        {
+    if (found){
+        if (remove((("data/"+filename).c_str()) != 0){
             cerr << "Error deleting original file" << endl;
             exit(1);
         }
@@ -146,6 +137,3 @@ void writeFile(const string &filename, streampos &fileptr, const T* &records)
     f.seekp(fileptr);
     f.close();
 }
-
-
-

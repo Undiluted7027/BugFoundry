@@ -7,19 +7,24 @@ Record.hpp keeps its high cohesion by encapsulating all possible product entries
 ----------------------------------------------------------------------*/
 #include "Globals.hpp"
 
+<<<<<<< HEAD
 template <class T, class Q>
 class Record
 {
+=======
+template <class T>
+class Record{
+>>>>>>> ebe04d13a7830444952cb0c58921dcbf436c0bbe
     private:
-        T id;
-        Q data;
+        char *id;
+        T data;
     public:
-        Record(T id, Q data): id(id), data(data){}
+        Record(const char *id, T data): id(id), data(data){}
 
-        T getId() const;
-        Q getData() const;
-        void setID(T id);
-        void setData(Q data);
+        char *getId() const;
+        T getData() const;
+        void setID(const char *id);
+        void setData(T &data);
 };
 
 

@@ -39,8 +39,7 @@ const string FILENAMES[NUMBER_OF_FILES] =
         "Products.bin"
 };  // Array with names of binary files
 // ----------------------------------------------------------------------
-template <class T>
-T IDGenerator(
+char *IDGenerator(
     const char &type,     // in
                             // type of entity that wants the ID (Product, Complaint, Customer, Change)
     const int &precision    // in
