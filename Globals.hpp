@@ -33,10 +33,10 @@ extern streampos PRODUCTFILEPOINTER;    //  fstream file pointer for "Products.b
 // ----------------------------------------------------------------------
 const string FILENAMES[NUMBER_OF_FILES] = 
 {
-        "Customers.bin",
-        "Changes.bin",
-        "Complaints.bin",
-        "Products.bin"
+        "data/Customers.bin",
+        "data/Changes.bin",
+        "data/Complaints.bin",
+        "data/Products.bin"
 };  // Array with names of binary files
 // ----------------------------------------------------------------------
 char *IDGenerator(
@@ -47,4 +47,5 @@ char *IDGenerator(
 );
 /* T IDGenerator(const string &type, const int &precision) generates a random ID for the entity that is passed in type parameter as string. The function returns a template value. It fails if type is null and/or precision is 0.
 ----------------------------------------------------------------------*/
+void safeStrCopy(char* dest, const char* src, size_t maxLen);
 #endif

@@ -13,7 +13,7 @@ T* readFile(const string &filename, streampos fileptr);
 
 // Template function to read a single record from a file
 template <class T>
-T readRecord(const string &filename, streampos &fileptr);
+T readRecord(const string &filename, streampos fileptr);
 
 // Template function to write a single record to a file
 template <class T>
@@ -30,5 +30,9 @@ void deleteRecord(const string &filename, streampos fileptr, const Q *id);
 // Template function to write an array of records to a file
 template <typename T>
 void writeFile(const string &filename, streampos &fileptr, const T* &records);
+
+size_t getFileSize(const string& filename);
+template <typename T>
+void printRecords(T* arr, const int &size);
 
 #endif // DRIVERS_HPP
