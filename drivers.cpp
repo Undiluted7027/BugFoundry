@@ -1,24 +1,29 @@
+/* Main.cpp
+REVISION HISTORY:
+Rev. 1 - 24/07/04 Original by Sanchit Jain
+----------------------------------------------------------------------*/
 #include <iostream>
 #include <fstream>
 #include <cstdlib> //for exit() function.
 #include <string>
-#include "Globals.cpp"
-#include "Record.hpp"
-#include "Customer.hpp"
+#include <vector>
+
 using namespace std;
 
 template <class T>
 T* readFile(const string &filename, streampos fileptr){
-    int length = f.tell(g);
     fstream f("data/"+filename, ios::in);
+    int length = f.tellg();
     if (!f.good())
         exit(1);
     f.seekg(fileptr);
     T* dataptr = new T[length];
+    cout << length << endl;
     T data;
     int i = 0;
-    while(f.read(reinterpret_cast<char *>(&data), sizeof data)){
-        cout << "Data read from file " << filename << " was " << data << endl;
+    while(i != length && f.read(reinterpret_cast<char *>(&data), sizeof data)){
+        cout << "Data read from file " << filename << " was: " << endl;
+        cout << data << endl;
         dataptr[i] = data;
         i++;
     }
@@ -28,41 +33,73 @@ T* readFile(const string &filename, streampos fileptr){
     return dataptr;
 }
 
-template <class T>
-T readRecord(const string &filename, streampos &fileptr){
-    fstream f("data/"+filename, ios::in);
-    if (!f.good())
+template <typename T>
+T readRecord(const string &filename, streampos fileptr) {
+    ifstream f("data/" + filename, ios::in | ios::binary);
+    if (!f) {
+        cerr << "Error opening file!" << endl;
         exit(1);
+    }
+
+    // Seek to the specified position
     f.seekg(fileptr);
+
+    // Read data into T
     T data;
-    f.read(reinterpret_cast<char *>(&data), sizeof data);
-    cout << "Data from file " << filename << " was " << data << end;
+    f.read(reinterpret_cast<char*>(&data), sizeof(T));
+
+    // Check for read errors
+    if (!f) {
+        cerr << "Error reading from file!" << endl;
+        exit(1);
+    }
+
+    // Close the file
+    f.close();
+
+    cout << "Read data: " << data << endl;
+
+    return data;
 }
 
-template <class T>
-void writeRecord(const string &filename, streampos &fileptr, const T &record){
-    fstream f("data/"+filename, ios::out);
-    if (!f.good())
+template <typename T>
+void writeRecord(const string &filename, streampos &fileptr, T record) {
+    ofstream f("data/" + filename, ios::out | ios::binary);
+    if (!f) {
+        cerr << "Error opening file!" << endl;
         exit(1);
+    }
+
+    // Seek to the specified position
     f.seekp(fileptr);
-    f.write(reinterpret_cast<char *> (&record), sizeof record);
+
+    // Write record data
+    f.write(reinterpret_cast<const char*>(&record), sizeof(T));
+
+    // Check for write errors
+    if (!f) {
+        cerr << "Error writing to file!" << endl;
+        exit(1);
+    }
+
+    // Flush and close the file
     f.flush();
-    fileptr = f.tellp();
     f.close();
 }
 
-template <class T, class Q>
-void updateRecord(const string &filename, streampos fileptr, const T &newRecord, const Q *id){
+template <class T>
+void updateRecord(const string &filename, streampos fileptr, const T newRecord, const char *id)
+{
     // work in progress
     fstream f("data/" + filename, ios::in || ios::out);
     if (!f.good())
         exit(1);
     T record;
-    Q recordId;
+    char *recordID;
     while (f.read(reinterpret_cast<char *>(&record), sizeof(T))){
         recordID = extractID(record);
         if (recordID == id){
-            fileptr = file.tellg() - streampos(sizeof(T));
+            fileptr = f.tellg() - streampos(sizeof(T));
             f.seekp(fileptr);
             f.write(reinterpret_cast<const char *>(&newRecord), sizeof(T));
         }
@@ -74,9 +111,11 @@ void updateRecord(const string &filename, streampos fileptr, const T &newRecord,
 
 template <typename T, typename Q>
 void deleteRecord(const string &filename, streampos fileptr, const Q *id){
+    string fpath = "data/" + filename;
     fstream f("data/" + filename, ios::in || ios::out);
     fstream temp("data/temp_"+filename, ios::in||ios::out);
-    if (!temp.is_open()){
+    if (!temp.is_open())
+    {
         cerr << "Error opening file: " << filename << endl;
         exit(1);
     }
@@ -84,7 +123,7 @@ void deleteRecord(const string &filename, streampos fileptr, const Q *id){
         exit(1);
     T record;
     Q recordID;
-    bool dound = true;
+    bool found = true;
     while (f.read(reinterpret_cast<char *>(&record), sizeof(T))){
         recordID = extractID(record);
         if (recordID == id)
@@ -96,15 +135,18 @@ void deleteRecord(const string &filename, streampos fileptr, const Q *id){
     f.close();
     temp.close();
     if (found){
-        if (remove((("data/"+filename).c_str()) != 0){
+        if (remove(fpath.c_str()) != 0){
             cerr << "Error deleting original file" << endl;
             exit(1);
         }
-        if (rename(("data/temp_" + filename).c_str(), ("data/" + filename).c_str()) != 0) {
+        if (rename(("data/temp_" + filename).c_str(), ("data/" + filename).c_str()) != 0) 
+        {
             cerr << "Error renaming temporary file." << std::endl;
             exit(1);
         }
-    } else {
+    } 
+    else 
+    {
         // If the record was not found, delete the temporary file
         remove(("data/temp_" + filename).c_str());
         cerr << "Record not found." << endl;
@@ -112,7 +154,8 @@ void deleteRecord(const string &filename, streampos fileptr, const Q *id){
 }
 
 template <typename T>
-void writeFile(const string &filename, streampos &fileptr, const T* &records){
+void writeFile(const string &filename, streampos &fileptr, const T* &records)
+{
     fstream f("data/"+filename, ios::out);
     if (!f.good())
         exit(1);
@@ -127,5 +170,20 @@ void writeFile(const string &filename, streampos &fileptr, const T* &records){
     f.close();
 }
 
+size_t getFileSize(const string& filename) {
+    fstream file(filename, ios::in|ios::ate);
+    if (!file.is_open()) {
+        std::cerr << "Error opening file: " << filename << std::endl;
+        return 0;
+    }
+    size_t fileSize = file.tellg();
+    file.seekg(0, ios::beg);
+    file.close();
+    return fileSize;
+}
 
-
+template <typename T>
+void printRecords(T* arr, const int &size){
+    for (int i = 0; i < size; i++)
+        cout << arr[i] << endl;
+}   

@@ -3,7 +3,7 @@
 
 /* ScenarioControl.hpp
 REVISION HISTORY:
-Rev. 2 - 24/07/11 Added several helper functions and comments by Jason Lee
+Rev. 2 - 24/07/11 Edited several display function parameters and added more comments by Jason Lee
 Rev. 1 - 24/07/03 Original by Jason Lee
 ----------------------------------------------------------------------
 This module, ScenarioControl.hpp, hides the implementation of the 
@@ -20,21 +20,18 @@ of the system with the event calls.
 #include "Change.hpp"
 #include "Product.hpp"
 #include "Globals.hpp"
-#include "ErrorMessages.hpp"
+
 /*--------------------------------------------------------------------
 // Exported constants/types/variables
-This module does not export any constant/types/variables
-
+This module does not export any constants/types/variables
 --------------------------------------------------------------------*/
-// This module does not include any classes
 
 //--------------------------------------------------------------------
+// Function Prototypes
+//--------------------------------------------------------------------
 int ScenarioControl(
-    int choice,     // in
-                    // Indicates the choice made in the main menu
-
-    int subchoice   // in 
-                    // Indicates the choice made in a sub menu
+    int choice,     // in: Indicates the choice made in the main menu
+    int subchoice   // in: Indicates the choice made in a sub menu
 );
 /*
 ScenarioControl is used to orchestrate the system flow based on the 
@@ -55,167 +52,104 @@ Main menu 3, Submenu 2: Report of Anticipated Changes for a product
 Main menu 3, Submenu 3: Report of Users to be informed on Update on Change
 Main menu 0, Submenu 0: Shutdown
 --------------------------------------------------------------------*/
-int InitControl(
 
-);
+int InitControl();
 /*
 InitControl is used to initialize all other objects: Complaint, Change, Customer, Product.
 This function gets called whenever the system starts up. When the function
-successfully finishes, returns 1. Else, returns 0. 
+successfully finishes, returns 1. Else, returns 0.
 --------------------------------------------------------------------*/
-void Shutdown(
 
-);
+void Shutdown();
 /*
-Shutdown is used to exit the whole system. The restriction is not applicable
+Shutdown is used to exit the whole system. The restriction is not applicable.
 --------------------------------------------------------------------*/
-int NewCustomer(
 
-);
+int NewCustomer();
 /*
 NewCustomer is used to create a new customer by retrieving the customer information
-through the input from the user.
-The restriction for each attributes for a user is mentioned in the User Manual.
+through the input from the user. The restriction for each attribute for a user 
+is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-int CreateNewComplaint(
 
-);
+int CreateNewComplaint();
 /*
 CreateNewComplaint is used to create a new complaint by retrieving the 
-complaint information through the input from the user. 
-The restriction for each attributes for a complaint is mentioned in the User Manual.
+complaint information through the input from the user. The restriction 
+for each attribute for a complaint is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-int CreateNewProduct(
 
-);
+int CreateNewProduct();
 /*
 CreateNewProduct is used to create a new product by retrieving the 
-product information through the input from user.
-The restriction for each attributes for a product is mentioned in the User Manual
+product information through the input from the user. The restriction 
+for each attribute for a product is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-int CreateNewProductRel(
 
-);
+int CreateNewProductRel();
 /*
 CreateNewProductRel is used to create a new product release by retrieving the 
-product release information through the input from user.
-The restriction for each attributes for a product release is mentioned in the User Manual
-----------------------------------------------------------------------*/
-int CreateNewChange(
+product release information through the input from the user. The restriction 
+for each attribute for a product release is mentioned in the User Manual.
+--------------------------------------------------------------------*/
 
-);
+int CreateNewChange();
 /*
 CreateNewChange is used to create a new change by retrieving the change
-information through the input from user. 
-The restriction for each attributes for a change is mentioned in the User Manual
-----------------------------------------------------------------------*/
-int UpdateSpecificChange(   
-                        
-);
+information through the input from the user. The restriction for each 
+attribute for a change is mentioned in the User Manual.
+--------------------------------------------------------------------*/
+
+int UpdateSpecificChange();
 /*
 UpdateSpecificChange is used to get and validate the changeID that the user wants to update. 
 The restriction for the changeID is mentioned in the User Manual.
-----------------------------------------------------------------------*/
+--------------------------------------------------------------------*/
+
 int UpdateChangeInfo(
-    int changeID     // in
-                     // A changeID to update its attributes
+    const char *changeID,  // in: A changeID to update its attributes
+    std::streampos position // in: Position of the change in the file
 );
 /*
 UpdateChangeInfo is used to update the attribute of the 'change' in the
-function parameter. The output will be 1 if successful and 0 if unsuccessful
-The restriction for each attributes for a change is mentioned in the User Manual.
-----------------------------------------------------------------------*/
-int ListAndSelectChange(
+function parameter. The output will be 1 if successful and 0 if unsuccessful.
+The restriction for each attribute for a change is mentioned in the User Manual.
+--------------------------------------------------------------------*/
 
-);
+int ListAndSelectChange();
 /*
 ListAndSelectChange is used to display the next 10 latest changes and take
-the user input of an option selecting one of the change that displayed, 
+the user input of an option selecting one of the changes displayed, 
 display the next 10 latest changes, or exit the event. The output will be
 the user selection. For the user input restriction, refer to the
 Update one of the latest Change event in the User Manual.
-----------------------------------------------------------------------*/
-int ExistingChanges(
+--------------------------------------------------------------------*/
 
-);
+int ExistingChanges();
 /*
-ExistingChanges is used to check if there are at least one change.
+ExistingChanges is used to check if there is at least one change.
 If exists, returns 1. If not, returns 0. The restriction for this function
 is not applicable.
-----------------------------------------------------------------------*/
-int DisplayChangeReport(
+--------------------------------------------------------------------*/
 
-);
+int DisplayChangeReport();
 /*
 DisplayChangeReport is used to display the next 10 latest changes and take
 the user input of an option of displaying the next 10 latest changes, 
 or exit the event. For the user input restriction, refer to the
 Report Changes event in the User Manual.
-----------------------------------------------------------------------*/
-int ProductOnChange(
+--------------------------------------------------------------------*/
 
-);
+int ProductOnChange();
 /*
 ProductOnChange is used to get a particular product to display its 
-next 10 anticipated. The function input restriction is not applicable
-----------------------------------------------------------------------*/
-int UserOnChange(
-    
-);
+next 10 anticipated changes. The function input restriction is not applicable.
+--------------------------------------------------------------------*/
+
+int UserOnChange();
 /*
 UserOnChange is used to get a change to display the next 10 users that are
-related to the change the user inputted. The function input restriction is not applicable
-----------------------------------------------------------------------*/
-void PrintChangeA(
-    int number,             // in
-                            // line number in the display 
-    char *Product,          // in
-                            // name of the product
-    char *Description,      // in
-                            // description of the change
-    char *ChangeID,         // in
-                            // changeID of the change
-    char *Date,             // in
-                            // expected release date of the change
-    char *State,            // in 
-                            // current state of the change
-    int Priority,           // in
-                            // current priority level of the change
-    char *ReleaseID         // in
-                            // releaseID of the product
-);
-/*
-PrintChangeA is used to display the information of a change.
-Displays the description, changeID, expected release date, state, priority, and releaseID.
-----------------------------------------------------------------------*/
-void PrintChangeA(
-    int number,             // in
-                            // line number in the display 
-    char *Description,      // in
-                            // description of the change
-    char *ChangeID,         // in
-                            // changeID of the change
-    char *Date,             // in
-                            // expected release date of the change
-    char *State,            // in 
-                            // current state of the change
-    int Priority,           // in
-                            // current priority level of the change
-    char *ReleaseID         // in
-                            // releaseID of the product
-);
-/*
-PrintChangeB is used to display the information of a change.
-Displays the changeID, expected release date, state, priority, and releaseID.
-----------------------------------------------------------------------*/
-void PrintUser(
-    char *name,     // in 
-                    // the name of user 
-    char *email     // in
-                    // the email of user
-);
-/*
-PrintUser is used to display the information of a change.
-Displays the name and email.
-----------------------------------------------------------------------*/
-#endif
+related to the change the user inputted. The function input restriction is not applicable.
+--------------------------------------------------------------------*/
+
+#endif // SCENARIOCONTROL_HPP

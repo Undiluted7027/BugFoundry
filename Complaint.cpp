@@ -6,116 +6,368 @@ This CPP file called Complaint.cpp handles the complaints of the program.
 --------------------------------------------------------------------*/
 
 #include "Complaint.hpp"
+#include "Change.hpp"
 #include "Globals.hpp"
-#include "drivers.cpp"
-#include<cstring>
-#include<iostream>
+// #include "drivers.cpp"
+#include <cstring>
+#include <iostream>
 
-using namespace std;
-
-Complaint::Complaint(const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID){
-    const char *generatedID = IDGenerator<const char *>('2', 6);
-    strcpy(this->complaintID, generatedID);
-    this->complaintID[sizeof(this->complaintID)-1] = '\0';
-    strcpy(this->description, description);
-    this->description[sizeof(this->description) - 1] = '\0';
-    strcpy(this->dateOfComplaint, dateOfComplaint);
-    this->dateOfComplaint[sizeof(this->dateOfComplaint) - 1] = '\0';
-    strcpy(this->changeID, changeID);
-    this->changeID[sizeof(this->changeID) - 1] = '\0';
-    strcpy(this->releaseID, releaseID);
-    this->releaseID[sizeof(this->releaseID)-1] = '\0';
-    strcpy(this->custID, custID);
-    this->custID[sizeof(this->custID)-1] = '\0';
+Complaint::Complaint()
+{
+    memset(complaintID, 0, sizeof(complaintID));
+    memset(description, 0, sizeof(description));
+    memset(dateOfComplaint, 0, sizeof(dateOfComplaint));
+    memset(changeID, 0, sizeof(changeID));
+    memset(releaseID, 0, sizeof(releaseID));
+    memset(custID, 0, sizeof(custID));
 }
 
-bool Complaint::operator==(const Complaint &other) const{
-    return (complaintID == other.complaintID || description == other.description || dateOfComplaint == other.dateOfComplaint);
-}
-
-void Complaint::DisplayDetails(ostream &out) const{
-    if (strlen(description) == 0 || strlen(dateOfComplaint) == 0 || strlen(changeID) == 0 || releaseID == nullptr || custID == nullptr)
-        out << "Error in reading Complaint information. One or more attributes of complaint do not have value(s)" << endl;
-        // RAISE ERROR
-        // exit(1);
-    else{
-        out << "complaintID: " << complaintID << endl;
-        out << "description: " << description << endl;
-        out << "dateOfComplaint: " << dateOfComplaint << endl;
-        out << "changeID: " << changeID << endl;
-        out << "releaseID: " << releaseID << endl;
-        out << "custID: " << custID << endl;
+Complaint::Complaint(const char *complaintID, const char *description, const char *dateOfComplaint, const char *changeID,
+                     const char *releaseID, const char *custID)
+{
+    if (strlen(complaintID) != 0)
+    {
+        safeStrCopy(this->complaintID, complaintID, sizeof(this->complaintID));
     }
+    else
+    {
+        // Assuming IDGenerator returns a char*
+        char *generatedID = IDGenerator('2', 7);
+        safeStrCopy(this->complaintID, generatedID, sizeof(this->complaintID));
+        delete[] generatedID;
+    }
+
+    safeStrCopy(this->description, description, sizeof(this->description));
+    safeStrCopy(this->dateOfComplaint, dateOfComplaint, sizeof(this->dateOfComplaint));
+    safeStrCopy(this->changeID, changeID, sizeof(this->changeID));
+    safeStrCopy(this->releaseID, releaseID, sizeof(this->releaseID));
+    safeStrCopy(this->custID, custID, sizeof(this->custID));
+}
+/*
+Create Complaint object using attrbibutes provided. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+Complaint::Complaint(const Complaint &other)
+{
+    *this = other;
 }
 
-int ValidateComplaint(const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID){
-    if (strlen(description) > 30){
+Complaint &Complaint::operator=(const Complaint &other)
+{
+    if (this != &other)
+    {
+        if (other.complaintID != "" || other.complaintID != nullptr)
+        
+        {
+            safeStrCopy(complaintID, other.complaintID, sizeof(this->complaintID));
+        }
+        else
+        {
+            // Assuming IDGenerator returns a char*
+
+            char *generatedID = IDGenerator('1', 7);
+            safeStrCopy(complaintID, generatedID, sizeof(this->complaintID));
+            delete[] generatedID;
+        }
+        safeStrCopy(description, other.description, sizeof(description));
+        safeStrCopy(dateOfComplaint, other.dateOfComplaint, sizeof(dateOfComplaint));
+        safeStrCopy(changeID, other.changeID, sizeof(changeID));
+        safeStrCopy(releaseID, other.releaseID, sizeof(releaseID));
+        safeStrCopy(custID, other.custID, sizeof(custID));
+    }
+    return *this;
+}
+
+bool Complaint::operator==(const Complaint &other) const
+{
+    return (strcmp(complaintID, other.complaintID) == 0);
+}
+/* Checks if two Complaint objects are equal based on complaintID or description or dateOfComplaint. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+
+Complaint::~Complaint()
+{
+    // No dynamic allocation, so nothing to delete
+}
+
+void Complaint::DisplayDetails(std::ostream &out) const
+{
+    out << std::left
+        << std::setw(10) << complaintID
+        << std::setw(31) << description
+        << std::setw(9) << dateOfComplaint
+        << std::setw(10) << changeID
+        << std::setw(9) << releaseID
+        << std::setw(11) << custID << std::endl;
+}
+/*
+Print the attribute details of the Complaint object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+char *Complaint::getCustID() const{
+    return custID;
+}
+
+/*
+Get the custID of a Complaint object.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+int ValidateComplaint(const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID)
+{
+    // Validate description
+    if (strlen(description) == 0 || strlen(description) > 30)
+    {
+        std::cout << "Invalid description length" << std::endl;
         return -1;
     }
-    if (strlen(dateOfComplaint) != 8){
+
+    // Validate dateOfComplaint
+    if (strlen(dateOfComplaint) != 8)
+    {
+        std::cout << "Invalid date format" << std::endl;
         return -1;
     }
-    if (dateOfComplaint[2] != '-' ||  dateOfComplaint[5] != '-'){
+    if (dateOfComplaint[2] != '-' || dateOfComplaint[5] != '-')
+    {
+        std::cout << "Invalid date separator" << std::endl;
         return -1;
     }
     int year = (dateOfComplaint[0] - '0') * 10 + (dateOfComplaint[1] - '0');
-    if (year < 24 || year > 99){
+    int month = (dateOfComplaint[3] - '0') * 10 + (dateOfComplaint[4] - '0');
+    int day = (dateOfComplaint[6] - '0') * 10 + (dateOfComplaint[7] - '0');
+    if (year < 24 || year > 99 || month < 1 || month > 12 || day < 1 || day > 31)
+    {
+        std::cout << "Invalid date values" << std::endl;
         return -1;
     }
 
-    int month = (dateOfComplaint[3] - '0') * 10 + (dateOfComplaint[4] - '0');
-    if (month < 1 || month > 12){
+    // Validate changeID
+    if (strlen(changeID) != 5 || changeID[0] != '1')
+    {
+        std::cout << "Invalid changeID" << std::endl;
         return -1;
     }
-    int day = (dateOfComplaint[6] - '0') * 10 + (dateOfComplaint[7] - '0');
-    if (day < 1 || day > 31){
+
+    // Validate releaseID
+    if (strlen(releaseID) != 8)
+    {
+        std::cout << "Invalid releaseID" << std::endl;
         return -1;
     }
-    if (strlen(changeID) != 6){
+
+    // Validate custID
+    if (strlen(custID) != 10)
+    {
+        std::cout << "Invalid custID" << std::endl;
         return -1;
     }
-    if(changeID[0] != '1'){
+
+    // Check for duplicate complaint
+    std::ifstream file( FILENAMES[2], std::ios::binary);
+    if (!file)
+    {
+        std::cerr << "Error: Could not open file for reading" << std::endl;
         return -1;
     }
-    if (strlen(releaseID) != 8){
-        return -1;
-    }
-    if (strlen(custID) != 10){
-        return -1;
-    }
-    // how to check if this complaint is a duplicate?
-    Complaint *dataptr = readFile<Complaint>(FILENAMES[2], COMPLAINTFILEPOINTER);
-    Complaint dummy(description, dateOfComplaint, changeID, releaseID, custID);
-    size_t size = sizeof(dataptr)/sizeof(dataptr[0]);
-    for (int i = 0; i < size; i++){
-        if (dataptr[i] == dummy){
-            delete [] dataptr;
-            cout << "Record already exists :/" << endl;
+
+    Complaint currentComplaint;
+    while (file.read(reinterpret_cast<char *>(&currentComplaint), sizeof(Complaint)))
+    {
+        if (currentComplaint == *this)
+        {
+            std::cout << "Record already exists" << std::endl;
+            file.close();
             return 0;
         }
     }
-    delete [] dataptr;
-    cout << "Record is valid!" << endl;
+
+    file.close();
+    std::cout << "Record is valid!" << std::endl;
     return 1;
 }
-
-Complaint CreateComplaint (const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID){
-    if (ValidateComplaint(description, dateOfComplaint, changeID, releaseID, custID) == 1){
-        Complaint newComplaint(description, dateOfComplaint, changeID, releaseID, custID);
-        return newComplaint;
+/*
+Validates that the Complaint object attributes are acceptable and makes sure no duplicate Complaint records exists.
+A linear search algorithm is used to iterate through the Complaint records.
+--------------------------------------------------------------------*/
+Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
+                          const char *changeID, const char *releaseID, const char *custID)
+{
+    if (ValidateComplaint(description, dateOfComplaint, changeID, releaseID, custID) != 1)
+    {
+        throw std::runtime_error("Invalid complaint data");
     }
-    else{
-        // RAISE EXCEPTION
-        cout << "Could not create a new complaint!" << endl;
+
+    // Check if a matching Change record exists
+    bool changeExists = false;
+    std::ifstream changeFile( FILENAMES[1], std::ios::binary);
+    if (changeFile)
+    {
+        Change change;
+        while (changeFile.read(reinterpret_cast<char *>(&change), sizeof(Change)))
+        {
+            if (strcmp(change.change_displayRelID(), releaseID) == 0 &&
+                strcmp(change.change_displayDesc(), description) == 0)
+            {
+                changeExists = true;
+                changeID = change.getChangeID();
+                break;
+            }
+        }
+        changeFile.close();
     }
-}
 
-void CommitComplaint(const Complaint &complaint, streampos &startPos = COMPLAINTFILEPOINTER, const string &FILENAME = FILENAMES[2]){
-    writeRecord(FILENAME, startPos, complaint);
-}
+    // Create a new Change if no matching record was found
+    if (!changeExists)
+    {
+        char status = '-';   // Assuming '-' is the default status for a new change
+        char priority = '3'; // Assuming '3' is the default priority
+        Change newChange("", description, status, priority, releaseID);
 
+        std::streampos changePos = CHANGEFILEPOINTER;
+        CommitChange(newChange, changePos, FILENAMES[1]);
 
-Complaint GetComplaintDetails(streampos &startPos = COMPLAINTFILEPOINTER, const string &FILENAME = FILENAMES[2]){
-    Complaint newComplaint = readRecord<Complaint>(FILENAME, startPos);
+        // Update changeID with the newly created Change's ID
+        strcpy(const_cast<char *>(changeID), newChange.getChangeID());
+    }
+
+    // Create and return the new Complaint
+    Complaint newComplaint("", description, dateOfComplaint, changeID, releaseID, custID);
+
+    std::streampos complaintPos = COMPLAINTFILEPOINTER;
+    CommitComplaint(newComplaint, complaintPos, FILENAMES[2]);
+
     return newComplaint;
+}
+/*
+Create new Complaint object and also validates it.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+void CommitComplaint(const Complaint &complaint, std::streampos &startPos, const std::string &FILENAME)
+{
+    std::ofstream file( FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
+    if (!file)
+    {
+        throw std::runtime_error("Could not open file for writing");
+    }
+    file.seekp(startPos);
+    file.write(reinterpret_cast<const char *>(&complaint), sizeof(Complaint));
+    startPos = file.tellp();
+}
+/*
+Writes a Complaint object to a specified file at a given position.
+Uses the unsorted records data structure to add the Complaint object.
+--------------------------------------------------------------------*/
+Complaint GetComplaintDetails(std::streampos &startPos, const std::string &FILENAME)
+{
+    std::ifstream file(FILENAMES[2], std::ios::binary);
+    if (!file)
+    {
+        throw std::runtime_error("Could not open file for reading");
+    }
+    file.seekg(startPos);
+    Complaint complaint;
+    file.read(reinterpret_cast<char *>(&complaint), sizeof(Complaint));
+    startPos = file.tellg();
+    return complaint;
+}
+/*
+Reads a Complaint object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Complaint object.
+--------------------------------------------------------------------*/
+void PrintAllComplaints(const std::string &FILENAME)
+{
+    std::ifstream file(FILENAMES[2], std::ios::binary);
+    if (!file)
+    {
+        std::cerr << "Error: Could not open file " << FILENAME << " for reading." << std::endl;
+        return;
+    }
+
+    Complaint complaint;
+    int recordCount = 0;
+
+    std::cout << std::left
+              << std::setw(10) << "ID"
+              << std::setw(31) << "Description"
+              << std::setw(9) << "Date"
+              << std::setw(10) << "Change"
+              << std::setw(9) << "Release"
+              << std::setw(11) << "Customer" << std::endl;
+    std::cout << std::string(72, '-') << std::endl;
+
+    while (file.read(reinterpret_cast<char *>(&complaint), sizeof(Complaint)))
+    {
+        complaint.DisplayDetails(std::cout);
+        recordCount++;
+    }
+
+    std::cout << std::string(72, '-') << std::endl;
+    std::cout << "Total records: " << recordCount << std::endl;
+
+    file.close();
+}
+
+bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint, const std::string &FILENAME)
+{
+    std::fstream file(FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
+    if (!file)
+    {
+        std::cerr << "Error: Could not open file " << FILENAME << " for reading and writing." << std::endl;
+        return false;
+    }
+
+    Complaint currentComplaint;
+    bool found = false;
+    std::streampos position;
+
+    while (file.read(reinterpret_cast<char *>(&currentComplaint), sizeof(Complaint)))
+    {
+        // read Complaints file
+        if (strcmp(currentComplaint.getComplaintID(), complaintID) == 0)
+        {
+            found = true;
+            position = file.tellg() - static_cast<std::streampos>(sizeof(Complaint));
+            break;
+        }
+    }
+
+    if (found)
+    {
+        file.seekp(position);
+        file.write(reinterpret_cast<const char *>(&updatedComplaint), sizeof(Complaint));
+
+        if (file.fail())
+        {
+            std::cerr << "Error: Failed to write updated complaint data." << std::endl;
+            file.close();
+            return false;
+        }
+
+        std::cout << "Complaint record updated successfully." << std::endl;
+        file.close();
+        return true;
+    }
+    else
+    {
+        std::cout << "Complaint with ID " << complaintID << " not found." << std::endl;
+        file.close();
+        return false;
+    }
+}
+
+int InitComplaint()
+{
+    std::filesystem::create_directory(DIRECTORY);
+    if (!std::filesystem::exists( FILENAMES[2]))
+    {
+        std::ofstream file( FILENAMES[2], std::ios::binary);
+        if (!file)
+        {
+            return -1;
+        }
+        file.close();
+        return 1;
+    }
+    return 0;
 }
