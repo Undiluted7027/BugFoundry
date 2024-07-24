@@ -27,19 +27,29 @@ Product::Product(const char* releaseID, const char* productName, const char* Rel
         char* generatedID = IDGenerator('4', 9);
         safeStrCopy(this->releaseID, generatedID, sizeof(this->releaseID));
         delete[] generatedID;
-    }
+        }
 }
-
+/*
+Create Product object using attrbibutes provided. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void Product::DisplayDetails(std::ostream& out) const {
     out << std::left
         << std::setw(11) << productName
         << std::setw(9) << releaseID
         << std::setw(11) << releaseDate << std::endl;
 }
-
+/*
+Print the attribute details of the Product object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 bool Product::operator==(const Product& other) const {
-    return (strcmp(releaseID, other.releaseID) == 0);
+    return (strcmp(releaseID, other.releaseID) == 0 || strcmp(releaseDate, other.releaseDate) == 0);
 }
+  /*
+Checks if two Product objects are equal based on releaseID or releaseDate.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 
 int ValidateProduct(const char* productName, const char* ReleaseID, const char* ReleaseDate) {
     if (strlen(productName) == 0 || strlen(productName) > 10) {
@@ -83,6 +93,10 @@ int ValidateProduct(const char* productName, const char* ReleaseID, const char* 
     std::cout << "Product is valid!" << std::endl;
     return 1;
 }
+/*
+Validates that the Product object attributes are acceptable and makes sure no duplicate Product records exists.
+A linear search algorithm is used to iterate through the Product records.
+--------------------------------------------------------------------*/
 
 Product CreateProduct(const char* productName, const char* ReleaseID, const char* ReleaseDate) {
     int validationResult = ValidateProduct(productName, ReleaseID, ReleaseDate);
@@ -94,12 +108,15 @@ Product CreateProduct(const char* productName, const char* ReleaseID, const char
         throw std::runtime_error("FailedToCreateProduct: Invalid ReleaseID or ReleaseDate");
     }
 }
-
+/*
+Create new Product object and also validates it.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void CommitProduct(const Product& product, std::streampos& startPos, const std::string& FILENAME) {
     std::ofstream file( FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file) {
         throw std::runtime_error("FileWriteFailed: Could not open file for writing");
-    }
+        }
     file.seekp(startPos);
     file.write(reinterpret_cast<const char*>(&product), sizeof(Product));
     if (file.fail()) {
@@ -107,7 +124,10 @@ void CommitProduct(const Product& product, std::streampos& startPos, const std::
     }
     startPos = file.tellp();
 }
-
+/*
+Writes a Product object to a specified file at a given position.
+Uses the unsorted records data structure to add the Product object.
+--------------------------------------------------------------------*/
 Product GetProductDetails(std::streampos startPos, const std::string& FILENAME) {
     std::ifstream file( FILENAME, std::ios::binary);
     if (!file) {
@@ -120,6 +140,10 @@ Product GetProductDetails(std::streampos startPos, const std::string& FILENAME) 
     }
     return product;
 }
+/*
+Reads a Product object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Product object.
+--------------------------------------------------------------------*/
 
 int InitProduct() {
     std::filesystem::create_directory(DIRECTORY);

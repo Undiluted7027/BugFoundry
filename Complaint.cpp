@@ -43,7 +43,10 @@ Complaint::Complaint(const char *complaintID, const char *description, const cha
     safeStrCopy(this->releaseID, releaseID, sizeof(this->releaseID));
     safeStrCopy(this->custID, custID, sizeof(this->custID));
 }
-
+/*
+Create Complaint object using attrbibutes provided. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 Complaint::Complaint(const Complaint &other)
 {
     *this = other;
@@ -79,6 +82,9 @@ bool Complaint::operator==(const Complaint &other) const
 {
     return (strcmp(complaintID, other.complaintID) == 0);
 }
+/* Checks if two Complaint objects are equal based on complaintID or description or dateOfComplaint. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 
 Complaint::~Complaint()
 {
@@ -95,7 +101,18 @@ void Complaint::DisplayDetails(std::ostream &out) const
         << std::setw(9) << releaseID
         << std::setw(11) << custID << std::endl;
 }
+/*
+Print the attribute details of the Complaint object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+char *Complaint::getCustID() const{
+    return custID;
+}
 
+/*
+Get the custID of a Complaint object.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 int ValidateComplaint(const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID)
 {
     // Validate description
@@ -157,11 +174,7 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
     Complaint currentComplaint;
     while (file.read(reinterpret_cast<char *>(&currentComplaint), sizeof(Complaint)))
     {
-        if (strcmp(currentComplaint.getDescription(), description) == 0 &&
-            strcmp(currentComplaint.getDateOfComplaint(), dateOfComplaint) == 0 &&
-            strcmp(currentComplaint.getChangeID(), changeID) == 0 &&
-            strcmp(currentComplaint.getReleaseID(), releaseID) == 0 &&
-            strcmp(currentComplaint.getCustID(), custID) == 0)
+        if (currentComplaint == *this)
         {
             std::cout << "Record already exists" << std::endl;
             file.close();
@@ -173,7 +186,10 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
     std::cout << "Record is valid!" << std::endl;
     return 1;
 }
-
+/*
+Validates that the Complaint object attributes are acceptable and makes sure no duplicate Complaint records exists.
+A linear search algorithm is used to iterate through the Complaint records.
+--------------------------------------------------------------------*/
 Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
                           const char *changeID, const char *releaseID, const char *custID)
 {
@@ -223,7 +239,10 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
 
     return newComplaint;
 }
-
+/*
+Create new Complaint object and also validates it.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 void CommitComplaint(const Complaint &complaint, std::streampos &startPos, const std::string &FILENAME)
 {
     std::ofstream file( FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
@@ -235,7 +254,10 @@ void CommitComplaint(const Complaint &complaint, std::streampos &startPos, const
     file.write(reinterpret_cast<const char *>(&complaint), sizeof(Complaint));
     startPos = file.tellp();
 }
-
+/*
+Writes a Complaint object to a specified file at a given position.
+Uses the unsorted records data structure to add the Complaint object.
+--------------------------------------------------------------------*/
 Complaint GetComplaintDetails(std::streampos &startPos, const std::string &FILENAME)
 {
     std::ifstream file(FILENAMES[2], std::ios::binary);
@@ -249,7 +271,10 @@ Complaint GetComplaintDetails(std::streampos &startPos, const std::string &FILEN
     startPos = file.tellg();
     return complaint;
 }
-
+/*
+Reads a Complaint object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Complaint object.
+--------------------------------------------------------------------*/
 void PrintAllComplaints(const std::string &FILENAME)
 {
     std::ifstream file(FILENAMES[2], std::ios::binary);

@@ -34,7 +34,10 @@ char* IDGenerator(const char &type, const int &precision){
     id[precision] = '\0';
     return id;
 }
-
+/*
+Generates a random ID of a specific length based on a type character, intializing the ID with a leading digit 
+depending on the type and filling the rest with random digits.
+--------------------------------------------------------------------*/
 void safeStrCopy(char* dest, const char* src, size_t maxLen) {
     std::strncpy(dest, src, maxLen - 1);
     dest[maxLen - 1] = '\0';

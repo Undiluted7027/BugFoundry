@@ -40,6 +40,10 @@ Customer::Customer(
     safeStrCopy(this->email, email, sizeof(this->email));
     safeStrCopy(this->phone, phone, sizeof(this->phone));
 }
+/*
+Create Customer object using attrbibutes provided. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 
 // Constructor: Copy
 Customer::Customer(
@@ -78,7 +82,10 @@ bool Customer::operator==(
 ) const {
     return (strcmp(custID, other.custID) == 0 || strcmp(email, other.email) == 0 || strcmp(phone, other.phone) == 0);
 }
-
+/*
+Checks if two Customer objects are equal based on custID or email or phone. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 // DisplayDetails
 void Customer::DisplayDetails(
     std::ostream& out  // in/out
@@ -97,7 +104,10 @@ void Customer::DisplayDetails(
         out << std::left << phone << std::endl;
     }
 }
-
+/*
+Print the attribute details of the Customer object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 // CreateCustomer
 Customer CreateCustomer(
     const char* name,  // in
@@ -114,8 +124,7 @@ Customer CreateCustomer(
 
         // Create the customer object
         Customer newCustomer(generatedID, name, email, phone);
-
-        // Clean up the generated ID
+       // Clean up the generated ID
         delete[] generatedID;
 
         return newCustomer;
@@ -125,6 +134,10 @@ Customer CreateCustomer(
         throw std::runtime_error("FailedToCreateCustomer: Invalid name, email, or phone");
     }
 }
+/*
+Create new Customer object and also validates it.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 
 // CommitCustomer
 void CommitCustomer(
@@ -143,7 +156,10 @@ void CommitCustomer(
     file.write(reinterpret_cast<const char*>(&customer), sizeof(Customer));
     startPos = file.tellp();
 }
-
+/*
+Writes a Customer object to a specified file at a given position.
+Uses the unsorted records data structure to add the Complaint object.
+--------------------------------------------------------------------*/
 // GetCustomerDetails
 Customer GetCustomerDetails(
     std::streampos& startPos,    // in/out
@@ -161,7 +177,10 @@ Customer GetCustomerDetails(
     startPos = file.tellg();
     return customer;
 }
-
+/*
+Reads a Customer object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Customer object.
+--------------------------------------------------------------------*/
 // PrintAllCustomers
 void PrintAllCustomers(
     const std::string& FILENAME  // in
@@ -216,7 +235,6 @@ int ValidateCustomer(
 ) {
     if (strlen(name) == 0 || strlen(email) == 0 || strlen(phone) == 0)
         return -1;
-
     // Validate email
     const char* atSign = strchr(email, '@');
     if (atSign == nullptr)
@@ -259,7 +277,10 @@ int ValidateCustomer(
     std::cout << "Record is valid!" << std::endl;
     return 1;
 }
-
+/*
+Validates that the Customer object attributes are acceptable and makes sure no duplicate Customer records exists.
+A linear search algorithm is used to iterate through the Customer records.
+--------------------------------------------------------------------*/
 // InitCustomer
 int InitCustomer() {
     std::filesystem::create_directory(DIRECTORY);

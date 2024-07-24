@@ -45,11 +45,14 @@ Change::Change(const char *changeID, const char* description, const char& status
     safeStrCopy(this->productName, productName, sizeof(this->productName));
 }
 
-// Equality operator overload for Change class
-bool Change::operator==(const Change& other) const {
-    return (strcmp(changeID, other.changeID) == 0);
-}
 
+bool Change::operator==(const Change& other) const {
+    return (strcmp(changeID, other.changeID) == 0 || strcmp(description, other.description) == 0);
+}
+/*
+Checks if two Change objects are equal based on changeID or description. 
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 // UpdateChange method to update existing change details
 void Change::UpdateChange(const char* changeID, const char* description, const char& status,
                           const char& priority, const char* releaseID) {
@@ -71,16 +74,26 @@ void Change::DisplayDetails(std::ostream& out) const {
         << std::setw(9) << releaseID
         << std::setw(11) << productName << std::endl;
 }
-
+/*
+Print the attribute details of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 // Accessor methods for Change class attributes
 const char* Change::getChangeID() const {
     return changeID;
 }
+/*
+Get the changeID of a Change object.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 
 const char *Change::change_displayProductName() const {
     return productName;
 }
-
+/*
+Print the productName of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 const char *Change::change_displayDesc() const {
     return description;
 }
@@ -88,15 +101,24 @@ const char *Change::change_displayDesc() const {
 char Change::change_displayStatus() const {
     return status;
 }
-
+/*
+Print the status of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 char Change::change_displayPriority() const {
     return priority;
 }
-
+/*
+Print the priority of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 const char *Change::change_displayRelID() const {
     return releaseID;
 }
-
+/*
+Print the releaseID of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 // CreateChange function to create a new Change object
 Change CreateChange(const char* description, const char& status, const char& priority,
                     const char* lastUpdate, const char* releaseID, const char* changeID) {
@@ -107,7 +129,10 @@ Change CreateChange(const char* description, const char& status, const char& pri
         throw std::runtime_error("Could not create a new change!");
     }
 }
-
+/*
+Create new Change object and also validates it.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 // ValidateChange function to validate change data
 int ValidateChange(const char* description, const char& status, const char& priority,
                    const char* lastUpdate, const char* releaseID) {
@@ -157,7 +182,10 @@ int ValidateChange(const char* description, const char& status, const char& prio
     std::cout << "Change is valid!" << std::endl;
     return 1;
 }
-
+/*
+Validates that the Change object attributes are acceptable and makes sure no duplicate Change records exists.
+A linear search algorithm is used to iterate through the Change records.
+--------------------------------------------------------------------*/
 void UpdateLatestChange(const char* description, const char& status, const char& priority,
                         const char* releaseID, const char* lastUpdate) {
     // Implementation depends on how you want to identify the latest change
@@ -185,7 +213,6 @@ int CreateChangesReport() {
             if (choice == '0') break;
         }
     }
-
     file.close();
     return count;
 }
@@ -206,7 +233,14 @@ void CreateAnticipatedChangesProduct(const char* releaseID) {
     }
 
     file.close();
-}
+
+// void UpdateLatestChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
+//     Change lastChange = readRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER);
+//     char *latestChangeID = lastChange.getChangeID();
+//     Change newChange(description, status, priority, releaseID, lastUpdate, latestChangeID);
+//     updateRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER, newChange, latestChangeID);
+// }
+
 
 // CreateUsersInformedOnUpdateReport function to create a report of users to be informed about an update on a change
 void CreateUsersInformedOnUpdateReport(const char* changeID) {
@@ -292,7 +326,10 @@ void CommitChange(const Change& change, std::streampos& startPos, const std::str
     file.write(reinterpret_cast<const char*>(&change), sizeof(Change));
     startPos = file.tellp();
 }
-
+/*
+Writes a Change object to a specified file at a given position.
+Uses the unsorted records data structure to add the Change object.
+--------------------------------------------------------------------*/
 // GetChangeDetails function to retrieve Change details from file
 Change GetChangeDetails(std::streampos startPos, const std::string& FILENAME) {
     std::ifstream file( FILENAMES[1], std::ios::binary);
@@ -306,7 +343,10 @@ Change GetChangeDetails(std::streampos startPos, const std::string& FILENAME) {
     }
     return change;
 }
-
+/*
+Reads a Change object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Change object.
+--------------------------------------------------------------------*/
 int InitChange(){
     filesystem::create_directory(DIRECTORY);
     if (!filesystem::exists( FILENAMES[1]))

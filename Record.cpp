@@ -13,22 +13,38 @@ char *Record<T>::getId() const{
     return id;
 };
 
+/*
+Returns the ID member of Record template.
+--------------------------------------------------------------------*/
 template <typename T>
 T Record<T>::getData() const{
     return data;
 }
 
+/*
+Returns the data member of Record template.
+--------------------------------------------------------------------*/
 template <typename T>
 void Record<T>::setID(const char* id){
     this->id = id;
 }
 
+/*
+Set the ID member of Record template.
+--------------------------------------------------------------------*/
 template <typename T>
 void Record<T>::setData(T &data){
     this->data = data;
 }
 
+/*
+Set the data member of Record template.
+--------------------------------------------------------------------*/
 template <typename T>
 char *extractID(const Record<T> &record){
     return record.getId();
 }
+
+/*
+Retrieves the id of Record object and returns it.
+--------------------------------------------------------------------*/
