@@ -1,3 +1,9 @@
+/* test.cpp
+REVISION HISTORY:
+Rev. 1 - 24/07/16 Original by Sanchit Jain
+----------------------------------------------------------------------
+This CPP file called test.cpp handles tests on the program.
+--------------------------------------------------------------------*/
 #include "Customer.cpp"
 #include "Change.cpp"
 #include "Product.cpp"

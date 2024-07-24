@@ -1,8 +1,5 @@
 #include "ScenarioControl.hpp"
-// #include "Customer.hpp"
-// #include "Complaint.hpp"
 #include "Change.cpp"
-// #include "Product.hpp"
 #include <iostream>
 #include <cstring>
 
