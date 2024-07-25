@@ -8,8 +8,8 @@ This CPP file called Main.cpp handles the startup of the program, calls required
 #include <string>
 #include <fstream>
 #include <filesystem>
-#include "ScenarioControl.hpp"
-#include "UI.hpp"
+// #include "ScenarioControl.cpp"
+#include "UI.cpp"
 
 using namespace std;
 

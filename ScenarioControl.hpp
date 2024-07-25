@@ -14,12 +14,6 @@ Furthermore, it has a scenariocontrol function that controls the flow
 of the system with the event calls.
 --------------------------------------------------------------------*/
 #include <iostream>
-#include <bits/stdc++.h>
-#include "Customer.hpp"
-#include "Complaint.hpp"
-#include "Change.hpp"
-#include "Product.hpp"
-#include "Globals.hpp"
 
 /*--------------------------------------------------------------------
 // Exported constants/types/variables
