@@ -15,7 +15,6 @@ This CPP file called Changes.cpp handles the changes of the program.
 
 using namespace std;
 
-// Default constructor for Change class
 Change::Change(): status('-'), priority('1'){
     memset(changeID, 0, sizeof(changeID));
     memset(description, 0, sizeof(description));
@@ -23,8 +22,10 @@ Change::Change(): status('-'), priority('1'){
     memset(releaseID, 0, sizeof(releaseID));
     memset(productName, 0, sizeof(productName));
 }
-
-// Parameterized constructor for Change class
+/*
+Default constructor for Change class
+No noticeable algorithm or data structure used.
+------------------------------------------------*/
 Change::Change(const char *changeID, const char* description, const char& status, const char& priority,
                const char* releaseID, const char* lastUpdate,
                const char* productName)
@@ -44,12 +45,15 @@ Change::Change(const char *changeID, const char* description, const char& status
     safeStrCopy(this->lastUpdate, lastUpdate, sizeof(this->lastUpdate));
     safeStrCopy(this->productName, productName, sizeof(this->productName));
 }
-
-
+/*
+Parameterized constructor for Change class
+No noticeable algorithm or data structure used.
+-------------------------------------------------*/
 bool Change::operator==(const Change& other) const {
     return (strcmp(changeID, other.changeID) == 0 || strcmp(description, other.description) == 0);
 }
 /*
+Equality operator overload for Change 
 Checks if two Change objects are equal based on changeID or description. 
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
@@ -62,8 +66,10 @@ void Change::UpdateChange(const char* changeID, const char* description, const c
     this->priority = priority;
     safeStrCopy(this->releaseID, releaseID, sizeof(this->releaseID));
 }
-
-// DisplayDetails method to display change details
+/*
+Updates the attributes of the Change.
+No noticeable algorithm or data structure used.
+-----------------------------------------------------------*/
 void Change::DisplayDetails(std::ostream& out) const {
     out << std::left
         << std::setw(7) << changeID
@@ -75,51 +81,58 @@ void Change::DisplayDetails(std::ostream& out) const {
         << std::setw(11) << productName << std::endl;
 }
 /*
+DisplayDetails method to display change details
 Print the attribute details of the Change object to the console.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-// Accessor methods for Change class attributes
 const char* Change::getChangeID() const {
     return changeID;
 }
 /*
+Accessor methods for Change class attributes
 Get the changeID of a Change object.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-
 const char *Change::change_displayProductName() const {
     return productName;
 }
 /*
-Print the productName of the Change object to the console.
+Accessor methods for Change class attributes
+Get the productname of a Change object.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 const char *Change::change_displayDesc() const {
     return description;
 }
-
+/*
+Accessor methods for Change class attributes
+Get the description of a Change object.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
 char Change::change_displayStatus() const {
     return status;
 }
 /*
-Print the status of the Change object to the console.
+Accessor methods for Change class attributes
+Get the status of a Change object.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 char Change::change_displayPriority() const {
     return priority;
 }
 /*
-Print the priority of the Change object to the console.
+Accessor methods for Change class attributes
+Get the priority of a Change object.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 const char *Change::change_displayRelID() const {
     return releaseID;
 }
 /*
-Print the releaseID of the Change object to the console.
+Accessor methods for Change class attributes
+Get the releaseID of a Change object.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-// CreateChange function to create a new Change object
 Change CreateChange(const char* description, const char& status, const char& priority,
                     const char* lastUpdate, const char* releaseID, const char* changeID) {
     // Validate change data before creating a new Change object
@@ -130,10 +143,10 @@ Change CreateChange(const char* description, const char& status, const char& pri
     }
 }
 /*
+CreateChange function to create a new Change object
 Create new Change object and also validates it.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-// ValidateChange function to validate change data
 int ValidateChange(const char* description, const char& status, const char& priority,
                    const char* lastUpdate, const char* releaseID) {
     // Check each attribute for validity
@@ -183,6 +196,7 @@ int ValidateChange(const char* description, const char& status, const char& prio
     return 1;
 }
 /*
+ValidateChange function to validate change data
 Validates that the Change object attributes are acceptable and makes sure no duplicate Change records exists.
 A linear search algorithm is used to iterate through the Change records.
 --------------------------------------------------------------------*/
@@ -192,8 +206,10 @@ void UpdateLatestChange(const char* description, const char& status, const char&
     // This is a placeholder implementation
     std::cout << "UpdateLatestChange: Not implemented" << std::endl;
 }
-
-// CreateChangesReport function to create a report of all changes
+/*
+UpdateLatestChange displays 10 recently reported changes.
+User chooses one of the displayed changes to update or display the next 10 recently reported changes
+-------------------------------------------------------------------*/
 int CreateChangesReport() {
     std::ifstream file( FILENAMES[1], std::ios::binary);
     if (!file) {
@@ -216,8 +232,10 @@ int CreateChangesReport() {
     file.close();
     return count;
 }
-
-// CreateAnticipatedChangesProduct function to create a report of anticipated changes for a product
+/*
+CreateChangesReport creates a report of changes. 
+Displays 10 changes at a time. User can make a choice to display the next 10 changes.
+-----------------------------------------------------------------------*/
 void CreateAnticipatedChangesProduct(const char* releaseID) {
     std::ifstream file( FILENAMES[1], std::ios::binary);
     if (!file) {
@@ -234,6 +252,10 @@ void CreateAnticipatedChangesProduct(const char* releaseID) {
 
     file.close();
 }
+/*
+CreateAnticipatedChangesProduct displays 10 latest reported change for a specific product
+Displays 10 changes at a time. User can make a choice to display the next 10 changes.
+--------------------------------------------------------------*/
 
 // void UpdateLatestChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
 //     Change lastChange = readRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER);
@@ -241,9 +263,8 @@ void CreateAnticipatedChangesProduct(const char* releaseID) {
 //     Change newChange(description, status, priority, releaseID, lastUpdate, latestChangeID);
 //     updateRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER, newChange, latestChangeID);
 // }
-
-
-// CreateUsersInformedOnUpdateReport function to create a report of users to be informed about an update on a change
+/*
+--------------------------------------------------------------------*/
 void CreateUsersInformedOnUpdateReport(const char* changeID) {
     if (strlen(changeID) != 6 || changeID[0] != '1') {
         std::cerr << "Invalid changeID format. It should be 5 digits starting with 1." << std::endl;
@@ -316,8 +337,9 @@ void CreateUsersInformedOnUpdateReport(const char* changeID) {
     std::cout << std::string(50, '-') << std::endl;
     std::cout << "Total customers to be informed: " << count << std::endl;
 }
-
-// CommitChange function to commit a Change object to file
+/*
+CreateUsersInformedOnUpdateReport displays information of users who are related to a change
+----------------------------------------------------------------------------------*/
 void CommitChange(const Change& change, std::streampos& startPos, const std::string& FILENAME) {
     std::ofstream file( FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file) {
@@ -328,10 +350,10 @@ void CommitChange(const Change& change, std::streampos& startPos, const std::str
     startPos = file.tellp();
 }
 /*
+CommitChange function to commit a Change object to file
 Writes a Change object to a specified file at a given position.
 Uses the unsorted records data structure to add the Change object.
 --------------------------------------------------------------------*/
-// GetChangeDetails function to retrieve Change details from file
 Change GetChangeDetails(std::streampos startPos, const std::string& FILENAME) {
     std::ifstream file( FILENAMES[1], std::ios::binary);
     if (!file) {
@@ -345,6 +367,7 @@ Change GetChangeDetails(std::streampos startPos, const std::string& FILENAME) {
     return change;
 }
 /*
+GetChangeDetails function to retrieve Change details from file
 Reads a Change object from a specified file at a given position and returns it.
 Uses the unsorted records data structure to read the Change object.
 --------------------------------------------------------------------*/
@@ -368,5 +391,9 @@ int InitChange(){
     }
     return -1;
 }
-/* int InitChange() uses the global variables streampos CHANGEFILEPOINTER and FILENAMES[1] to check if binary file "Changes.bin" exist in the DIRECTORY to essentially check if the program is being run for the first time. If it does, then it returns 0, if it doesn't then the files is created. If file was created successfully, it returns 1 else -1. The function does not fail.
+/* 
+int InitChange() uses the global variables streampos CHANGEFILEPOINTER and FILENAMES[1] 
+to check if binary file "Changes.bin" exist in the DIRECTORY to essentially check if the program is being run 
+for the first time. If it does, then it returns 0, if it doesn't then the files is created. 
+If file was created successfully, it returns 1 else -1. The function does not fail.
 ----------------------------------------------------------------------*/
