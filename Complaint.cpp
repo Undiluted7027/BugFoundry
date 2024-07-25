@@ -105,9 +105,9 @@ void Complaint::DisplayDetails(std::ostream &out) const
 Print the attribute details of the Complaint object to the console.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-char *Complaint::getCustID() const{
-    return custID;
-}
+// char *Complaint::getCustID() const{
+//     return custID;
+// }
 
 /*
 Get the custID of a Complaint object.
@@ -174,7 +174,11 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
     Complaint currentComplaint;
     while (file.read(reinterpret_cast<char *>(&currentComplaint), sizeof(Complaint)))
     {
-        if (currentComplaint == *this)
+        if (strcmp(currentComplaint.getDescription(), description) == 0 &&
+            strcmp(currentComplaint.getDateOfComplaint(), dateOfComplaint) == 0 &&
+            strcmp(currentComplaint.getChangeID(), changeID) == 0 &&
+            strcmp(currentComplaint.getReleaseID(), releaseID) == 0 &&
+            strcmp(currentComplaint.getCustID(), custID) == 0)
         {
             std::cout << "Record already exists" << std::endl;
             file.close();

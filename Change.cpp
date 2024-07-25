@@ -233,6 +233,7 @@ void CreateAnticipatedChangesProduct(const char* releaseID) {
     }
 
     file.close();
+}
 
 // void UpdateLatestChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
 //     Change lastChange = readRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER);
