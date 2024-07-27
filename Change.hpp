@@ -150,6 +150,9 @@ Retrieve Change details from file
 -------------------------------------------------------------------*/
 int InitChange(); 
 /*
-Initialize the Change module
+int InitChange() uses the global variables streampos CHANGEFILEPOINTER and FILENAMES[1] 
+to check if binary file "Changes.bin" exist in the DIRECTORY to essentially check if the program is being run 
+for the first time. If it does, then it returns 0, if it doesn't then the files is created. 
+If file was created successfully, it returns 1 else -1. The function does not fail.
 --------------------------------------------------------------------*/
 #endif // CHANGE_HPP

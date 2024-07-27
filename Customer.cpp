@@ -9,25 +9,17 @@ This module, Customer.cpp, implements the Customer class and associated function
 #include "drivers.cpp"
 #include "Globals.cpp"
 
-// Constructor: Default
 Customer::Customer() {
     custID[0] = '\0';
     name[0] = '\0';
     email[0] = '\0';
     phone[0] = '\0';
 }
-
-// Constructor: Parameterized
-Customer::Customer(
-    const char* custID,   // in
-                          // Customer ID
-    const char* name,     // in
-                          // Customer name
-    const char* email,    // in
-                          // Customer email
-    const char* phone     // in
-                          // Customer phone number
-) {
+/*
+Default constructor for Customer class
+-----------------------------------------------------------------------*/
+Customer::Customer(const char* custID, const char* name, const char* email, const char* phone) 
+{
     if (custID && *custID) {
         safeStrCopy(this->custID, custID, sizeof(this->custID));
     } else {
@@ -41,31 +33,27 @@ Customer::Customer(
     safeStrCopy(this->phone, phone, sizeof(this->phone));
 }
 /*
+Parameterized constructor for Customer class.
 Create Customer object using attrbibutes provided. 
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-
-// Constructor: Copy
-Customer::Customer(
-    const Customer& other // in
-                          // Another Customer object to copy from
-) {
+Customer::Customer(const Customer& other) 
+{
     safeStrCopy(this->custID, other.custID, sizeof(this->custID));
     safeStrCopy(this->name, other.name, sizeof(this->name));
     safeStrCopy(this->email, other.email, sizeof(this->email));
     safeStrCopy(this->phone, other.phone, sizeof(this->phone));
 }
-
-// Destructor
+/*
+Copy constructor for Customer class
+-----------------------------------------------------------------------*/
 Customer::~Customer() {
     // No dynamic memory to clean up
 }
-
-// Operator: Assignment
-Customer& Customer::operator=(
-    const Customer& other // in
-                          // Another Customer object to assign from
-) {
+/*
+Destructor for Customer class
+-----------------------------------------------------------------------*/
+Customer& Customer::operator=(const Customer& other) {
     if (this != &other) {
         safeStrCopy(this->custID, other.custID, sizeof(this->custID));
         safeStrCopy(this->name, other.name, sizeof(this->name));
@@ -74,23 +62,18 @@ Customer& Customer::operator=(
     }
     return *this;
 }
-
-// Operator: Equality
-bool Customer::operator==(
-    const Customer& other // in
-                          // Another Customer object to compare to
-) const {
+/*
+Assigning overload operator for Customer class
+-----------------------------------------------------------------------*/
+bool Customer::operator==(const Customer& other) const {
     return (strcmp(custID, other.custID) == 0 || strcmp(email, other.email) == 0 || strcmp(phone, other.phone) == 0);
 }
 /*
+Equality overload operator for Customer class
 Checks if two Customer objects are equal based on custID or email or phone. 
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-// DisplayDetails
-void Customer::DisplayDetails(
-    std::ostream& out  // in/out
-                       // ostream object to handle calling with << operator
-) const {
+void Customer::DisplayDetails(std::ostream& out) const {
     if (name[0] == '\0' || email[0] == '\0' || phone[0] == '\0') {
         out << "Error: One or more attributes of customer do not have values." << std::endl;
     } else {
@@ -108,15 +91,7 @@ void Customer::DisplayDetails(
 Print the attribute details of the Customer object to the console.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-// CreateCustomer
-Customer CreateCustomer(
-    const char* name,  // in
-                       // Customer name
-    const char* email, // in
-                       // Customer email
-    const char* phone  // in
-                       // Customer phone number
-) {
+Customer CreateCustomer(const char* name, const char* email, const char* phone) {
     int validationResult = ValidateCustomer(name, email, phone);
     if (validationResult == 1) {
         // Generate a new customer ID
@@ -138,16 +113,7 @@ Customer CreateCustomer(
 Create new Customer object and also validates it.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-
-// CommitCustomer
-void CommitCustomer(
-    const Customer& customer, // in
-                              // Customer to add in binary file
-    std::streampos& startPos, // in/out
-                              // File pointer of the binary file
-    const std::string& FILENAME // in
-                              // Location-name of file
-) {
+void CommitCustomer(const Customer& customer, std::streampos& startPos, const std::string& FILENAME) {
     std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file) {
         throw std::runtime_error("Could not open file for writing");
@@ -160,13 +126,7 @@ void CommitCustomer(
 Writes a Customer object to a specified file at a given position.
 Uses the unsorted records data structure to add the Complaint object.
 --------------------------------------------------------------------*/
-// GetCustomerDetails
-Customer GetCustomerDetails(
-    std::streampos& startPos,    // in/out
-                                 // File pointer of the binary file
-    const std::string& FILENAME  // in
-                                 // Location-name of file
-) {
+Customer GetCustomerDetails(std::streampos& startPos, const std::string& FILENAME) {
     std::ifstream file(FILENAME, std::ios::binary);
     if (!file) {
         throw std::runtime_error("Could not open file for reading");
@@ -181,11 +141,7 @@ Customer GetCustomerDetails(
 Reads a Customer object from a specified file at a given position and returns it.
 Uses the unsorted records data structure to read the Customer object.
 --------------------------------------------------------------------*/
-// PrintAllCustomers
-void PrintAllCustomers(
-    const std::string& FILENAME  // in
-                                 // Location-name of file
-) {
+void PrintAllCustomers(const std::string& FILENAME) {
     std::ifstream file(FILENAME, std::ios::binary);
     if (!file) {
         std::cerr << "Error: Could not open file " << FILENAME << " for reading." << std::endl;
@@ -223,16 +179,10 @@ void PrintAllCustomers(
 
     file.close();
 }
-
-// ValidateCustomer
-int ValidateCustomer(
-    const char* name,  // in
-                       // Customer name
-    const char* email, // in
-                       // Customer email
-    const char* phone  // in
-                       // Customer phone number
-) {
+/*
+Prints all customers recorded in the customer file
+-----------------------------------------------------------------------*/
+int ValidateCustomer(const char* name, const char* email, const char* phone) {
     if (strlen(name) == 0 || strlen(email) == 0 || strlen(phone) == 0)
         return -1;
     // Validate email
@@ -281,7 +231,6 @@ int ValidateCustomer(
 Validates that the Customer object attributes are acceptable and makes sure no duplicate Customer records exists.
 A linear search algorithm is used to iterate through the Customer records.
 --------------------------------------------------------------------*/
-// InitCustomer
 int InitCustomer() {
     std::filesystem::create_directory(DIRECTORY);
     if (!std::filesystem::exists(FILENAMES[0])) {
@@ -296,3 +245,6 @@ int InitCustomer() {
         return 0;
     }
 }
+/*
+Initializes customer module with customer file and customer file pointer
+-----------------------------------------------------------------------*/

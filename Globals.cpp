@@ -8,11 +8,14 @@ Rev. 1 - 24/07/03 Original by Sanchit Jain
 #include <cstring>
 #include <cstdlib>
 
+//----------------------------------------------------------------------
+
 streampos CUSTOMERFILEPOINTER = 0;
 streampos COMPLAINTFILEPOINTER = 0;
 streampos CHANGEFILEPOINTER = 0;
 streampos PRODUCTFILEPOINTER = 0;
 
+//----------------------------------------------------------------------
 char* IDGenerator(const char &type, const int &precision){
     srand(static_cast<unsigned int>(time(nullptr)));
     char* id = new char[precision + 1];
@@ -42,3 +45,6 @@ void safeStrCopy(char* dest, const char* src, size_t maxLen) {
     std::strncpy(dest, src, maxLen - 1);
     dest[maxLen - 1] = '\0';
 }
+/*
+Copies a string to another destination and adds the null character at the end of copied array
+--------------------------------------------------------------------*/

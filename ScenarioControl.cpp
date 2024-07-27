@@ -1,3 +1,10 @@
+/* ScenarioControl.hpp
+REVISION HISTORY:
+Rev. 2 - 24/07/16 Revised by Sanchit Jain
+Rev. 1 - 24/07/03 Original by Jason Lee
+----------------------------------------------------------------------
+This CPP file called ScenarioControl.cpp all possible scenarios in the program.
+--------------------------------------------------------------------*/
 #include "ScenarioControl.hpp"
 #include "Customer.cpp"
 #include "Change.cpp"
@@ -5,7 +12,7 @@
 #include "ErrorMessages.cpp"
 #include <iostream>
 #include <cstring>
-
+//--------------------------------------------------------------------
 int ScenarioControl(int choice, int subchoice)
 {
     switch (choice)
@@ -46,7 +53,10 @@ int ScenarioControl(int choice, int subchoice)
     }
     return 1;
 }
-
+/*
+ScenarioControl identifies which scenario is chosen and execute that scenario
+No noticeable algorithm or data structure used. 
+----------------------------------------------------------------*/
 int NewCustomer()
 {
     char name[31], email[25], phone[15];
@@ -83,7 +93,10 @@ int NewCustomer()
         return 0;
     }
 }
-
+/*
+Takes new user's information input and tries to commit the new customer into file
+No noticeable algorithm or data structure used. 
+----------------------------------------------------------------*/
 int CreateNewComplaint()
 {
     char userID[11], relID[9], desc[31], product[11];
@@ -110,7 +123,7 @@ int CreateNewComplaint()
     try
     {
         char date[9];
-        // Get current date in format YY-MM-DD
+        // Get current date in format YYYY-MM-DD
         time_t now = time(0);
         strftime(date, sizeof(date), "%y-%m-%d", localtime(&now));
 
@@ -131,9 +144,10 @@ int CreateNewComplaint()
         return 0;
     }
 }
-
-// Implement other functions (CreateNewProduct, CreateNewProductRel, UpdateSpecificChange, etc.) similarly...
-
+/*
+Takes new complaint information input and tries to commit the new complaint into file
+No noticeable algorithm or data structure used.
+----------------------------------------------------------------*/
 int DisplayChangeReport()
 {
     int start = 0;
@@ -179,7 +193,10 @@ int DisplayChangeReport()
 
     return 1;
 }
-
+/*
+Displays the recent 10 changes. User can choose to display the next 10 changes
+Goes through the unsorted change file to get the change data
+----------------------------------------------------------------*/
 int CreateNewProduct()
 {
     char productName[11];
@@ -211,7 +228,10 @@ int CreateNewProduct()
         return 0;
     }
 }
-
+/*
+Gets new product information input and tries to commit the new product in file
+No noticeable algorithm or data structure used.
+----------------------------------------------------------------*/
 int CreateNewProductRel()
 {
     char productName[11], releaseDate[11], releaseID[9];
@@ -247,7 +267,10 @@ int CreateNewProductRel()
         return 0;
     }
 }
-
+/*
+Gets new product release information input and tries to commit it in file
+No noticeable algorithm or data structure used.
+----------------------------------------------------------------*/
 int UpdateSpecificChange()
 {
     char changeID[7];
@@ -272,7 +295,12 @@ int UpdateSpecificChange()
         return 0;
     }
 }
-
+/*
+Updates a specific change targetd by user.
+The changeID is given by user input
+Goes through the unsorted change file to find the change data having the same changeID  
+Then UpdateChangeInfo gets called with the changeID 
+----------------------------------------------------------------*/
 int ListAndSelectChange()
 {
     int start = 0;
@@ -328,7 +356,12 @@ int ListAndSelectChange()
 
     return 0;
 }
-
+/*
+Lists 10 latest changes and allow user to select a change from the list or 
+display the next 10 changes. When a change is selected, UpdateChangeInfo gets called
+with the changeID of the selected change.
+This function goes through the unsorted change file to fetch the change data
+----------------------------------------------------------------*/
 int UpdateChangeInfo(const char *changeID, std::streampos position)
 {
     Change theChange = GetChangeDetails(position, FILENAMES[1]);
@@ -384,7 +417,11 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
     std::cout << "Change updated successfully" << std::endl;
     return 1;
 }
-
+/*
+Updates a change with givin changeID.
+User can choose to update specific attributes of that change.
+No noticeable algorithm or data structure used.
+----------------------------------------------------------------*/
 int ProductOnChange()
 {
     char relID[9];
@@ -427,7 +464,6 @@ int ProductOnChange()
     } while (DisplayPageError(choice) == 1);
     return 1;
 }
-
 /*
 Gets a specific changeID input from the user and see people associated with the change.
 User can see the list of people.
@@ -514,8 +550,10 @@ Complaint getComplaint = GetComplaintDetails(complaintPos, FILENAMES[2]);
     } while (DisplayPageError(choice) == 1);
     return 1;
 }
-
-
+/*
+Displays all users associated or related to that specific change.
+Goes through the unsorted files to find all corresponding users.
+----------------------------------------------------------------*/
 int InitControl(){
     int CustomerStart = InitCustomer();
     int ComplaintStart = InitComplaint();
@@ -525,3 +563,6 @@ int InitControl(){
         return 0;
     return 1;
 }
+/*
+Initializes customer, complaint, change, and product with their file and file pointer
+----------------------------------------------------------------*/

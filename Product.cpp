@@ -10,10 +10,13 @@ This CPP file called Changes.cpp handles the changes of the program.
 #include <fstream>
 #include <iomanip>
 
-
+//--------------------------------------------------------------------
 Product::Product() : releaseID{0}, releaseDate{0} {
     memset(productName, 0, sizeof(productName));
 }
+/*
+The default constructor of Product class
+---------------------------------------------------------------------*/
 
 Product::Product(const char* releaseID, const char* productName, const char* ReleaseDate) {
     safeStrCopy(this->productName, productName, sizeof(this->productName));
@@ -46,11 +49,10 @@ No noticeable algorithm or data structure used.
 bool Product::operator==(const Product& other) const {
     return (strcmp(releaseID, other.releaseID) == 0 || strcmp(releaseDate, other.releaseDate) == 0);
 }
-  /*
+/*
 Checks if two Product objects are equal based on releaseID or releaseDate.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-
 int ValidateProduct(const char* productName, const char* ReleaseID, const char* ReleaseDate) {
     if (strlen(productName) == 0 || strlen(productName) > 10) {
         std::cout << "Invalid product name length" << std::endl;
@@ -97,7 +99,6 @@ int ValidateProduct(const char* productName, const char* ReleaseID, const char* 
 Validates that the Product object attributes are acceptable and makes sure no duplicate Product records exists.
 A linear search algorithm is used to iterate through the Product records.
 --------------------------------------------------------------------*/
-
 Product CreateProduct(const char* productName, const char* ReleaseID, const char* ReleaseDate) {
     int validationResult = ValidateProduct(productName, ReleaseID, ReleaseDate);
     if (validationResult == 1) {
@@ -144,7 +145,6 @@ Product GetProductDetails(std::streampos startPos, const std::string& FILENAME) 
 Reads a Product object from a specified file at a given position and returns it.
 Uses the unsorted records data structure to read the Product object.
 --------------------------------------------------------------------*/
-
 int InitProduct() {
     std::filesystem::create_directory(DIRECTORY);
     if (!std::filesystem::exists( FILENAMES[3])) {
@@ -157,3 +157,6 @@ int InitProduct() {
     }
     return 0;
 }
+/*
+Initialize the Product module with product file and the product file pointer
+-------------------------------------------------------------------*/

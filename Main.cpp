@@ -13,11 +13,16 @@ This CPP file called Main.cpp handles the startup of the program, calls required
 
 using namespace std;
 
+//-----------------------------------------------------------------------
 int Startup()
 {
     return InitControl();
 }
-/* int Startup(const string FILENAMES[]) checks if binary files exist in the DIRECTORY to essentially check if the program is being run for the first time. If they do, then it returns 0, if they don't then the files are created. If files were created successfully, it returns 1 else -1. The function does not fail.
+/* 
+int Startup(const string FILENAMES[]) checks if binary files exist in the DIRECTORY 
+to essentially check if the program is being run for the first time. 
+If they do, then it returns 0, if they don't then the files are created. 
+If files were created successfully, it returns 1 else -1. The function does not fail.
 ----------------------------------------------------------------------*/
 int main()
 {

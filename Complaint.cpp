@@ -21,7 +21,10 @@ Complaint::Complaint()
     memset(releaseID, 0, sizeof(releaseID));
     memset(custID, 0, sizeof(custID));
 }
-
+/*
+Default constructor for Complaint class
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------------*/
 Complaint::Complaint(const char *complaintID, const char *description, const char *dateOfComplaint, const char *changeID,
                      const char *releaseID, const char *custID)
 {
@@ -51,7 +54,10 @@ Complaint::Complaint(const Complaint &other)
 {
     *this = other;
 }
-
+/*
+Copy constructor for Complaint class
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------------*/
 Complaint &Complaint::operator=(const Complaint &other)
 {
     if (this != &other)
@@ -77,7 +83,11 @@ Complaint &Complaint::operator=(const Complaint &other)
     }
     return *this;
 }
-
+/*
+Assigning operator overload for Complaint
+Assign the other complaint to this complaint.
+No noticeable algorithm or data structure used. 
+--------------------------------------------------------------------------*/
 bool Complaint::operator==(const Complaint &other) const
 {
     return (strcmp(complaintID, other.complaintID) == 0);
@@ -90,7 +100,10 @@ Complaint::~Complaint()
 {
     // No dynamic allocation, so nothing to delete
 }
-
+/*
+Default destructor for Complaint class
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------------*/
 void Complaint::DisplayDetails(std::ostream &out) const
 {
     out << std::left
@@ -311,7 +324,10 @@ void PrintAllComplaints(const std::string &FILENAME)
 
     file.close();
 }
-
+/*
+Prints all complaint objects
+Uses the unsorted records data structure to read the Complaint object.
+--------------------------------------------------------------------------*/
 bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint, const std::string &FILENAME)
 {
     std::fstream file(FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
@@ -359,7 +375,10 @@ bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint,
         return false;
     }
 }
-
+/*
+Update the complaint in file by writing the new complaint over the old complaint.
+Uses the unsorted records data structure to check the Complaint object.
+--------------------------------------------------------------------------*/
 int InitComplaint()
 {
     std::filesystem::create_directory(DIRECTORY);
@@ -375,3 +394,6 @@ int InitComplaint()
     }
     return 0;
 }
+/*
+Initializes the complaint module with the complaint file and complaint file pointer
+--------------------------------------------------------------------------*/
