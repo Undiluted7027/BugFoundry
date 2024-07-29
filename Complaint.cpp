@@ -233,7 +233,6 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
 
         // Update changeID with the newly created Change's ID
         strcpy(const_cast<char *>(changeID), newChange.getChangeID());
-        cout << "ALREADY ADDED " << endl;
     }
 
     // Create and return the new Complaint

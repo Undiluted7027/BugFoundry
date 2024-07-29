@@ -66,13 +66,13 @@ void Change::UpdateChange(const char* changeID, const char* description, const c
 // DisplayDetails method to display change details
 void Change::DisplayDetails(std::ostream& out) const {
     out << std::left
-        << std::setw(7) << changeID
-        << std::setw(31) << description
-        << std::setw(2) << status
-        << std::setw(2) << priority
-        << std::setw(9) << lastUpdate
-        << std::setw(9) << releaseID
-        << std::setw(11) << productName << std::endl;
+        << std::setw(12) << productName
+        << std::setw(32) << description
+        << std::setw(10) << changeID
+        << std::setw(12) << lastUpdate
+        << std::setw(11) << status
+        << std::setw(10) << priority
+        << std::setw(9) << releaseID << std::endl;
 }
 /*
 Print the attribute details of the Change object to the console.
@@ -170,14 +170,14 @@ int ValidateChange(const char* description, const char& status, const char& prio
     }
 
     // This part already gets done in complaint.cpp
-    // Change currentChange;
-    // while (file.read(reinterpret_cast<char*>(&currentChange), sizeof(Change))) {
-    //     if (/*(trcmp(currentChange.change_displayRelID(), releaseID) == 0) && */(strcmp(currentChange.change_displayDesc(), description) == 0)) {
-    //         std::cout << "Change already exists" << std::endl;
-    //         file.close();
-    //         return 0;
-    //     }
-    // }
+    Change currentChange;
+    while (file.read(reinterpret_cast<char*>(&currentChange), sizeof(Change))) {
+        if (/*(trcmp(currentChange.change_displayRelID(), releaseID) == 0) && */(strcmp(currentChange.change_displayDesc(), description) == 0)) {
+            std::cout << "Change already exists" << std::endl;
+            file.close();
+            return 0;
+        }
+    }
 
     file.close();
     std::cout << "Change is valid!" << std::endl;

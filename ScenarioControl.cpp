@@ -6,7 +6,8 @@
 #include <iostream>
 #include <cstring>
 
-//361167593
+//967774000
+//144721
 
 int ScenarioControl(int choice, int subchoice)
 {
@@ -261,6 +262,7 @@ int UpdateSpecificChange()
 {
     char changeID[7];
     std::cout << "===ChangeID===" << std::endl;
+    std::cin.ignore();
     std::cout << "Enter the ChangeID (6 Digit ID): ";
     std::cin.getline(changeID, 7);
 
@@ -321,6 +323,7 @@ int ListAndSelectChange()
         }
 
         std::cout << "Type the number to select a change, '1' to show the next list, '0' to quit: ";
+        std::cin.ignore();
         std::cin.getline(input, 3);
         choice = atoi(input);
 
