@@ -94,7 +94,7 @@ class Customer
                         // Name of customer
         char email[31];  // in
                         // Email of customer
-        char phone[15];  // in
+        char phone[12];  // in
                         // Phone number of customer
 };
 // ----------------------------------------------------------------------

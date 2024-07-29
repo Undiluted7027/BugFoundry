@@ -255,8 +255,8 @@ int ValidateCustomer(
             return -1;
     }
 
-    // Validate phone number
-    if (phone[0] != '1' || phone[1] != ' ' || !isdigit(phone[2]) || !isdigit(phone[3]) || !isdigit(phone[4]) || phone[5] != '-' || !isdigit(phone[6]) || !isdigit(phone[7]) || !isdigit(phone[8]) || phone[9] != '-' || !isdigit(phone[10]) || !isdigit(phone[11]) || !isdigit(phone[12]) || !isdigit(phone[13]))
+    // Validate phone number [1]6041231234
+    if (phone[0] != '1' || !isdigit(phone[1]) || !isdigit(phone[2]) || !isdigit(phone[3]) || !isdigit(phone[4]) || !isdigit(phone[5]) || !isdigit(phone[6]) || !isdigit(phone[7]) || !isdigit(phone[8]) || !isdigit(phone[9]) || !isdigit(phone[10]))
         return -1;
 
     // Check if record already exists

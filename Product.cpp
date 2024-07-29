@@ -57,21 +57,26 @@ int ValidateProduct(const char* productName, const char* ReleaseID, const char* 
         return -1;
     }  
     cout <<strlen(ReleaseID) << endl;
-    if (strlen(ReleaseID) != 8) {
+    if (strlen(ReleaseID) > 8 && strlen(ReleaseID) && strlen(ReleaseID) != 0) {
         std::cout << "Invalid ReleaseID length" << std::endl;
         return -1;
     }
 
-    if (strlen(ReleaseDate) != 8) {
+    if (strlen(ReleaseDate) != 10 && strlen(ReleaseDate) != 0) {
         std::cout << "Invalid ReleaseDate format" << std::endl;
         return -1;
     }
 
-    // Check ReleaseDate format (YY-MM-DD)
-    if (ReleaseDate[2] != '-' || ReleaseDate[5] != '-') {
-        std::cout << "Invalid ReleaseDate format" << std::endl;
-        return -1;
+    // Check ReleaseDate format (YYYY-MM-DD)
+    if (strlen(ReleaseDate) != 0)
+    {
+        if (ReleaseDate[4] != '-' || ReleaseDate[7] != '-') 
+        {
+            std::cout << "Invalid ReleaseDate format" << std::endl;
+            return -1;
+        }
     }
+    
 
     // Check for duplicate product
     std::ifstream file( FILENAMES[3], std::ios::binary);
