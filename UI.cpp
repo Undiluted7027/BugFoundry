@@ -38,7 +38,7 @@ int Create_Menu()
         cout << "4) Create Product Release" << endl;
         cout << "0) Go back to main menu" << endl;
 
-        cout << "Choose an option and enter (0-3): ";
+        cout << "Choose an option and enter (0-4): ";
         cin >> choice;
         cout << endl;
 

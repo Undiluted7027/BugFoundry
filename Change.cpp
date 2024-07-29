@@ -152,12 +152,12 @@ int ValidateChange(const char* description, const char& status, const char& prio
         return -1;
     }
 
-    if (strlen(lastUpdate) != 8) {
+    if (strlen(lastUpdate) != 10) {
         std::cout << "Invalid lastUpdate format" << std::endl;
         return -1;
     }
 
-    if (strlen(releaseID) != 8) {
+    if (strlen(releaseID) > 8) {
         std::cout << "Invalid releaseID" << std::endl;
         return -1;
     }
@@ -169,14 +169,15 @@ int ValidateChange(const char* description, const char& status, const char& prio
         return -1;
     }
 
-    Change currentChange;
-    while (file.read(reinterpret_cast<char*>(&currentChange), sizeof(Change))) {
-        if ((strcmp(currentChange.change_displayRelID(), releaseID) == 0) && (strcmp(currentChange.change_displayDesc(), description) == 0)) {
-            std::cout << "Change already exists" << std::endl;
-            file.close();
-            return 0;
-        }
-    }
+    // This part already gets done in complaint.cpp
+    // Change currentChange;
+    // while (file.read(reinterpret_cast<char*>(&currentChange), sizeof(Change))) {
+    //     if (/*(trcmp(currentChange.change_displayRelID(), releaseID) == 0) && */(strcmp(currentChange.change_displayDesc(), description) == 0)) {
+    //         std::cout << "Change already exists" << std::endl;
+    //         file.close();
+    //         return 0;
+    //     }
+    // }
 
     file.close();
     std::cout << "Change is valid!" << std::endl;

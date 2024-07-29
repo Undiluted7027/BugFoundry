@@ -175,7 +175,7 @@ int ChangeIDError(char *msg)
         cout << "Error: releaseID must be max 6 digits" << endl;
         return 1;
     }
-    for (int i = 0; i < strlen(msg); i++)
+    for (unsigned int i = 0; i < strlen(msg); i++)
     {
         if (msg[i] > '9' && msg[i] < '0')
         {
@@ -189,11 +189,9 @@ int ChangeIDError(char *msg)
 /*
 Checks if the provided msg is empty or contains non-digit characters for releaseID.
 --------------------------------------------------------------------*/
-int StateError(char *msg)
+int StateError(char state)
 {
-    char *state = msg;
-    state[strlen(msg)] = '\0';
-    if (state != "CANCELED" || state != "INPROGRESS" || state != "DONE")
+    if (state != 'X' || state != 'P' || state != 'O')
     {
         cout << "Error: Status must be CANCELED, INPROGRESS, or DONE" << endl;
         return 1;

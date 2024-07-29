@@ -6,6 +6,8 @@
 #include <iostream>
 #include <cstring>
 
+//361167593
+
 int ScenarioControl(int choice, int subchoice)
 {
     switch (choice)
@@ -52,11 +54,12 @@ int NewCustomer()
     char name[31], email[25], phone[15];
 
     std::cout << "===Creating a User===" << std::endl;
+    std::cin.ignore();
     std::cout << "Enter full name (30 max characters): ";
     std::cin.getline(name, 30);
     std::cout << "Enter email (24 max characters): ";
     std::cin.getline(email, 24);
-    std::cout << "Enter phone (eg. 1 604-723-1023): ";
+    std::cout << "Enter phone (eg. [1]6047231023): ";
     std::cin.getline(phone, 14);
 
     char choice;
@@ -86,10 +89,13 @@ int NewCustomer()
 
 int CreateNewComplaint()
 {
+    char* generatedID = IDGenerator('3', 6);
+    cout << endl << generatedID << endl;
     char userID[11], relID[9], desc[31], product[11];
 
     std::cout << "===Creating a Complaint===" << std::endl;
-    std::cout << "Enter your UserID (10 digits): ";
+    std::cin.ignore();
+    std::cout << "Enter your UserID (9 digits): ";
     std::cin.getline(userID, 11);
     std::cout << "Enter the Product the bug was found on: ";
     std::cin.getline(product, 11);
@@ -109,16 +115,17 @@ int CreateNewComplaint()
 
     try
     {
-        char date[9];
+        char date[11] = "2024-08-01";
+        date[11] = '\0';
         // Get current date in format YY-MM-DD
-        time_t now = time(0);
-        strftime(date, sizeof(date), "%y-%m-%d", localtime(&now));
+        // time_t now = time(0);
+        //strftime(date, sizeof(date), "%y-%m-%d", localtime(&now));
 
-        Complaint newComplaint = CreateComplaint(desc, date, "", relID, userID);
+        Complaint newComplaint = CreateComplaint(desc, date, generatedID, relID, userID);
         std::streampos pos = COMPLAINTFILEPOINTER;
         CommitComplaint(newComplaint, pos, FILENAMES[2]);
 
-        Change newChange = CreateChange(desc, '-', '3', date, relID, "");
+        Change newChange = CreateChange(desc, '-', '3', date, relID, generatedID);
         pos = CHANGEFILEPOINTER;
         CommitChange(newChange, pos, FILENAMES[1]);
 
@@ -185,6 +192,7 @@ int CreateNewProduct()
     char productName[11];
     std::cout << "===Create Product===" << std::endl;
 
+    std::cin.ignore();
     std::cout << "Enter the new product name (10 max characters): ";
     std::cin.getline(productName, 11);
 
@@ -217,9 +225,10 @@ int CreateNewProductRel()
     char productName[11], releaseDate[11], releaseID[9];
 
     std::cout << "===Create Product Release===" << std::endl;
+    std::cin.ignore();
     std::cout << "Enter the product name (10 max characters): ";
     std::cin.getline(productName, 11);
-    std::cout << "Enter the anticipated release date (YY/MM/DD): ";
+    std::cout << "Enter the anticipated release date (YYYY-MM-DD): ";
     std::cin.getline(releaseDate, 11);
     std::cout << "Enter the new releaseID (8 max characters): ";
     std::cin.getline(releaseID, 9);
