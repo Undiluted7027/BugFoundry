@@ -52,16 +52,18 @@ int ScenarioControl(int choice, int subchoice)
 
 int NewCustomer()
 {
-    char name[31], email[25], phone[15];
+    std::string name;
+    std::string email;
+    std::string phone; 
 
     std::cout << "===Creating a User===" << std::endl;
     std::cin.ignore();
     std::cout << "Enter full name (30 max characters): ";
-    std::cin.getline(name, 30);
+    std::getline(std::cin, name);
     std::cout << "Enter email (24 max characters): ";
-    std::cin.getline(email, 24);
+    std::getline(std::cin, email);
     std::cout << "Enter phone (eg. [1]6047231023): ";
-    std::cin.getline(phone, 14);
+    std::getline(std::cin, phone);
 
     char choice;
     std::cout << "Confirm to create user (Y/N): ";
@@ -74,7 +76,7 @@ int NewCustomer()
 
     try
     {
-        Customer newCustomer = CreateCustomer(name, email, phone);
+        Customer newCustomer = CreateCustomer(name.data(), email.data(), phone.data());
         std::streampos pos = CUSTOMERFILEPOINTER;
         CommitCustomer(newCustomer, pos, FILENAMES[0]);
         std::cout << "New UserID: " << newCustomer.getCustID() << std::endl;
@@ -92,18 +94,22 @@ int CreateNewComplaint()
 {
     char* generatedID = IDGenerator('3', 6);
     cout << endl << generatedID << endl;
-    char userID[11], relID[9], desc[31], product[11];
+    
+    std::string userID;
+    std::string relID;
+    std::string desc;
+    std::string product;
 
     std::cout << "===Creating a Complaint===" << std::endl;
     std::cin.ignore();
     std::cout << "Enter your UserID (9 digits): ";
-    std::cin.getline(userID, 11);
+    std::getline(std::cin, userID);
     std::cout << "Enter the Product the bug was found on: ";
-    std::cin.getline(product, 11);
+    std::getline(std::cin, product);
     std::cout << "Enter the Product ReleaseID that the bug was found on (8 letters): ";
-    std::cin.getline(relID, 9);
+    std::getline(std::cin, relID);
     std::cout << "Enter Description of your complaint (30 max characters): ";
-    std::cin.getline(desc, 31);
+    std::getline(std::cin, desc);
 
     char choice;
     std::cout << "Confirm to create complaint (Y/N): ";
@@ -116,17 +122,17 @@ int CreateNewComplaint()
 
     try
     {
-        char date[11] = "2024-08-01";
-        date[11] = '\0';
+        char date[11];
+        // date[11] = '\0';
         // Get current date in format YY-MM-DD
-        // time_t now = time(0);
-        //strftime(date, sizeof(date), "%y-%m-%d", localtime(&now));
+        time_t now = time(0);
+        strftime(date, sizeof(date), "%y-%m-%d", localtime(&now));
 
-        Complaint newComplaint = CreateComplaint(desc, date, generatedID, relID, userID);
+        Complaint newComplaint = CreateComplaint(desc.data(), date, generatedID, relID.data(), userID.data());
         std::streampos pos = COMPLAINTFILEPOINTER;
         CommitComplaint(newComplaint, pos, FILENAMES[2]);
 
-        Change newChange = CreateChange(desc, '-', '3', date, relID, generatedID);
+        Change newChange = CreateChange(desc.data(), '-', '3', date, relID.data(), generatedID);
         pos = CHANGEFILEPOINTER;
         CommitChange(newChange, pos, FILENAMES[1]);
 
@@ -223,16 +229,18 @@ int CreateNewProduct()
 
 int CreateNewProductRel()
 {
-    char productName[11], releaseDate[11], releaseID[9];
+    std::string productName;
+    std::string releaseDate;
+    std::string releaseID;
 
     std::cout << "===Create Product Release===" << std::endl;
     std::cin.ignore();
     std::cout << "Enter the product name (10 max characters): ";
-    std::cin.getline(productName, 11);
+    std::getline(std::cin, productName);
     std::cout << "Enter the anticipated release date (YYYY-MM-DD): ";
-    std::cin.getline(releaseDate, 11);
+    std::getline(std::cin, releaseDate);
     std::cout << "Enter the new releaseID (8 max characters): ";
-    std::cin.getline(releaseID, 9);
+    std::getline(std::cin, releaseID);
 
     char choice;
     std::cout << "Confirm to create product release (Y/N): ";
@@ -245,7 +253,7 @@ int CreateNewProductRel()
 
     try
     {
-        Product newProductRelease = CreateProduct(productName, releaseID, releaseDate);
+        Product newProductRelease = CreateProduct(productName.data(), releaseID.data(), releaseDate.data());
         std::streampos pos = PRODUCTFILEPOINTER;
         CommitProduct(newProductRelease, pos, FILENAMES[3]);
         std::cout << "Product Release Created Successfully" << std::endl;
@@ -260,22 +268,22 @@ int CreateNewProductRel()
 
 int UpdateSpecificChange()
 {
-    char changeID[7];
+    std::string changeID;
     std::cout << "===ChangeID===" << std::endl;
     std::cin.ignore();
     std::cout << "Enter the ChangeID (6 Digit ID): ";
-    std::cin.getline(changeID, 7);
+    std::getline(std::cin, changeID);
 
     try
     {
         std::streampos pos = CHANGEFILEPOINTER;
         Change changeToUpdate = GetChangeDetails(pos, FILENAMES[1]);
-        while (strcmp(changeToUpdate.getChangeID(), changeID) != 0)
+        while (strcmp(changeToUpdate.getChangeID(), changeID.data()) != 0)
         {
             pos += sizeof(Change);
             changeToUpdate = GetChangeDetails(pos, FILENAMES[1]);
         }
-        return UpdateChangeInfo(changeID, pos);
+        return UpdateChangeInfo(changeID.data(), pos);
     }
     catch (const std::runtime_error &e)
     {
@@ -344,19 +352,20 @@ int ListAndSelectChange()
 int UpdateChangeInfo(const char *changeID, std::streampos position)
 {
     Change theChange = GetChangeDetails(position, FILENAMES[1]);
-    char description[31];
     char status;
     int priority;
-    char releaseID[9];
+
+    std::string description;
+    std::string releaseID;
 
     std::cout << "Updating Change " << changeID << std::endl;
 
     std::cout << "Current Description: " << theChange.change_displayDesc() << std::endl;
     std::cout << "Enter new Description (or press Enter to keep current): ";
-    std::cin.getline(description, 31);
+    std::getline(std::cin, description);
     if (description[0] == '\0')
     {
-        strcpy(description, theChange.change_displayDesc());
+        strcpy(description.data(), theChange.change_displayDesc());
     }
 
     std::cout << "Current Status: " << theChange.change_displayStatus() << std::endl;
@@ -383,13 +392,13 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
 
     std::cout << "Current ReleaseID: " << theChange.change_displayRelID() << std::endl;
     std::cout << "Enter new ReleaseID (or press Enter to keep current): ";
-    std::cin.getline(releaseID, 9);
+    std::getline(std::cin, releaseID);
     if (releaseID[0] == '\0')
     {
-        strcpy(releaseID, theChange.change_displayRelID());
+        strcpy(releaseID.data(), theChange.change_displayRelID());
     }
 
-    theChange.UpdateChange(changeID, description, status, priority + '0', releaseID);
+    theChange.UpdateChange(changeID, description.data(), status, priority + '0', releaseID.data());
 
     CommitChange(theChange, position, FILENAMES[1]);
 
