@@ -45,7 +45,7 @@ private:
     char description[31]; // Description of the change
     char status; // Status of the change
     char priority; // Priority of the change
-    char lastUpdate[9]; // Last update date of the change
+    char lastUpdate[11]; // Last update date of the change
     char releaseID[9]; // Release ID associated with the change
     char productName[11]; // Product name associated with the change
 };

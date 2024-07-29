@@ -123,41 +123,41 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
     }
 
     // Validate dateOfComplaint
-    if (strlen(dateOfComplaint) != 8)
+    if (strlen(dateOfComplaint) != 10)
     {
         std::cout << "Invalid date format" << std::endl;
         return -1;
     }
-    if (dateOfComplaint[2] != '-' || dateOfComplaint[5] != '-')
+    if (dateOfComplaint[4] != '-' || dateOfComplaint[7] != '-')
     {
         std::cout << "Invalid date separator" << std::endl;
         return -1;
     }
-    int year = (dateOfComplaint[0] - '0') * 10 + (dateOfComplaint[1] - '0');
-    int month = (dateOfComplaint[3] - '0') * 10 + (dateOfComplaint[4] - '0');
-    int day = (dateOfComplaint[6] - '0') * 10 + (dateOfComplaint[7] - '0');
-    if (year < 24 || year > 99 || month < 1 || month > 12 || day < 1 || day > 31)
+    int year = (dateOfComplaint[0] - '0') * 1000 + (dateOfComplaint[1] - '0') * 100 + (dateOfComplaint[2] - '0') * 10 + (dateOfComplaint[3] - '0');
+    int month = (dateOfComplaint[5] - '0') * 10 + (dateOfComplaint[6] - '0');
+    int day = (dateOfComplaint[8] - '0') * 10 + (dateOfComplaint[9] - '0');
+    if (year < 2024 || year > 2099 || month < 1 || month > 12 || day < 1 || day > 31)
     {
         std::cout << "Invalid date values" << std::endl;
         return -1;
     }
 
     // Validate changeID
-    if (strlen(changeID) != 5 || changeID[0] != '1')
+    if (strlen(changeID) != 0 && (strlen(changeID) != 6 || changeID[0] != '1'))
     {
         std::cout << "Invalid changeID" << std::endl;
         return -1;
     }
 
     // Validate releaseID
-    if (strlen(releaseID) != 8)
+    if (strlen(releaseID) > 8 && strlen(releaseID) <= 0)
     {
         std::cout << "Invalid releaseID" << std::endl;
         return -1;
     }
 
-    // Validate custID
-    if (strlen(custID) != 10)
+    // Validate custID: TODO need to check if customer exists
+    if (strlen(custID) != 9)
     {
         std::cout << "Invalid custID" << std::endl;
         return -1;
