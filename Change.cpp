@@ -119,349 +119,360 @@ void PrintAllChanges(const std::string &FILENAME)
 
     file.close();
 }
-    /*
-    Print the attribute details of the Change object to the console.
-    No noticeable algorithm or data structure used.
-    --------------------------------------------------------------------*/
-    // Accessor methods for Change class attributes
-    const char *Change::getChangeID() const
+/*
+Print the attribute details of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+// Accessor methods for Change class attributes
+const char *Change::getChangeID() const
+{
+    return changeID;
+}
+/*
+Get the changeID of a Change object.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+
+const char *Change::change_displayProductName() const
+{
+    return productName;
+}
+/*
+Print the productName of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+const char *Change::change_displayDesc() const
+{
+    return description;
+}
+
+char Change::change_displayStatus() const
+{
+    return status;
+}
+/*
+Print the status of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+char Change::change_displayPriority() const
+{
+    return priority;
+}
+/*
+Print the priority of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+const char *Change::change_displayRelID() const
+{
+    return releaseID;
+}
+/*
+Print the releaseID of the Change object to the console.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+// CreateChange function to create a new Change object
+Change CreateChange(const char *description, const char &status, const char &priority,
+                    const char *lastUpdate, const char *releaseID, const char *changeID)
+{
+    // Validate change data before creating a new Change object
+    if (ValidateChange(description, status, priority, lastUpdate, releaseID) == 1)
     {
-        return changeID;
+        return Change("", description, status, priority, releaseID, lastUpdate, changeID);
     }
-    /*
-    Get the changeID of a Change object.
-    No noticeable algorithm or data structure used.
-    --------------------------------------------------------------------*/
-
-    const char *Change::change_displayProductName() const
+    else
     {
-        return productName;
+        throw std::runtime_error("Could not create a new change!");
     }
-    /*
-    Print the productName of the Change object to the console.
-    No noticeable algorithm or data structure used.
-    --------------------------------------------------------------------*/
-    const char *Change::change_displayDesc() const
+}
+/*
+Create new Change object and also validates it.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+// ValidateChange function to validate change data
+int ValidateChange(const char *description, const char &status, const char &priority,
+                   const char *lastUpdate, const char *releaseID)
+{
+    // Check each attribute for validity
+    if (strlen(description) == 0 || strlen(description) > 30)
     {
-        return description;
-    }
-
-    char Change::change_displayStatus() const
-    {
-        return status;
-    }
-    /*
-    Print the status of the Change object to the console.
-    No noticeable algorithm or data structure used.
-    --------------------------------------------------------------------*/
-    char Change::change_displayPriority() const
-    {
-        return priority;
-    }
-    /*
-    Print the priority of the Change object to the console.
-    No noticeable algorithm or data structure used.
-    --------------------------------------------------------------------*/
-    const char *Change::change_displayRelID() const
-    {
-        return releaseID;
-    }
-    /*
-    Print the releaseID of the Change object to the console.
-    No noticeable algorithm or data structure used.
-    --------------------------------------------------------------------*/
-    // CreateChange function to create a new Change object
-    Change CreateChange(const char *description, const char &status, const char &priority,
-                        const char *lastUpdate, const char *releaseID, const char *changeID)
-    {
-        // Validate change data before creating a new Change object
-        if (ValidateChange(description, status, priority, lastUpdate, releaseID) == 1)
-        {
-            return Change("", description, status, priority, releaseID, lastUpdate, changeID);
-        }
-        else
-        {
-            throw std::runtime_error("Could not create a new change!");
-        }
-    }
-    /*
-    Create new Change object and also validates it.
-    No noticeable algorithm or data structure used.
-    --------------------------------------------------------------------*/
-    // ValidateChange function to validate change data
-    int ValidateChange(const char *description, const char &status, const char &priority,
-                       const char *lastUpdate, const char *releaseID)
-    {
-        // Check each attribute for validity
-        if (strlen(description) == 0 || strlen(description) > 30)
-        {
-            std::cout << "Invalid description length" << std::endl;
-            return -1;
-        }
-
-        if (status != '-' && status != 'X' && status != 'P')
-        {
-            std::cout << "Invalid status" << std::endl;
-            return -1;
-        }
-
-        if (priority < '1' || priority > '5')
-        {
-            std::cout << "Invalid priority" << std::endl;
-            return -1;
-        }
-
-        if (strlen(lastUpdate) != 10)
-        {
-            std::cout << "Invalid lastUpdate format" << std::endl;
-            return -1;
-        }
-
-        if (strlen(releaseID) > 8)
-        {
-            std::cout << "Invalid releaseID" << std::endl;
-            return -1;
-        }
-
-        // Check for duplicate change in the file
-        std::ifstream file(FILENAMES[1], std::ios::binary);
-        if (!file)
-        {
-            std::cerr << "Error: Could not open file for reading" << std::endl;
-            return -1;
-        }
-
-        // This part already gets done in complaint.cpp
-        Change currentChange;
-        while (file.read(reinterpret_cast<char *>(&currentChange), sizeof(Change)))
-        {
-            if (/*(trcmp(currentChange.change_displayRelID(), releaseID) == 0) && */ (strcmp(currentChange.change_displayDesc(), description) == 0))
-            {
-                std::cout << "Change already exists" << std::endl;
-                file.close();
-                return 0;
-            }
-        }
-
-        file.close();
-        std::cout << "Change is valid!" << std::endl;
-        return 1;
-    }
-    /*
-    Validates that the Change object attributes are acceptable and makes sure no duplicate Change records exists.
-    A linear search algorithm is used to iterate through the Change records.
-    --------------------------------------------------------------------*/
-    void UpdateLatestChange(const char *description, const char &status, const char &priority,
-                            const char *releaseID, const char *lastUpdate)
-    {
-        // Implementation depends on how you want to identify the latest change
-        // This is a placeholder implementation
-        std::cout << "UpdateLatestChange: Not implemented" << std::endl;
+        std::cout << "Invalid description length" << std::endl;
+        return -1;
     }
 
-    // CreateChangesReport function to create a report of all changes
-    int CreateChangesReport()
+    if (status != '-' && status != 'X' && status != 'P')
     {
-        std::ifstream file(FILENAMES[1], std::ios::binary);
-        if (!file)
-        {
-            std::cerr << "Error: Could not open file for reading" << std::endl;
-            return -1;
-        }
-
-        Change change;
-        int count = 0;
-        while (file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
-        {
-            change.DisplayDetails(std::cout);
-            count++;
-            if (count % 10 == 0)
-            {
-                char choice;
-                std::cout << "Press 'N' for next 10 changes, '0' to exit: ";
-                std::cin >> choice;
-                if (choice == '0')
-                    break;
-            }
-        }
-        file.close();
-        return count;
+        std::cout << "Invalid status" << std::endl;
+        return -1;
     }
 
-    // CreateAnticipatedChangesProduct function to create a report of anticipated changes for a product
-    void CreateAnticipatedChangesProduct(const char *releaseID)
+    if (priority < '1' || priority > '5')
     {
-        std::ifstream file(FILENAMES[1], std::ios::binary);
-        if (!file)
-        {
-            std::cerr << "Error: Could not open file for reading" << std::endl;
-            return;
-        }
+        std::cout << "Invalid priority" << std::endl;
+        return -1;
+    }
 
-        Change change;
-        while (file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
+    if (strlen(lastUpdate) != 10)
+    {
+        std::cout << "Invalid lastUpdate format" << std::endl;
+        return -1;
+    }
+
+    if (strlen(releaseID) > 8)
+    {
+        std::cout << "Invalid releaseID" << std::endl;
+        return -1;
+    }
+
+    // Check for duplicate change in the file
+    std::ifstream file(FILENAMES[1], std::ios::binary);
+    if (!file)
+    {
+        std::cerr << "Error: Could not open file for reading" << std::endl;
+        return -1;
+    }
+
+    // This part already gets done in complaint.cpp
+    Change currentChange;
+    while (file.read(reinterpret_cast<char *>(&currentChange), sizeof(Change)))
+    {
+        if (/*(trcmp(currentChange.change_displayRelID(), releaseID) == 0) && */ (strcmp(currentChange.change_displayDesc(), description) == 0))
         {
-            if (strcmp(change.change_displayRelID(), releaseID) == 0)
+            std::cout << "Change already exists" << std::endl;
+            file.close();
+            return 0;
+        }
+    }
+
+    file.close();
+    std::cout << "Change is valid!" << std::endl;
+    return 1;
+}
+/*
+Validates that the Change object attributes are acceptable and makes sure no duplicate Change records exists.
+A linear search algorithm is used to iterate through the Change records.
+--------------------------------------------------------------------*/
+void UpdateLatestChange(const char *description, const char &status, const char &priority,
+                        const char *releaseID, const char *lastUpdate)
+{
+    // Implementation depends on how you want to identify the latest change
+    // This is a placeholder implementation
+    std::cout << "UpdateLatestChange: Not implemented" << std::endl;
+}
+
+// CreateChangesReport function to create a report of all changes
+int CreateChangesReport()
+{
+    std::ifstream file(FILENAMES[1], std::ios::binary);
+    if (!file)
+    {
+        std::cerr << "Error: Could not open file for reading" << std::endl;
+        return -1;
+    }
+
+    Change change;
+    int count = 0;
+    while (file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
+    {
+        change.DisplayDetails(std::cout);
+        count++;
+        if (count % 10 == 0)
+        {
+            char choice;
+            std::cout << "Press 'N' for next 10 changes, '0' to exit: ";
+            std::cin >> choice;
+            if (choice == '0')
+                break;
+        }
+    }
+    file.close();
+    return count;
+}
+
+// CreateAnticipatedChangesProduct function to create a report of anticipated changes for a product
+void CreateAnticipatedChangesProduct(const char *releaseID)
+{
+    std::ifstream file(FILENAMES[1], std::ios::binary);
+    if (!file)
+    {
+        std::cerr << "Error: Could not open file for reading" << std::endl;
+        return;
+    }
+    std::cout << std::left
+              << std::setw(10) << "ChangeID"
+              << std::setw(15) << "Product Name"
+              << std::setw(32) << "Description"
+              << std::setw(12) << "Last Update"
+              << std::setw(7) << "Status"
+              << std::setw(10) << "Priority"
+              << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+    std::cout << std::string(118, '-') << std::endl;
+    Change change;
+    while (file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
+    {
+        if (strcmp(change.change_displayRelID(), releaseID) == 0)
+        {
+            if (change.change_displayStatus() != 'X')
             {
                 change.DisplayDetails(std::cout);
             }
         }
+    }
+    std::cout << std::string(118, '-') << std::endl;
+    file.close();
+}
 
-        file.close();
+// void UpdateLatestChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
+//     Change lastChange = readRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER);
+//     char *latestChangeID = lastChange.getChangeID();
+//     Change newChange(description, status, priority, releaseID, lastUpdate, latestChangeID);
+//     updateRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER, newChange, latestChangeID);
+// }
+
+// CreateUsersInformedOnUpdateReport function to create a report of users to be informed about an update on a change
+void CreateUsersInformedOnUpdateReport(const char *changeID)
+{
+    if (strlen(changeID) != 6 || changeID[0] != '1')
+    {
+        std::cerr << "Invalid changeID format. It should be 5 digits starting with 1." << std::endl;
+        return;
     }
 
-    // void UpdateLatestChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
-    //     Change lastChange = readRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER);
-    //     char *latestChangeID = lastChange.getChangeID();
-    //     Change newChange(description, status, priority, releaseID, lastUpdate, latestChangeID);
-    //     updateRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER, newChange, latestChangeID);
-    // }
-
-    // CreateUsersInformedOnUpdateReport function to create a report of users to be informed about an update on a change
-    void CreateUsersInformedOnUpdateReport(const char *changeID)
+    // Find the Change object with given changeID
+    std::ifstream changeFile(FILENAMES[1], std::ios::binary);
+    if (!changeFile)
     {
-        if (strlen(changeID) != 6 || changeID[0] != '1')
-        {
-            std::cerr << "Invalid changeID format. It should be 5 digits starting with 1." << std::endl;
-            return;
-        }
-
-        // Find the Change object with given changeID
-        std::ifstream changeFile(FILENAMES[1], std::ios::binary);
-        if (!changeFile)
-        {
-            std::cerr << "Error: Could not open Changes file." << std::endl;
-            return;
-        }
-
-        Change change;
-        bool changeFound = false;
-        while (changeFile.read(reinterpret_cast<char *>(&change), sizeof(Change)))
-        {
-            if (strcmp(change.getChangeID(), changeID) == 0)
-            {
-                changeFound = true;
-                break;
-            }
-        }
-        changeFile.close();
-
-        if (!changeFound)
-        {
-            std::cout << "No Change found with ID: " << changeID << std::endl;
-            return;
-        }
-
-        // Find all Complaints associated with this Change
-        std::ifstream complaintFile(FILENAMES[2], std::ios::binary);
-        if (!complaintFile)
-        {
-            std::cerr << "Error: Could not open Complaints file." << std::endl;
-            return;
-        }
-
-        std::set<std::string> uniqueCustomerIDs;
-        Complaint complaint;
-        while (complaintFile.read(reinterpret_cast<char *>(&complaint), sizeof(Complaint)))
-        {
-            if (strcmp(complaint.getChangeID(), changeID) == 0)
-            {
-                uniqueCustomerIDs.insert(complaint.getCustID());
-            }
-        }
-        complaintFile.close();
-
-        if (uniqueCustomerIDs.empty())
-        {
-            std::cout << "No customers found for Change ID: " << changeID << std::endl;
-            return;
-        }
-
-        // Find and display Customer details associated with the Complaints
-        std::ifstream customerFile(FILENAMES[0], std::ios::binary);
-        if (!customerFile)
-        {
-            std::cerr << "Error: Could not open Customers file." << std::endl;
-            return;
-        }
-
-        std::cout << "Customers to be informed about Change ID " << changeID << ":" << std::endl;
-        std::cout << std::string(50, '-') << std::endl;
-
-        Customer customer;
-        int count = 0;
-        while (customerFile.read(reinterpret_cast<char *>(&customer), sizeof(Customer)))
-        {
-            if (uniqueCustomerIDs.find(customer.getCustID()) != uniqueCustomerIDs.end())
-            {
-                customer.DisplayDetails(std::cout);
-                count++;
-            }
-        }
-        customerFile.close();
-
-        std::cout << std::string(50, '-') << std::endl;
-        std::cout << "Total customers to be informed: " << count << std::endl;
+        std::cerr << "Error: Could not open Changes file." << std::endl;
+        return;
     }
 
-    // CommitChange function to commit a Change object to file
-    void CommitChange(const Change &change, std::streampos &startPos, const std::string &FILENAME)
+    Change change;
+    bool changeFound = false;
+    while (changeFile.read(reinterpret_cast<char *>(&change), sizeof(Change)))
     {
-        std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+        if (strcmp(change.getChangeID(), changeID) == 0)
+        {
+            changeFound = true;
+            break;
+        }
+    }
+    changeFile.close();
+
+    if (!changeFound)
+    {
+        std::cout << "No Change found with ID: " << changeID << std::endl;
+        return;
+    }
+
+    // Find all Complaints associated with this Change
+    std::ifstream complaintFile(FILENAMES[2], std::ios::binary);
+    if (!complaintFile)
+    {
+        std::cerr << "Error: Could not open Complaints file." << std::endl;
+        return;
+    }
+
+    std::set<std::string> uniqueCustomerIDs;
+    Complaint complaint;
+    while (complaintFile.read(reinterpret_cast<char *>(&complaint), sizeof(Complaint)))
+    {
+        if (strcmp(complaint.getChangeID(), changeID) == 0)
+        {
+            uniqueCustomerIDs.insert(complaint.getCustID());
+        }
+    }
+    complaintFile.close();
+
+    if (uniqueCustomerIDs.empty())
+    {
+        std::cout << "No customers found for Change ID: " << changeID << std::endl;
+        return;
+    }
+
+    // Find and display Customer details associated with the Complaints
+    std::ifstream customerFile(FILENAMES[0], std::ios::binary);
+    if (!customerFile)
+    {
+        std::cerr << "Error: Could not open Customers file." << std::endl;
+        return;
+    }
+
+    std::cout << "Customers to be informed about Change ID " << changeID << ":" << std::endl;
+    std::cout << std::string(50, '-') << std::endl;
+
+    Customer customer;
+    int count = 0;
+    while (customerFile.read(reinterpret_cast<char *>(&customer), sizeof(Customer)))
+    {
+        if (uniqueCustomerIDs.find(customer.getCustID()) != uniqueCustomerIDs.end())
+        {
+            customer.DisplayDetails(std::cout);
+            count++;
+        }
+    }
+    customerFile.close();
+
+    std::cout << std::string(50, '-') << std::endl;
+    std::cout << "Total customers to be informed: " << count << std::endl;
+}
+
+// CommitChange function to commit a Change object to file
+void CommitChange(const Change &change, std::streampos &startPos, const std::string &FILENAME)
+{
+    std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    if (!file)
+    {
+        throw std::runtime_error("Could not open file for writing");
+    }
+    file.seekp(0, std::ios::end);
+    startPos = file.tellp();
+    file.write(reinterpret_cast<const char *>(&change), sizeof(Change));
+    startPos = file.tellp();
+}
+/*
+Writes a Change object to a specified file at a given position.
+Uses the unsorted records data structure to add the Change object.
+--------------------------------------------------------------------*/
+// GetChangeDetails function to retrieve Change details from file
+Change GetChangeDetails(std::streampos startPos, const std::string &FILENAME)
+{
+    std::ifstream file(FILENAMES[1], std::ios::binary);
+    if (!file)
+    {
+        throw std::runtime_error("Could not open file for reading");
+    }
+    file.seekg(startPos);
+    Change change;
+    if (!file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
+    {
+        throw std::runtime_error("FileReadFailed: There was an error in reading the file.");
+    }
+    return change;
+}
+/*
+Reads a Change object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Change object.
+--------------------------------------------------------------------*/
+int InitChange()
+{
+    filesystem::create_directory(DIRECTORY);
+    if (!filesystem::exists(FILENAMES[1]))
+    {
+        ofstream file(FILENAMES[1], ios::binary);
         if (!file)
         {
-            throw std::runtime_error("Could not open file for writing");
-        }
-        file.seekp(0, std::ios::end);
-        startPos = file.tellp();
-        file.write(reinterpret_cast<const char *>(&change), sizeof(Change));
-        startPos = file.tellp();
-    }
-    /*
-    Writes a Change object to a specified file at a given position.
-    Uses the unsorted records data structure to add the Change object.
-    --------------------------------------------------------------------*/
-    // GetChangeDetails function to retrieve Change details from file
-    Change GetChangeDetails(std::streampos startPos, const std::string &FILENAME)
-    {
-        std::ifstream file(FILENAMES[1], std::ios::binary);
-        if (!file)
-        {
-            throw std::runtime_error("Could not open file for reading");
-        }
-        file.seekg(startPos);
-        Change change;
-        if (!file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
-        {
-            throw std::runtime_error("FileReadFailed: There was an error in reading the file.");
-        }
-        return change;
-    }
-    /*
-    Reads a Change object from a specified file at a given position and returns it.
-    Uses the unsorted records data structure to read the Change object.
-    --------------------------------------------------------------------*/
-    int InitChange()
-    {
-        filesystem::create_directory(DIRECTORY);
-        if (!filesystem::exists(FILENAMES[1]))
-        {
-            ofstream file(FILENAMES[1], ios::binary);
-            if (!file)
-            {
-                return -1;
-            }
-            else
-            {
-                return 1;
-            }
-            file.close();
+            return -1;
         }
         else
         {
-            return 0;
+            return 1;
         }
-        return -1;
+        file.close();
     }
-    /* int InitChange() uses the global variables streampos CHANGEFILEPOINTER and FILENAMES[1] to check if binary file "Changes.bin" exist in the DIRECTORY to essentially check if the program is being run for the first time. If it does, then it returns 0, if it doesn't then the files is created. If file was created successfully, it returns 1 else -1. The function does not fail.
-    ----------------------------------------------------------------------*/
+    else
+    {
+        return 0;
+    }
+    return -1;
+}
+/* int InitChange() uses the global variables streampos CHANGEFILEPOINTER and FILENAMES[1] to check if binary file "Changes.bin" exist in the DIRECTORY to essentially check if the program is being run for the first time. If it does, then it returns 0, if it doesn't then the files is created. If file was created successfully, it returns 1 else -1. The function does not fail.
+----------------------------------------------------------------------*/
