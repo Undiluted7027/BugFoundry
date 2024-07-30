@@ -156,13 +156,14 @@ int DisplayChangeReport()
               << std::endl;
 
     std::cout << std::left
-              << std::setw(12) << "Product"
-              << std::setw(32) << "Description"
               << std::setw(10) << "ChangeID"
-              << std::setw(12) << "Date"
-              << std::setw(11) << "Status"
+              << std::setw(15) << "Product Name"
+              << std::setw(32) << "Description"
+              << std::setw(12) << "Last Update"
+              << std::setw(7) << "Status"
               << std::setw(10) << "Priority"
-              << std::setw(9) << "ReleaseID" << std::endl;
+              << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+    std::cout << std::string(118, '-') << std::endl;
 
     do
     {
@@ -301,14 +302,14 @@ int ListAndSelectChange()
               << std::endl;
 
     std::cout << std::left
-              << std::setw(2) << " "
-              << std::setw(12) << "Product"
-              << std::setw(32) << "Description"
               << std::setw(10) << "ChangeID"
-              << std::setw(12) << "Date"
-              << std::setw(11) << "Status"
+              << std::setw(15) << "Product Name"
+              << std::setw(32) << "Description"
+              << std::setw(12) << "Last Update"
+              << std::setw(7) << "Status"
               << std::setw(10) << "Priority"
-              << std::setw(9) << "ReleaseID" << std::endl;
+              << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+    std::cout << std::string(118, '-') << std::endl;
 
     do
     {
@@ -454,86 +455,14 @@ This function uses linear search to find all users that are related to the relea
 --------------------------------------------------------------------*/
 int UserOnChange()
 {
-    std::string productName;
     std::string changeID;
-    
-    char product[9];
-    int changeID[10];
-    char input[3];
-    int choice;
-    int start = 1;
-    int count = 1;
-    int end = 11;
-
-    cout << "===Product Name===" << endl;
-    cout << "Enter the product name: ";
-    cin.getline(product, 10);
-    // if (!ValidateProduct()) return 0
-    cout << endl;
-
-    cout << "List of changes" << endl;
-    do
-    {
-        // if (end of line)
-        // {
-        //     cout << "No changes to show!" << endl;
-        //     return 0;
-        // }
-        while (start < end /*&& CHANGEFILEPOINTER != Dummy*/)
-        {
-            std::streampos changePos = CHANGEFILEPOINTER - static_cast<std::streamoff>(start * sizeof(Change));
-            Change getChange = GetChangeDetails(changePos, FILENAMES[1]);
-            // if (getChange.ProductName == product)
-            // {
-            //     PrintChangeB(count, getChage.description, getChange.changeID, getChange.date, getChange.state, getChange.priority, getChange.ReleaseID);
-            //     count++;
-            // }
-            start++;
-        }
-        cout << "Type the number to the left of Change to select. ('1' to show the next list, '0' to quit): ";
-        cin.getline(input, 3);
-        choice = atoi(input);
-        cout << endl;
-
-        choice = SearchPageError(choice, start, end);
-        end = end + 10;
-    } while (choice == 1);
-
-    if (choice == -1)
-        return 0;
-    std::streampos changePos = CHANGEFILEPOINTER - static_cast<std::streamoff>(start * sizeof(Change));
-    Change theChange = GetChangeDetails(changePos, FILENAMES[1]);
-    choice = 0;
-    count = 1;
-    start = 1;
-    end = 11;
-
-    do
-    {
-        // if (COMPLAINTFILEPOINTER == Dummy)
-        // {
-        //     cout << "No users to show!" << endl;
-        //     return 0;
-        // }
-        while (start < end /*&& COMPLAINTFILEPOINTER != Dummy*/)
-        {
-
-            std::streampos complaintPos = COMPLAINTFILEPOINTER - static_cast<std::streamoff>(sizeof(Complaint) * start);
-            Complaint getComplaint = GetComplaintDetails(complaintPos, FILENAMES[2]);
-            // if (getComplaint.changeID == theChange.changeID)
-            // {
-            //     PrintUser(getComplaint.UserID.name, getComplaint.UserID.email);
-            //     count++;
-            // }
-            start++;
-        }
-        cout << "Press '1' to go to the next page or '1' to quit viewing ";
-        cin >> choice;
-        cout << endl;
-
-        start = end;
-        end = end + 10;
-    } while (DisplayPageError(choice) == 1);
+    PrintAllComplaints(FILENAMES[2]);
+    PrintAllChanges(FILENAMES[1]);
+    std::cout << "Enter Change ID (max 5 digits starting with 1): ";
+    std::cin.ignore();
+    std::getline(std::cin, changeID);
+    // if (strlen(changeID.data()) > 6) validation for incorrect changeID
+    CreateUsersInformedOnUpdateReport(changeID.data());
     return 1;
 }
 

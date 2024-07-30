@@ -97,7 +97,7 @@ void Complaint::DisplayDetails(std::ostream &out) const
     out << std::left
         << std::setw(10) << complaintID
         << std::setw(31) << description
-        << std::setw(9) << dateOfComplaint
+        << std::setw(12) << dateOfComplaint
         << std::setw(10) << changeID
         << std::setw(9) << releaseID
         << std::setw(11) << custID << std::endl;
@@ -235,6 +235,7 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
         // Update changeID with the newly created Change's ID
         strcpy(const_cast<char *>(newChange.getChangeID()), newChange.getChangeID());
     }
+        cout << "ID of change: " << change.getChangeID() << endl;
 
     // Create and return the new Complaint
     Complaint newComplaint("", description, dateOfComplaint, change.getChangeID(), releaseID, custID);
@@ -296,7 +297,7 @@ void PrintAllComplaints(const std::string &FILENAME)
     std::cout << std::left
               << std::setw(10) << "ID"
               << std::setw(31) << "Description"
-              << std::setw(9) << "Date"
+              << std::setw(12) << "Date"
               << std::setw(10) << "Change"
               << std::setw(9) << "Release"
               << std::setw(11) << "Customer" << std::endl;
