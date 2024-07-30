@@ -143,6 +143,7 @@ This function returns whether the user inputs are valid or not. If same data alr
 This function performs checks on formats of phone number, email, and name of the customer. 
 Call this function with details of the user to check whether the user info is valid.
 ----------------------------------------------------------------------*/
+bool checkDup(const char *otherCustID);
 int InitCustomer();
 /* int InitCustomer() uses the global variables streampos CUSTOMERFILEPOINTER and FILENAMES[0] to check if binary file "Customers.bin" exist in the DIRECTORY to essentially check if the program is being run for the first time. If it does, then it returns 0, if it doesn't then the file is created. If file was created successfully, it returns 1 else -1. The function does not fail.
 ----------------------------------------------------------------------*/

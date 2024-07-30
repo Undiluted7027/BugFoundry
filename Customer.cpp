@@ -277,6 +277,23 @@ int ValidateCustomer(
     std::cout << "Record is valid!" << std::endl;
     return 1;
 }
+
+bool checkDup(const char *otherCustID){
+    std::ifstream file(FILENAMES[0], std::ios::binary);
+    if (!file) {
+        throw std::runtime_error("Could not open file for reading");
+        return 0;
+    }
+    Customer temp;
+    while (file.read(reinterpret_cast<char*>(&temp), sizeof(Customer))){
+        if (strcmp(temp.getCustID(), otherCustID) == 0) {
+            std::cout << "Record already exists :/" << std::endl;
+            return 1;
+        }
+    }
+    return 0;
+}
+
 /*
 Validates that the Customer object attributes are acceptable and makes sure no duplicate Customer records exists.
 A linear search algorithm is used to iterate through the Customer records.
