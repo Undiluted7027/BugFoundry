@@ -6,6 +6,9 @@
 #include <iostream>
 #include <cstring>
 
+// 967774000
+// 144721
+
 int ScenarioControl(int choice, int subchoice)
 {
     switch (choice)
@@ -19,8 +22,6 @@ int ScenarioControl(int choice, int subchoice)
         if (subchoice == 2)
             return CreateNewComplaint();
         if (subchoice == 3)
-            return CreateNewProduct();
-        if (subchoice == 4)
             return CreateNewProductRel();
         break;
 
@@ -49,15 +50,18 @@ int ScenarioControl(int choice, int subchoice)
 
 int NewCustomer()
 {
-    char name[31], email[25], phone[15];
+    std::string name;
+    std::string email;
+    std::string phone;
 
     std::cout << "===Creating a User===" << std::endl;
+    std::cin.ignore();
     std::cout << "Enter full name (30 max characters): ";
-    std::cin.getline(name, 30);
+    std::getline(std::cin, name);
     std::cout << "Enter email (24 max characters): ";
-    std::cin.getline(email, 24);
-    std::cout << "Enter phone (eg. 1 604-723-1023): ";
-    std::cin.getline(phone, 14);
+    std::getline(std::cin, email);
+    std::cout << "Enter phone (eg. [1]6047231023): ";
+    std::getline(std::cin, phone);
 
     char choice;
     std::cout << "Confirm to create user (Y/N): ";
@@ -70,7 +74,7 @@ int NewCustomer()
 
     try
     {
-        Customer newCustomer = CreateCustomer(name, email, phone);
+        Customer newCustomer = CreateCustomer(name.data(), email.data(), phone.data());
         std::streampos pos = CUSTOMERFILEPOINTER;
         CommitCustomer(newCustomer, pos, FILENAMES[0]);
         std::cout << "New UserID: " << newCustomer.getCustID() << std::endl;
@@ -86,17 +90,25 @@ int NewCustomer()
 
 int CreateNewComplaint()
 {
-    char userID[11], relID[9], desc[31], product[11];
+    // char* generatedID = IDGenerator('3', 6);
+    // cout << endl << generatedID << endl;
+
+    std::string userID;
+    std::string relID;
+    std::string desc;
+    std::string product;
 
     std::cout << "===Creating a Complaint===" << std::endl;
-    std::cout << "Enter your UserID (10 digits): ";
-    std::cin.getline(userID, 11);
+    std::cin.ignore();
+    PrintAllCustomers(FILENAMES[0]);
+    std::cout << "Enter your UserID (9 digits): ";
+    std::getline(std::cin, userID);
     std::cout << "Enter the Product the bug was found on: ";
-    std::cin.getline(product, 11);
+    std::getline(std::cin, product);
     std::cout << "Enter the Product ReleaseID that the bug was found on (8 letters): ";
-    std::cin.getline(relID, 9);
+    std::getline(std::cin, relID);
     std::cout << "Enter Description of your complaint (30 max characters): ";
-    std::cin.getline(desc, 31);
+    std::getline(std::cin, desc);
 
     char choice;
     std::cout << "Confirm to create complaint (Y/N): ";
@@ -109,18 +121,18 @@ int CreateNewComplaint()
 
     try
     {
-        char date[9];
-        // Get current date in format YY-MM-DD
+        char date[11];
+        // Get current date in format YYYY-MM-DD
         time_t now = time(0);
-        strftime(date, sizeof(date), "%y-%m-%d", localtime(&now));
+        strftime(date, sizeof(date), "%Y-%m-%d", localtime(&now));
 
-        Complaint newComplaint = CreateComplaint(desc, date, "", relID, userID);
-        std::streampos pos = COMPLAINTFILEPOINTER;
-        CommitComplaint(newComplaint, pos, FILENAMES[2]);
+        Complaint newComplaint = CreateComplaint(desc.data(), date, relID.data(), userID.data());
+        // std::streampos pos = COMPLAINTFILEPOINTER;
+        // CommitComplaint(newComplaint, pos, FILENAMES[2]);
 
-        Change newChange = CreateChange(desc, '-', '3', date, relID, "");
-        pos = CHANGEFILEPOINTER;
-        CommitChange(newChange, pos, FILENAMES[1]);
+        // Change newChange = CreateChange(desc.data(), '-', '3', date, relID.data());
+        // pos = CHANGEFILEPOINTER;
+        // CommitChange(newChange, pos, FILENAMES[1]);
 
         std::cout << "Complaint Created Successfully" << std::endl;
         return 1;
@@ -144,13 +156,14 @@ int DisplayChangeReport()
               << std::endl;
 
     std::cout << std::left
-              << std::setw(12) << "Product"
-              << std::setw(32) << "Description"
               << std::setw(10) << "ChangeID"
-              << std::setw(12) << "Date"
-              << std::setw(11) << "Status"
+              << std::setw(15) << "Product Name"
+              << std::setw(32) << "Description"
+              << std::setw(12) << "Last Update"
+              << std::setw(7) << "Status"
               << std::setw(10) << "Priority"
-              << std::setw(9) << "ReleaseID" << std::endl;
+              << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+    std::cout << std::string(118, '-') << std::endl;
 
     do
     {
@@ -185,6 +198,7 @@ int CreateNewProduct()
     char productName[11];
     std::cout << "===Create Product===" << std::endl;
 
+    std::cin.ignore();
     std::cout << "Enter the new product name (10 max characters): ";
     std::cin.getline(productName, 11);
 
@@ -214,15 +228,18 @@ int CreateNewProduct()
 
 int CreateNewProductRel()
 {
-    char productName[11], releaseDate[11], releaseID[9];
-
+    std::string productName;
+    std::string releaseDate;
+    std::string releaseID;
+    PrintAllProducts(FILENAMES[3]);
     std::cout << "===Create Product Release===" << std::endl;
+    std::cin.ignore();
     std::cout << "Enter the product name (10 max characters): ";
-    std::cin.getline(productName, 11);
-    std::cout << "Enter the anticipated release date (YY/MM/DD): ";
-    std::cin.getline(releaseDate, 11);
-    std::cout << "Enter the new releaseID (8 max characters): ";
-    std::cin.getline(releaseID, 9);
+    std::getline(std::cin, productName);
+    std::cout << "Enter the anticipated release date (YYYY-MM-DD): ";
+    std::getline(std::cin, releaseDate);
+    std::cout << "Enter the new/anticipated releaseID (8 max characters): ";
+    std::getline(std::cin, releaseID);
 
     char choice;
     std::cout << "Confirm to create product release (Y/N): ";
@@ -235,7 +252,7 @@ int CreateNewProductRel()
 
     try
     {
-        Product newProductRelease = CreateProduct(productName, releaseID, releaseDate);
+        Product newProductRelease = CreateProduct(productName.data(), releaseID.data(), releaseDate.data());
         std::streampos pos = PRODUCTFILEPOINTER;
         CommitProduct(newProductRelease, pos, FILENAMES[3]);
         std::cout << "Product Release Created Successfully" << std::endl;
@@ -250,21 +267,22 @@ int CreateNewProductRel()
 
 int UpdateSpecificChange()
 {
-    char changeID[7];
+    std::string changeID;
     std::cout << "===ChangeID===" << std::endl;
+    std::cin.ignore();
     std::cout << "Enter the ChangeID (6 Digit ID): ";
-    std::cin.getline(changeID, 7);
+    std::getline(std::cin, changeID);
 
     try
     {
         std::streampos pos = CHANGEFILEPOINTER;
         Change changeToUpdate = GetChangeDetails(pos, FILENAMES[1]);
-        while (strcmp(changeToUpdate.getChangeID(), changeID) != 0)
+        while (strcmp(changeToUpdate.getChangeID(), changeID.data()) != 0)
         {
             pos += sizeof(Change);
             changeToUpdate = GetChangeDetails(pos, FILENAMES[1]);
         }
-        return UpdateChangeInfo(changeID, pos);
+        return UpdateChangeInfo(changeID.data(), pos);
     }
     catch (const std::runtime_error &e)
     {
@@ -284,14 +302,14 @@ int ListAndSelectChange()
               << std::endl;
 
     std::cout << std::left
-              << std::setw(2) << " "
-              << std::setw(12) << "Product"
-              << std::setw(32) << "Description"
               << std::setw(10) << "ChangeID"
-              << std::setw(12) << "Date"
-              << std::setw(11) << "Status"
+              << std::setw(15) << "Product Name"
+              << std::setw(32) << "Description"
+              << std::setw(12) << "Last Update"
+              << std::setw(7) << "Status"
               << std::setw(10) << "Priority"
-              << std::setw(9) << "ReleaseID" << std::endl;
+              << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+    std::cout << std::string(118, '-') << std::endl;
 
     do
     {
@@ -312,6 +330,7 @@ int ListAndSelectChange()
         }
 
         std::cout << "Type the number to select a change, '1' to show the next list, '0' to quit: ";
+        std::cin.ignore();
         std::cin.getline(input, 3);
         choice = atoi(input);
 
@@ -332,19 +351,20 @@ int ListAndSelectChange()
 int UpdateChangeInfo(const char *changeID, std::streampos position)
 {
     Change theChange = GetChangeDetails(position, FILENAMES[1]);
-    char description[31];
     char status;
     int priority;
-    char releaseID[9];
+
+    std::string description;
+    std::string releaseID;
 
     std::cout << "Updating Change " << changeID << std::endl;
 
     std::cout << "Current Description: " << theChange.change_displayDesc() << std::endl;
     std::cout << "Enter new Description (or press Enter to keep current): ";
-    std::cin.getline(description, 31);
+    std::getline(std::cin, description);
     if (description[0] == '\0')
     {
-        strcpy(description, theChange.change_displayDesc());
+        strcpy(description.data(), theChange.change_displayDesc());
     }
 
     std::cout << "Current Status: " << theChange.change_displayStatus() << std::endl;
@@ -371,13 +391,13 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
 
     std::cout << "Current ReleaseID: " << theChange.change_displayRelID() << std::endl;
     std::cout << "Enter new ReleaseID (or press Enter to keep current): ";
-    std::cin.getline(releaseID, 9);
+    std::getline(std::cin, releaseID);
     if (releaseID[0] == '\0')
     {
-        strcpy(releaseID, theChange.change_displayRelID());
+        strcpy(releaseID.data(), theChange.change_displayRelID());
     }
 
-    theChange.UpdateChange(changeID, description, status, priority + '0', releaseID);
+    theChange.UpdateChange(changeID, description.data(), status, priority + '0', releaseID.data());
 
     CommitChange(theChange, position, FILENAMES[1]);
 
@@ -435,88 +455,19 @@ This function uses linear search to find all users that are related to the relea
 --------------------------------------------------------------------*/
 int UserOnChange()
 {
-    char product[9];
-    int changeID[10];
-    char input[3];
-    int choice;
-    int start = 1;
-    int count = 1;
-    int end = 11;
-
-    cout << "===Product Name===" << endl;
-    cout << "Enter the product name: ";
-    cin.getline(product, 10);
-    // if (!ValidateProduct()) return 0
-    cout << endl;
-
-    cout << "List of changes" << endl;
-    do
-    {
-        // if (end of line)
-        // {
-        //     cout << "No changes to show!" << endl;
-        //     return 0;
-        // }
-        while (start < end /*&& CHANGEFILEPOINTER != Dummy*/)
-        {
-            std::streampos changePos = CHANGEFILEPOINTER - static_cast<std::streamoff>(start * sizeof(Change));
-            Change getChange = GetChangeDetails(changePos, FILENAMES[1]);
-            // if (getChange.ProductName == product)
-            // {
-            //     PrintChangeB(count, getChage.description, getChange.changeID, getChange.date, getChange.state, getChange.priority, getChange.ReleaseID);
-            //     count++;
-            // }
-            start++;
-        }
-        cout << "Type the number to the left of Change to select. ('1' to show the next list, '0' to quit): ";
-        cin.getline(input, 3);
-        choice = atoi(input);
-        cout << endl;
-
-        choice = SearchPageError(choice, start, end);
-        end = end + 10;
-    } while (choice == 1);
-
-    if (choice == -1)
-        return 0;
-    std::streampos changePos = CHANGEFILEPOINTER - static_cast<std::streamoff>(start * sizeof(Change));
-    Change theChange = GetChangeDetails(changePos, FILENAMES[1]);
-    choice = 0;
-    count = 1;
-    start = 1;
-    end = 11;
-
-    do
-    {
-        // if (COMPLAINTFILEPOINTER == Dummy)
-        // {
-        //     cout << "No users to show!" << endl;
-        //     return 0;
-        // }
-        while (start < end /*&& COMPLAINTFILEPOINTER != Dummy*/)
-        {
-
-            std::streampos complaintPos = COMPLAINTFILEPOINTER - static_cast<std::streamoff>(sizeof(Complaint) * start);
-Complaint getComplaint = GetComplaintDetails(complaintPos, FILENAMES[2]);
-            // if (getComplaint.changeID == theChange.changeID)
-            // {
-            //     PrintUser(getComplaint.UserID.name, getComplaint.UserID.email);
-            //     count++;
-            // }
-            start++;
-        }
-        cout << "Press '1' to go to the next page or '1' to quit viewing ";
-        cin >> choice;
-        cout << endl;
-
-        start = end;
-        end = end + 10;
-    } while (DisplayPageError(choice) == 1);
+    std::string changeID;
+    PrintAllComplaints(FILENAMES[2]);
+    PrintAllChanges(FILENAMES[1]);
+    std::cout << "Enter Change ID (max 5 digits starting with 1): ";
+    std::cin.ignore();
+    std::getline(std::cin, changeID);
+    // if (strlen(changeID.data()) > 6) validation for incorrect changeID
+    CreateUsersInformedOnUpdateReport(changeID.data());
     return 1;
 }
 
-
-int InitControl(){
+int InitControl()
+{
     int CustomerStart = InitCustomer();
     int ComplaintStart = InitComplaint();
     int ChangeStart = InitChange();

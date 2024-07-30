@@ -51,6 +51,7 @@ Product GetProductDetails(
     const std::string &FILENAME = FILENAMES[3]
 ); // Function to retrieve Product details from file
 
+bool checkDupProduct(const char *otherReleaseID);
 int InitProduct(); // Placeholder function declaration for initializing product data
 
 #endif // PRODUCT_HPP

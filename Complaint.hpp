@@ -85,8 +85,8 @@ public:
     private:
     char complaintID[7];      // Unique ID of complaint
     char description[31];     // Description of complaint
-    char dateOfComplaint[9];  // Date complaint was created (YYYYMMDD format)
-    char changeID[6];         // Change ID associated with complaint
+    char dateOfComplaint[11];  // Date complaint was created (YYYY-MM-DD format)
+    char changeID[7];         // Change ID associated with complaint
     char releaseID[9];        // Release ID of the product
     char custID[11];          // Customer ID (10 characters + null terminator)
 };
