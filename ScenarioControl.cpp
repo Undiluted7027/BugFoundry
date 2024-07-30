@@ -6,8 +6,8 @@
 #include <iostream>
 #include <cstring>
 
-//967774000
-//144721
+// 967774000
+// 144721
 
 int ScenarioControl(int choice, int subchoice)
 {
@@ -22,8 +22,6 @@ int ScenarioControl(int choice, int subchoice)
         if (subchoice == 2)
             return CreateNewComplaint();
         if (subchoice == 3)
-            return CreateNewProduct();
-        if (subchoice == 4)
             return CreateNewProductRel();
         break;
 
@@ -54,7 +52,7 @@ int NewCustomer()
 {
     std::string name;
     std::string email;
-    std::string phone; 
+    std::string phone;
 
     std::cout << "===Creating a User===" << std::endl;
     std::cin.ignore();
@@ -92,9 +90,9 @@ int NewCustomer()
 
 int CreateNewComplaint()
 {
-    char* generatedID = IDGenerator('3', 6);
-    cout << endl << generatedID << endl;
-    
+    // char* generatedID = IDGenerator('3', 6);
+    // cout << endl << generatedID << endl;
+
     std::string userID;
     std::string relID;
     std::string desc;
@@ -102,6 +100,7 @@ int CreateNewComplaint()
 
     std::cout << "===Creating a Complaint===" << std::endl;
     std::cin.ignore();
+    PrintAllCustomers(FILENAMES[0]);
     std::cout << "Enter your UserID (9 digits): ";
     std::getline(std::cin, userID);
     std::cout << "Enter the Product the bug was found on: ";
@@ -123,18 +122,17 @@ int CreateNewComplaint()
     try
     {
         char date[11];
-        // date[11] = '\0';
-        // Get current date in format YY-MM-DD
+        // Get current date in format YYYY-MM-DD
         time_t now = time(0);
-        strftime(date, sizeof(date), "%y-%m-%d", localtime(&now));
+        strftime(date, sizeof(date), "%Y-%m-%d", localtime(&now));
 
-        Complaint newComplaint = CreateComplaint(desc.data(), date, generatedID, relID.data(), userID.data());
-        std::streampos pos = COMPLAINTFILEPOINTER;
-        CommitComplaint(newComplaint, pos, FILENAMES[2]);
+        Complaint newComplaint = CreateComplaint(desc.data(), date, relID.data(), userID.data());
+        // std::streampos pos = COMPLAINTFILEPOINTER;
+        // CommitComplaint(newComplaint, pos, FILENAMES[2]);
 
-        Change newChange = CreateChange(desc.data(), '-', '3', date, relID.data(), generatedID);
-        pos = CHANGEFILEPOINTER;
-        CommitChange(newChange, pos, FILENAMES[1]);
+        // Change newChange = CreateChange(desc.data(), '-', '3', date, relID.data());
+        // pos = CHANGEFILEPOINTER;
+        // CommitChange(newChange, pos, FILENAMES[1]);
 
         std::cout << "Complaint Created Successfully" << std::endl;
         return 1;
@@ -232,14 +230,14 @@ int CreateNewProductRel()
     std::string productName;
     std::string releaseDate;
     std::string releaseID;
-
+    PrintAllProducts(FILENAMES[3]);
     std::cout << "===Create Product Release===" << std::endl;
     std::cin.ignore();
     std::cout << "Enter the product name (10 max characters): ";
     std::getline(std::cin, productName);
     std::cout << "Enter the anticipated release date (YYYY-MM-DD): ";
     std::getline(std::cin, releaseDate);
-    std::cout << "Enter the new releaseID (8 max characters): ";
+    std::cout << "Enter the new/anticipated releaseID (8 max characters): ";
     std::getline(std::cin, releaseID);
 
     char choice;
@@ -456,6 +454,9 @@ This function uses linear search to find all users that are related to the relea
 --------------------------------------------------------------------*/
 int UserOnChange()
 {
+    std::string productName;
+    std::string changeID;
+    
     char product[9];
     int changeID[10];
     char input[3];
@@ -518,7 +519,7 @@ int UserOnChange()
         {
 
             std::streampos complaintPos = COMPLAINTFILEPOINTER - static_cast<std::streamoff>(sizeof(Complaint) * start);
-Complaint getComplaint = GetComplaintDetails(complaintPos, FILENAMES[2]);
+            Complaint getComplaint = GetComplaintDetails(complaintPos, FILENAMES[2]);
             // if (getComplaint.changeID == theChange.changeID)
             // {
             //     PrintUser(getComplaint.UserID.name, getComplaint.UserID.email);
@@ -536,8 +537,8 @@ Complaint getComplaint = GetComplaintDetails(complaintPos, FILENAMES[2]);
     return 1;
 }
 
-
-int InitControl(){
+int InitControl()
+{
     int CustomerStart = InitCustomer();
     int ComplaintStart = InitComplaint();
     int ChangeStart = InitChange();

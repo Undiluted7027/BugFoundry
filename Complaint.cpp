@@ -8,6 +8,7 @@ This CPP file called Complaint.cpp handles the complaints of the program.
 #include "Complaint.hpp"
 #include "Change.hpp"
 #include "Globals.hpp"
+#include "Product.hpp"
 // #include "drivers.cpp"
 #include <cstring>
 #include <iostream>
@@ -113,8 +114,16 @@ No noticeable algorithm or data structure used.
 Get the custID of a Complaint object.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
-int ValidateComplaint(const char *description, const char *dateOfComplaint, const char *changeID, const char *releaseID, const char *custID)
+int ValidateComplaint(const char *description, const char *dateOfComplaint, const char *releaseID, const char *custID)
 {
+    if (!checkDup(custID)){
+        cout << "Customer doesn't exist." << endl;
+        return -1;
+    }
+    if (!checkDupProduct(releaseID)){
+        cout << "Product doesn't exist." << endl;
+        return -1;
+    }
     // Validate description
     if (strlen(description) == 0 || strlen(description) > 30)
     {
@@ -142,13 +151,6 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
         return -1;
     }
 
-    // Validate changeID
-    if (strlen(changeID) != 0 && (strlen(changeID) != 6 || changeID[0] != '1'))
-    {
-        std::cout << "Invalid changeID" << std::endl;
-        return -1;
-    }
-
     // Validate releaseID
     if (strlen(releaseID) > 8 && strlen(releaseID) <= 0)
     {
@@ -163,6 +165,7 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
         return -1;
     }
 
+
     // Check for duplicate complaint
     std::ifstream file( FILENAMES[2], std::ios::binary);
     if (!file)
@@ -170,13 +173,12 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
         std::cerr << "Error: Could not open file for reading" << std::endl;
         return -1;
     }
-
+    
     Complaint currentComplaint;
     while (file.read(reinterpret_cast<char *>(&currentComplaint), sizeof(Complaint)))
     {
         if (strcmp(currentComplaint.getDescription(), description) == 0 &&
             strcmp(currentComplaint.getDateOfComplaint(), dateOfComplaint) == 0 &&
-            strcmp(currentComplaint.getChangeID(), changeID) == 0 &&
             strcmp(currentComplaint.getReleaseID(), releaseID) == 0 &&
             strcmp(currentComplaint.getCustID(), custID) == 0)
         {
@@ -195,26 +197,25 @@ Validates that the Complaint object attributes are acceptable and makes sure no 
 A linear search algorithm is used to iterate through the Complaint records.
 --------------------------------------------------------------------*/
 Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
-                          const char *changeID, const char *releaseID, const char *custID)
+                          const char *releaseID, const char *custID)
 {
-    if (ValidateComplaint(description, dateOfComplaint, changeID, releaseID, custID) != 1)
+    cout << "Date is: " << dateOfComplaint << endl;
+    if (ValidateComplaint(description, dateOfComplaint, releaseID, custID) != 1)
     {
         throw std::runtime_error("Invalid complaint data");
     }
-
     // Check if a matching Change record exists
     bool changeExists = false;
     std::ifstream changeFile( FILENAMES[1], std::ios::binary);
+    Change change;
     if (changeFile)
     {
-        Change change;
         while (changeFile.read(reinterpret_cast<char *>(&change), sizeof(Change)))
         {
             if (strcmp(change.change_displayRelID(), releaseID) == 0 &&
                 strcmp(change.change_displayDesc(), description) == 0)
             {
                 changeExists = true;
-                changeID = change.getChangeID();
                 break;
             }
         }
@@ -226,17 +227,17 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
     {
         char status = '-';   // Assuming '-' is the default status for a new change
         char priority = '3'; // Assuming '3' is the default priority
-        Change newChange("", description, status, priority, releaseID);
+        Change newChange("", description, status, priority, releaseID, dateOfComplaint);
 
         std::streampos changePos = CHANGEFILEPOINTER;
         CommitChange(newChange, changePos, FILENAMES[1]);
 
         // Update changeID with the newly created Change's ID
-        strcpy(const_cast<char *>(changeID), newChange.getChangeID());
+        strcpy(const_cast<char *>(newChange.getChangeID()), newChange.getChangeID());
     }
 
     // Create and return the new Complaint
-    Complaint newComplaint("", description, dateOfComplaint, changeID, releaseID, custID);
+    Complaint newComplaint("", description, dateOfComplaint, change.getChangeID(), releaseID, custID);
 
     std::streampos complaintPos = COMPLAINTFILEPOINTER;
     CommitComplaint(newComplaint, complaintPos, FILENAMES[2]);
@@ -254,7 +255,8 @@ void CommitComplaint(const Complaint &complaint, std::streampos &startPos, const
     {
         throw std::runtime_error("Could not open file for writing");
     }
-    file.seekp(startPos);
+    file.seekp(0, std::ios::end);
+    startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&complaint), sizeof(Complaint));
     startPos = file.tellp();
 }

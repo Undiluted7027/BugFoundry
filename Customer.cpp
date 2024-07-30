@@ -152,7 +152,8 @@ void CommitCustomer(
     if (!file) {
         throw std::runtime_error("Could not open file for writing");
     }
-    file.seekp(startPos);
+    file.seekp(0, std::ios::end);
+    startPos = file.tellp();
     file.write(reinterpret_cast<const char*>(&customer), sizeof(Customer));
     startPos = file.tellp();
 }
@@ -256,8 +257,16 @@ int ValidateCustomer(
     }
 
     // Validate phone number [1]6041231234
-    if (phone[0] != '1' || !isdigit(phone[1]) || !isdigit(phone[2]) || !isdigit(phone[3]) || !isdigit(phone[4]) || !isdigit(phone[5]) || !isdigit(phone[6]) || !isdigit(phone[7]) || !isdigit(phone[8]) || !isdigit(phone[9]) || !isdigit(phone[10]))
+    if ((strlen(phone) == 11 && phone[0] == '1') || (strlen(phone) == 10 && isdigit(phone[0]))){
+
+        for (int i = 0; i < strlen(phone); i++){
+            if (!isdigit(phone[i]))
+                return -1;
+        }
+    }
+    else{
         return -1;
+    }
 
     // Check if record already exists
     std::ifstream file(FILENAMES[0], std::ios::binary);
@@ -277,6 +286,23 @@ int ValidateCustomer(
     std::cout << "Record is valid!" << std::endl;
     return 1;
 }
+
+bool checkDup(const char *otherCustID){
+    std::ifstream file(FILENAMES[0], std::ios::binary);
+    if (!file) {
+        throw std::runtime_error("Could not open file for reading");
+        return 0;
+    }
+    Customer temp;
+    while (file.read(reinterpret_cast<char*>(&temp), sizeof(Customer))){
+        if (strcmp(temp.getCustID(), otherCustID) == 0) {
+            std::cout << "Record already exists :/" << std::endl;
+            return 1;
+        }
+    }
+    return 0;
+}
+
 /*
 Validates that the Customer object attributes are acceptable and makes sure no duplicate Customer records exists.
 A linear search algorithm is used to iterate through the Customer records.

@@ -324,7 +324,8 @@ void CommitChange(const Change& change, std::streampos& startPos, const std::str
     if (!file) {
         throw std::runtime_error("Could not open file for writing");
     }
-    file.seekp(startPos);
+    file.seekp(0, std::ios::end);
+    startPos = file.tellp();
     file.write(reinterpret_cast<const char*>(&change), sizeof(Change));
     startPos = file.tellp();
 }
