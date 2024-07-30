@@ -197,7 +197,7 @@ Validates that the Complaint object attributes are acceptable and makes sure no 
 A linear search algorithm is used to iterate through the Complaint records.
 --------------------------------------------------------------------*/
 Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
-                          const char *releaseID, const char *custID)
+                          const char *releaseID, const char *custID, const char* productName)
 {
     cout << "Date is: " << dateOfComplaint << endl;
     if (ValidateComplaint(description, dateOfComplaint, releaseID, custID) != 1)
@@ -227,13 +227,14 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
     {
         char status = '-';   // Assuming '-' is the default status for a new change
         char priority = '3'; // Assuming '3' is the default priority
-        Change newChange("", description, status, priority, releaseID, dateOfComplaint);
+        Change newChange("", description, status, priority, releaseID, dateOfComplaint,productName);
 
         std::streampos changePos = CHANGEFILEPOINTER;
         CommitChange(newChange, changePos, FILENAMES[1]);
 
         // Update changeID with the newly created Change's ID
         strcpy(const_cast<char *>(newChange.getChangeID()), newChange.getChangeID());
+        change = newChange;
     }
         cout << "ID of change: " << change.getChangeID() << endl;
 
