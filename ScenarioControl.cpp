@@ -126,7 +126,7 @@ int CreateNewComplaint()
         time_t now = time(0);
         strftime(date, sizeof(date), "%Y-%m-%d", localtime(&now));
 
-        Complaint newComplaint = CreateComplaint(desc.data(), date, relID.data(), userID.data());
+        Complaint newComplaint = CreateComplaint(desc.data(), date, relID.data(), userID.data(), product.data());
         // std::streampos pos = COMPLAINTFILEPOINTER;
         // CommitComplaint(newComplaint, pos, FILENAMES[2]);
 
@@ -268,6 +268,7 @@ int CreateNewProductRel()
 int UpdateSpecificChange()
 {
     std::string changeID;
+    PrintAllChanges(FILENAMES[1]);
     std::cout << "===ChangeID===" << std::endl;
     std::cin.ignore();
     std::cout << "Enter the ChangeID (6 Digit ID): ";
@@ -415,36 +416,17 @@ int ProductOnChange()
 
     cout << "===ReleaseID===" << endl;
     cout << "Enter the ReleaseID (max 8 characters): ";
+    cin.ignore();
     cin.getline(relID, 8);
-    if (ReleaseIDError(relID))
-        return 0;
+    if (!checkDupProduct(relID)){
+        cout << "Product doesn't exist." << endl;
+        return -1;
+    }
     cout << endl;
 
-    cout << "ANTICIPATED CHANGES FOR " << "Product Name" << endl
+    cout << "ANTICIPATED CHANGES FOR " << "Product with ReleaseID: " << relID << endl
          << endl;
-    do
-    {
-        // if (CHANGEFILEPOINTER == Dummy)
-        // {
-        //     cout << "No changes to show!" << endl;
-        //     return 0;
-        // }
-        while (count < end /*&& CHANGEFILEPOINTER != Dummy*/)
-        {
-            std::streampos changePos = CHANGEFILEPOINTER - static_cast<std::streamoff>(start * sizeof(Change));
-            Change getChange = GetChangeDetails(changePos, FILENAMES[1]);
-            // if (getChange.releaseID == relID)
-            // {
-            //     PrintChangeB(count, getChage.description, getChange.changeID, getChange.date, getChange.state, getChange.priority, getChange.ReleaseID);
-            //     count++;
-            // }
-            start++;
-        }
-        cout << "Type 1 to show next list, 0 to quit: ";
-        cin >> choice;
-        cout << endl;
-        end = end + 10;
-    } while (DisplayPageError(choice) == 1);
+    CreateAnticipatedChangesProduct(relID);
     return 1;
 }
 
