@@ -22,8 +22,6 @@ int ScenarioControl(int choice, int subchoice)
         if (subchoice == 2)
             return CreateNewComplaint();
         if (subchoice == 3)
-            return CreateNewProduct();
-        if (subchoice == 4)
             return CreateNewProductRel();
         break;
 
@@ -232,14 +230,14 @@ int CreateNewProductRel()
     std::string productName;
     std::string releaseDate;
     std::string releaseID;
-
+    PrintAllProducts(FILENAMES[3]);
     std::cout << "===Create Product Release===" << std::endl;
     std::cin.ignore();
     std::cout << "Enter the product name (10 max characters): ";
     std::getline(std::cin, productName);
     std::cout << "Enter the anticipated release date (YYYY-MM-DD): ";
     std::getline(std::cin, releaseDate);
-    std::cout << "Enter the new releaseID (8 max characters): ";
+    std::cout << "Enter the new/anticipated releaseID (8 max characters): ";
     std::getline(std::cin, releaseID);
 
     char choice;
@@ -456,6 +454,9 @@ This function uses linear search to find all users that are related to the relea
 --------------------------------------------------------------------*/
 int UserOnChange()
 {
+    std::string productName;
+    std::string changeID;
+    
     char product[9];
     int changeID[10];
     char input[3];

@@ -8,6 +8,7 @@ This CPP file called Complaint.cpp handles the complaints of the program.
 #include "Complaint.hpp"
 #include "Change.hpp"
 #include "Globals.hpp"
+#include "Product.hpp"
 // #include "drivers.cpp"
 #include <cstring>
 #include <iostream>
@@ -119,6 +120,10 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
         cout << "Customer doesn't exist." << endl;
         return -1;
     }
+    if (!checkDupProduct(releaseID)){
+        cout << "Product doesn't exist." << endl;
+        return -1;
+    }
     // Validate description
     if (strlen(description) == 0 || strlen(description) > 30)
     {
@@ -222,7 +227,7 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
     {
         char status = '-';   // Assuming '-' is the default status for a new change
         char priority = '3'; // Assuming '3' is the default priority
-        Change newChange("", description, status, priority, releaseID);
+        Change newChange("", description, status, priority, releaseID, dateOfComplaint);
 
         std::streampos changePos = CHANGEFILEPOINTER;
         CommitChange(newChange, changePos, FILENAMES[1]);
@@ -250,7 +255,8 @@ void CommitComplaint(const Complaint &complaint, std::streampos &startPos, const
     {
         throw std::runtime_error("Could not open file for writing");
     }
-    file.seekp(startPos);
+    file.seekp(0, std::ios::end);
+    startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&complaint), sizeof(Complaint));
     startPos = file.tellp();
 }
