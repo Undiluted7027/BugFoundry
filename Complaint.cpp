@@ -151,6 +151,19 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
         throw InvalidDataException("DateOfComplaint field can only have value in the format of YYYY-MM-DD.");
     }
 
+    if ((year % 4 != 0 && month == 02 && day > 30) || (year % 4 == 0 &&month == 2 && day > 29)){
+        throw InvalidDataException("Invalid date");
+    }
+    if (day > 30){
+        switch (month){
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                throw InvalidDataException("Invalid date");
+        }
+    }
+
     // Validate releaseID
     if (strlen(releaseID) > 8 && strlen(releaseID) <= 0)
     {
