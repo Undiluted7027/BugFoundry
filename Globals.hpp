@@ -37,10 +37,25 @@ const string FILENAMES[NUMBER_OF_FILES] =
         "data/Changes.bin",
         "data/Complaints.bin",
         "data/Products.bin"
-};  // Array with names of binary files
+};  
+// Array with names of binary files
 // ----------------------------------------------------------------------
 char* IDGenerator(const char &type, const std::string &FILENAME, int precision);
 /* T IDGenerator(const string &type, const int &precision) generates a random ID for the entity that is passed in type parameter as string. The function returns a template value. It fails if type is null and/or precision is 0.
+char *IDGenerator(
+    const char &type,       // in: type of entity that wants the ID (Product, Complaint, Customer, Change)
+    const int &precision    // in: Number of digits or characters in the ID
+);
+/* 
+T IDGenerator(const string &type, const int &precision) generates a random ID for the entity that is passed in type parameter as string. The function returns a template value. It fails if type is null and/or precision is 0.
 ----------------------------------------------------------------------*/
-void safeStrCopy(char* dest, const char* src, size_t maxLen);
+void safeStrCopy(
+    char* dest,             // in out: the destination to copy the character array
+    const char* src,        // in: the character array to copy
+    size_t maxLen           // in: the size of character array
+);
+/*
+Copies a character array to another destination and adds the null character at the end.
+Therefore, safely copies a character array.
+-----------------------------------------------------------------------*/
 #endif

@@ -9,16 +9,39 @@ Record.hpp keeps its high cohesion by encapsulating all possible product entries
 
 template <class T>
 class Record{
+    
     private:
-        char *id;
-        T data;
+
+        char *id;       // the ID of the record
+        T data;         // the data of the record of type T
+    
     public:
-        Record(const char *id, T data): id(id), data(data){}
+
+        Record(
+            const char *id,         // the id of the record
+            T data                  // the data of the record of type T 
+        ): id(id), data(data){}
 
         char *getId() const;
+        /*
+        getId is used to return the ID of the record
+        -----------------------------------------------------------------*/
         T getData() const;
-        void setID(const char *id);
-        void setData(T &data);
+        /*
+        getData is used to return the data of the record
+        -----------------------------------------------------------------*/
+        void setID(
+            const char *id      // the id used to set a data 
+        );
+        /*
+        setID is used to set an ID with the ID provided in function parameter
+        -----------------------------------------------------------------*/
+        void setData(
+            T &data     // the data used to set a data
+        );
+        /*
+        setData is used to set a data with the data provided in function parameter
+        -----------------------------------------------------------------*/
 };
 
 

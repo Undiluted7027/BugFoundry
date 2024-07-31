@@ -97,7 +97,6 @@ int Report_Menu()
 To display the report submenu and get choice from the user 
 No noticeable algorithm or data structure used.
 -------------------------------------------------*/
-
 int ActivateUI()
 {
     int choice;
