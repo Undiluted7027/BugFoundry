@@ -15,6 +15,9 @@ Product::Product() : releaseID{0}, releaseDate{0}
 {
     memset(productName, 0, sizeof(productName));
 }
+/*
+The default constructor of Product class
+---------------------------------------------------------------------*/
 
 Product::Product(const char *releaseID, const char *productName, const char *ReleaseDate)
 {
@@ -29,7 +32,7 @@ Product::Product(const char *releaseID, const char *productName, const char *Rel
     else
     {
         // Assuming IDGenerator returns a char*
-        char *generatedID = IDGenerator('4', 9);
+        char *generatedID = IDGenerator('3',FILENAMES[3], 9);
         safeStrCopy(this->releaseID, generatedID, sizeof(this->releaseID));
         delete[] generatedID;
     }
@@ -88,7 +91,7 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
     }
 
     if ((year % 4 != 0 && month == 02 && day > 30) || (year % 4 == 0 &&month == 2 && day > 29)){
-        throw InvalidDataException("Invalid date");
+        throw InvalidDataException("ReleaseDate field has invalid YYYY-MM-DD.");
     }
     if (day > 30){
         switch (month){
@@ -107,6 +110,7 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
         std::cerr << "Error: Could not open file for reading" << std::endl;
         return -1;
     }
+    file.seekg(sizeof(int), std::ios::beg);
 
     Product currentProduct;
     while (file.read(reinterpret_cast<char *>(&currentProduct), sizeof(Product)))
@@ -130,7 +134,6 @@ A linear search algorithm is used to iterate through the Product records.
 
 Product CreateProduct(const char *productName, const char *ReleaseID, const char *ReleaseDate)
 {
-
     ValidateProduct(productName, ReleaseID, ReleaseDate);
     return Product(ReleaseID, productName, ReleaseDate);
 }
@@ -140,11 +143,13 @@ No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 void CommitProduct(const Product &product, std::streampos &startPos, const std::string &FILENAME)
 {
-    std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    std::fstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file)
     {
         throw FileException("Could not open file 'Products.bin' for writing when adding a Change record to the file.");
     }
+    int recordCount;
+    file.read(reinterpret_cast<char*>(&recordCount), sizeof(int));
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&product), sizeof(Product));
@@ -153,6 +158,10 @@ void CommitProduct(const Product &product, std::streampos &startPos, const std::
         throw FileException("Could not open file 'Products.bin' for writing when adding a Change record to the file.");
     }
     startPos = file.tellp();
+    recordCount++;
+    file.seekp(0, std::ios::beg);
+    file.write(reinterpret_cast<const char*>(&recordCount), sizeof(int));
+    file.close();
 }
 /*
 Writes a Product object to a specified file at a given position.
@@ -165,6 +174,7 @@ Product GetProductDetails(std::streampos startPos, const std::string &FILENAME)
     {
         throw std::runtime_error("FileReadFailed: Could not open file for reading");
     }
+    // startPos += sizeof(int);
     file.seekg(startPos);
     Product product;
     if (!file.read(reinterpret_cast<char *>(&product), sizeof(Product)))
@@ -185,7 +195,7 @@ void PrintAllProducts(const std::string &FILENAME)
     {
         throw FileException("Could not open file 'Products.bin' during reading.");
     }
-
+    file.seekg(sizeof(int), std::ios::beg);
     Product product;
     int recordCount = 0;
     int batchSize = 10;
@@ -238,7 +248,7 @@ void PrintAllProducts(const std::string &FILENAME)
     }
 
     std::cout << std::string(89, '-') << std::endl;
-    std::cout << "Total records Displayed: " << recordCount + 1 << std::endl;
+    std::cout << "Total records Displayed: " << recordCount << std::endl;
 
     if (file.eof())
     {
@@ -259,6 +269,7 @@ bool checkDupProduct(const char *otherReleaseID)
     {
         throw FileException("Could not open file 'Products.bin' for checking duplicate releaseID.");
     }
+    file.seekg(sizeof(int), std::ios::beg);
     Product temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Product)))
     {
@@ -282,8 +293,14 @@ int InitProduct()
         {
             throw FileException("Startup failed while creating 'Products.bin' file.");
         }
+        int initialCount = 0;
+        file.write(reinterpret_cast<const char*>(&initialCount), sizeof(int)); // Reserve space for the record count
+
         file.close();
         return 1;
     }
     return 0;
 }
+/*
+Initialize the Product module with product file and the product file pointer
+-------------------------------------------------------------------*/

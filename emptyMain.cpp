@@ -31,11 +31,8 @@
  - Function prototype format
     // ------------------------------------------------------------------
     // int ScenarioControl(
-    //     int choice,     // in
-    //                     // Indicates the choice made in the main menu
-
-    //     int subchoice   // in 
-    //                     // Indicates the choice made in a sub menu
+    //     int choice,     // in: Indicates the choice made in the main menu
+    //     int subchoice   // in: Indicates the choice made in a sub menu 
     // );
     // /*
     // Function Description 

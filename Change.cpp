@@ -40,7 +40,7 @@ Change::Change(const char *changeID, const char *description, const char &status
     }
     else
     {
-        char *generatedID = IDGenerator('3', 7); // Assuming IDGenerator function is used to generate IDs
+        char *generatedID = IDGenerator('1', FILENAMES[1], 7); // Assuming IDGenerator function is used to generate IDs
         safeStrCopy(this->changeID, generatedID, sizeof(this->changeID));
         delete[] generatedID;
     }
@@ -93,7 +93,7 @@ int PrintAllChanges(const std::string &FILENAME)
     {
         throw FileException("Could not open file '" + FILENAME + "' during reading.");
     }
-
+    file.seekg(sizeof(int), std::ios::beg);
     Change change;
     int recordCount = 0;
     int batchSize = 10;
@@ -166,6 +166,7 @@ int PrintAllChanges(const std::string &FILENAME)
     return recordCount;
 }
 /*
+DisplayDetails method to display change details
 Print the attribute details of the Change object to the console.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
@@ -177,6 +178,7 @@ const char *Change::getChangeID() const
     return changeID;
 }
 /*
+Accessor methods for Change class attributes
 Get the changeID of a Change object.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
@@ -188,7 +190,8 @@ const char *Change::change_displayProductName() const
     return productName;
 }
 /*
-Print the productName of the Change object to the console.
+Accessor methods for Change class attributes
+Get the productname of a Change object.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 const char *Change::change_displayDesc() const
@@ -205,7 +208,8 @@ char Change::change_displayStatus() const
     return status;
 }
 /*
-Print the status of the Change object to the console.
+Accessor methods for Change class attributes
+Get the status of a Change object.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 char Change::change_displayPriority() const
@@ -215,7 +219,8 @@ char Change::change_displayPriority() const
     return priority;
 }
 /*
-Print the priority of the Change object to the console.
+Accessor methods for Change class attributes
+Get the priority of a Change object.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 const char *Change::change_displayRelID() const
@@ -225,7 +230,8 @@ const char *Change::change_displayRelID() const
     return releaseID;
 }
 /*
-Print the releaseID of the Change object to the console.
+Accessor methods for Change class attributes
+Get the releaseID of a Change object.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 // CreateChange function to create a new Change object
@@ -238,6 +244,7 @@ Change CreateChange(const char *description, const char &status, const char &pri
     return Change("", description, status, priority, releaseID, lastUpdate, changeID);
 }
 /*
+CreateChange function to create a new Change object
 Create new Change object and also validates it.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
@@ -278,7 +285,7 @@ int ValidateChange(const char *description, const char &status, const char &prio
         throw FileException("Could not open file 'Changes.bin' for reading during validation.");
     }
 
-    // This part already gets done in complaint.cpp
+    file.seekg(sizeof(int), std::ios::beg);
     Change currentChange;
     while (file.read(reinterpret_cast<char *>(&currentChange), sizeof(Change)))
     {
@@ -294,6 +301,7 @@ int ValidateChange(const char *description, const char &status, const char &prio
     return 1;
 }
 /*
+ValidateChange function to validate change data
 Validates that the Change object attributes are acceptable and makes sure no duplicate Change records exists.
 A linear search algorithm is used to iterate through the Change records.
 --------------------------------------------------------------------*/
@@ -325,7 +333,7 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
     {
         throw FileException("Could not open file 'Changes.bin' for reading when creating anticipated changes for product report.");
     }
-
+    file.seekg(sizeof(int), std::ios::beg);
     std::cout << std::left
               << std::setw(5) << " "
               << std::setw(10) << "ChangeID"
@@ -398,6 +406,10 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
 
     file.close();
 }
+/*
+CreateAnticipatedChangesProduct displays 10 latest reported change for a specific product
+Displays 10 changes at a time. User can make a choice to display the next 10 changes.
+--------------------------------------------------------------*/
 
 // void UpdateLatestChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
 //     Change lastChange = readRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER);
@@ -420,7 +432,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     {
         throw FileException("Could not open file 'Changes.bin' for reading.");
     }
-
+    changeFile.seekg(sizeof(int), std::ios::beg);
     Change change;
     bool changeFound = false;
     while (changeFile.read(reinterpret_cast<char *>(&change), sizeof(Change)))
@@ -444,6 +456,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     {
         throw FileException("Could not open file 'Complaints.bin' for reading.");
     }
+    complaintFile.seekg(sizeof(int), std::ios::beg);
 
     std::set<std::string> uniqueCustomerIDs;
     Complaint complaint;
@@ -470,6 +483,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
 
     std::cout << "Customers to be informed about Change ID " << changeID << ":" << std::endl;
     std::cout << std::string(91, '-') << std::endl;
+    customerFile.seekg(sizeof(int), std::ios::beg);
 
     Customer customer;
     int count = 0;
@@ -533,6 +547,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     std::cout << "Total customers to be informed: " << count << std::endl;
 }
 
+
 void CommitUpdatedChange(const Change &change, const std::string &FILENAME)
 {
     std::fstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
@@ -553,21 +568,25 @@ void CommitUpdatedChange(const Change &change, const std::string &FILENAME)
     }
     file.close();
 }
-
 // CommitChange function to commit a Change object to file
-void CommitChange(const Change &change, std::streampos &startPos, const std::string &FILENAME)
-{
-    std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
-    if (!file)
-    {
-        throw FileException("Could not open file 'Changes.bin' for writing when adding a Change record to the file.");
+void CommitChange(const Change& change, std::streampos& startPos, const std::string& FILENAME) {
+    std::ofstream file( FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    if (!file) {
+        throw std::runtime_error("Could not open file for writing");
     }
+    int recordCount;
+    file.read(reinterpret_cast<char*>(&recordCount), sizeof(int));
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&change), sizeof(Change));
     startPos = file.tellp();
+    recordCount++;
+    file.seekp(0, std::ios::beg);
+    file.write(reinterpret_cast<const char*>(&recordCount), sizeof(int));
+    file.close();
 }
 /*
+CommitChange function to commit a Change object to file
 Writes a Change object to a specified file at a given position.
 Uses the unsorted records data structure to add the Change object.
 --------------------------------------------------------------------*/
@@ -579,6 +598,7 @@ Change GetChangeDetails(std::streampos startPos, const std::string &FILENAME)
     {
         throw FileException("Could not open file for reading");
     }
+    // startPos += sizeof(int);
     file.seekg(startPos);
     Change change;
     if (!file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
@@ -588,6 +608,7 @@ Change GetChangeDetails(std::streampos startPos, const std::string &FILENAME)
     return change;
 }
 /*
+GetChangeDetails function to retrieve Change details from file
 Reads a Change object from a specified file at a given position and returns it.
 Uses the unsorted records data structure to read the Change object.
 --------------------------------------------------------------------*/
@@ -618,13 +639,14 @@ int InitChange()
         {
             throw FileException("Startup failed while creating 'Changes.bin' file.");
         }
-        else
-        {
-            return 1;
-        }
+        int initialCount = 0;
+        file.write(reinterpret_cast<const char*>(&initialCount), sizeof(int)); // Reserve space for the record count
+
         file.close();
+        return 1;
     }
     return 0;
 }
-/* int InitChange() uses the global variables streampos CHANGEFILEPOINTER and FILENAMES[1] to check if binary file "Changes.bin" exist in the DIRECTORY to essentially check if the program is being run for the first time. If it does, then it returns 0, if it doesn't then the files is created. If file was created successfully, it returns 1 else -1. The function does not fail.
+/* 
+Initialize the Change module with change file and the change file pointer
 ----------------------------------------------------------------------*/

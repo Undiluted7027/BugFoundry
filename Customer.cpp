@@ -38,13 +38,15 @@ Customer::Customer(
     else
     {
         // Assuming IDGenerator returns a char*
-        char *generatedID = IDGenerator('1', 10);
+        char *generatedID = IDGenerator('0', FILENAMES[0], 10);
         safeStrCopy(this->custID, generatedID, sizeof(this->custID));
         delete[] generatedID;
     }
     safeStrCopy(this->name, name, sizeof(this->name));
     safeStrCopy(this->email, email, sizeof(this->email));
     safeStrCopy(this->phone, phone, sizeof(this->phone));
+        cout << this->custID << endl;
+
 }
 /*
 Create Customer object using attrbibutes provided.
@@ -53,10 +55,9 @@ No noticeable algorithm or data structure used.
 
 // Constructor: Copy
 Customer::Customer(
-    const Customer &other // in
+    const Customer& other // in
                           // Another Customer object to copy from
-)
-{
+) {
     safeStrCopy(this->custID, other.custID, sizeof(this->custID));
     safeStrCopy(this->name, other.name, sizeof(this->name));
     safeStrCopy(this->email, other.email, sizeof(this->email));
@@ -103,12 +104,7 @@ void Customer::DisplayDetails(
                       // ostream object to handle calling with << operator
 ) const
 {
-    if (name[0] == '\0' || email[0] == '\0' || phone[0] == '\0')
-    {
-        throw InvalidDataException("One or more fields of Customer record has invalid data.");
-    }
-    else
-    {
+    
         out.width(15);
         out << std::left << custID;
         out << std::right << std::setw(10);
@@ -118,7 +114,7 @@ void Customer::DisplayDetails(
         out << std::left << email;
         out.width(15);
         out << std::left << phone << std::endl;
-    }
+    
 }
 /*
 Print the attribute details of the Customer object to the console.
@@ -126,19 +122,18 @@ No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 // CreateCustomer
 Customer CreateCustomer(
-    const char *name,  // in
+    const char* name,  // in
                        // Customer name
-    const char *email, // in
+    const char* email, // in
                        // Customer email
-    const char *phone  // in
+    const char* phone  // in
                        // Customer phone number
-)
-{
+) {
     int validationResult = ValidateCustomer(name, email, phone);
     if (validationResult == 1)
     {
         // Generate a new customer ID
-        char *generatedID = IDGenerator('0', 10);
+        char *generatedID = IDGenerator('0', FILENAMES[0], 10);
 
         // Create the customer object
         Customer newCustomer(generatedID, name, email, phone);
@@ -171,15 +166,22 @@ void CommitCustomer(
                                 // Location-name of file
 )
 {
-    std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    std::fstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file)
     {
         throw FileException("Could not open file 'Customers.bin' for writing when adding a Customer record to the file.");
     }
+    int recordCount;
+    file.read(reinterpret_cast<char *>(&recordCount), sizeof(int));
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&customer), sizeof(Customer));
     startPos = file.tellp();
+    recordCount++;
+    file.seekp(0, std::ios::beg);
+    file.write(reinterpret_cast<const char *>(&recordCount), sizeof(int));
+
+    file.close();
 }
 /*
 Writes a Customer object to a specified file at a given position.
@@ -198,9 +200,13 @@ Customer GetCustomerDetails(
     {
         throw FileException("Could not open file 'Customers.bin' for reading a record.");
     }
+    // startPos += sizeof(int);
     file.seekg(startPos);
     Customer customer;
-    file.read(reinterpret_cast<char *>(&customer), sizeof(Customer));
+    if (!file.read(reinterpret_cast<char *>(&customer), sizeof(Customer)))
+    {
+        throw NoRecordFound("FileReadFailed: There was an error in reading the file.");
+    }
     startPos = file.tellg();
     return customer;
 }
@@ -216,7 +222,7 @@ void PrintAllCustomers(const std::string &FILENAME)
     {
         throw FileException("Could not open file 'Customers.bin' for printing records.");
     }
-
+    file.seekg(sizeof(int), std::ios::beg);
     Customer customer;
     int recordCount = 0;
     int batchSize = 10;
@@ -337,12 +343,12 @@ int ValidateCustomer(
     {
         throw FileException("Could not open file 'Customers.bin' for reading records during validation.");
     }
-
+    file.seekg(sizeof(int), std::ios::beg);
     Customer temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Customer)))
     {
         // read through the file
-        if (strcmp(temp.getEmail(), email) == 0 || strcmp(temp.getPhone(), phone) == 0)
+        if (strcmp(temp.getEmail(), email) == 0 && strcmp(temp.getPhone(), phone) == 0)
         {
             throw DuplicateRecordException("Duplicate Customer record found.");
         }
@@ -359,6 +365,7 @@ bool checkDup(const char *otherCustID)
     {
         throw FileException("Could not open file 'Customers.bin' for checking duplicate customer ID.");
     }
+    file.seekg(sizeof(int), std::ios::beg);
     Customer temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Customer)))
     {
@@ -375,8 +382,7 @@ Validates that the Customer object attributes are acceptable and makes sure no d
 A linear search algorithm is used to iterate through the Customer records.
 --------------------------------------------------------------------*/
 // InitCustomer
-int InitCustomer()
-{
+int InitCustomer() {
     std::filesystem::create_directory(DIRECTORY);
     if (!std::filesystem::exists(FILENAMES[0]))
     {
@@ -387,9 +393,15 @@ int InitCustomer()
         }
         else
         {
+            int initialCount = 0;
+            file.write(reinterpret_cast<const char *>(&initialCount), sizeof(int)); // Reserve space for the record count
+
             file.close();
             return 1;
         }
     }
     return 0;
 }
+/*
+Initializes customer module with customer file and customer file pointer
+-----------------------------------------------------------------------*/
