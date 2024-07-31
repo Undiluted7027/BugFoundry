@@ -33,7 +33,7 @@ Complaint::Complaint(const char *complaintID, const char *description, const cha
     else
     {
         // Assuming IDGenerator returns a char*
-        char *generatedID = IDGenerator('2', 7);
+        char *generatedID = IDGenerator('2', FILENAMES[2], 7);
         safeStrCopy(this->complaintID, generatedID, sizeof(this->complaintID));
         delete[] generatedID;
     }
@@ -57,7 +57,7 @@ Complaint &Complaint::operator=(const Complaint &other)
 {
     if (this != &other)
     {
-        if (other.complaintID != "" || other.complaintID != nullptr)
+        if (other.complaintID[0] != '\0' || other.complaintID != nullptr)
 
         {
             safeStrCopy(complaintID, other.complaintID, sizeof(this->complaintID));
@@ -66,7 +66,7 @@ Complaint &Complaint::operator=(const Complaint &other)
         {
             // Assuming IDGenerator returns a char*
 
-            char *generatedID = IDGenerator('1', 7);
+            char *generatedID = IDGenerator('2', FILENAMES[2], 7);
             safeStrCopy(complaintID, generatedID, sizeof(this->complaintID));
             delete[] generatedID;
         }
@@ -151,6 +151,22 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
         throw InvalidDataException("DateOfComplaint field can only have value in the format of YYYY-MM-DD.");
     }
 
+    if ((year % 4 != 0 && month == 02 && day > 30) || (year % 4 == 0 && month == 2 && day > 29))
+    {
+        throw InvalidDataException("ReleaseDate field has invalid YYYY-MM-DD.");
+    }
+    if (day > 30)
+    {
+        switch (month)
+        {
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+            throw InvalidDataException("Invalid date");
+        }
+    }
+
     // Validate releaseID
     if (strlen(releaseID) > 8 && strlen(releaseID) <= 0)
     {
@@ -165,6 +181,7 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
     {
         throw FileException("Could not open file 'Complaints.bin' for reading during validation.");
     }
+    file.seekg(sizeof(int), std::ios::beg);
 
     Complaint currentComplaint;
     while (file.read(reinterpret_cast<char *>(&currentComplaint), sizeof(Complaint)))
@@ -191,9 +208,11 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
                           const char *releaseID, const char *custID, const char *productName)
 {
 
-    int validation = ValidateComplaint(description, dateOfComplaint, releaseID, custID);
+    ValidateComplaint(description, dateOfComplaint, releaseID, custID);
     bool changeExists = false;
     std::ifstream changeFile(FILENAMES[1], std::ios::binary);
+    changeFile.seekg(sizeof(int), std::ios::beg);
+
     Change change;
     if (changeFile)
     {
@@ -231,51 +250,63 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
     }
     return Complaint();
 }
-    /*
-    Create new Complaint object and also validates it.
-    No noticeable algorithm or data structure used.
-    --------------------------------------------------------------------*/
-    void CommitComplaint(const Complaint &complaint, std::streampos &startPos, const std::string &FILENAME)
+/*
+Create new Complaint object and also validates it.
+No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+void CommitComplaint(const Complaint &complaint, std::streampos &startPos, const std::string &FILENAME)
+{
+    std::fstream file(FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
+    if (!file)
     {
-        std::ofstream file(FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
-        if (!file)
-        {
-            throw FileException("Could not open file 'Complaints.bin' for writing when adding a Complaint record to the file.");
-        }
-        file.seekp(0, std::ios::end);
-        startPos = file.tellp();
-        file.write(reinterpret_cast<const char *>(&complaint), sizeof(Complaint));
-        startPos = file.tellp();
+        throw FileException("Could not open file 'Complaints.bin' for writing when adding a Complaint record to the file.");
     }
-    /*
-    Writes a Complaint object to a specified file at a given position.
-    Uses the unsorted records data structure to add the Complaint object.
-    --------------------------------------------------------------------*/
-    Complaint GetComplaintDetails(std::streampos & startPos, const std::string &FILENAME)
+    int recordCount;
+    file.read(reinterpret_cast<char *>(&recordCount), sizeof(int));
+    file.seekp(0, std::ios::end);
+    startPos = file.tellp();
+    file.write(reinterpret_cast<const char *>(&complaint), sizeof(Complaint));
+    if (file.fail())
     {
-        std::ifstream file(FILENAMES[2], std::ios::binary);
-        if (!file)
-        {
-            throw std::runtime_error("Could not open file for reading");
-        }
-        file.seekg(startPos);
-        Complaint complaint;
-        file.read(reinterpret_cast<char *>(&complaint), sizeof(Complaint));
-        startPos = file.tellg();
-        return complaint;
+        throw FileException("Could not write complaint to 'Complaints.bin'.");
     }
-    /*
-    Reads a Complaint object from a specified file at a given position and returns it.
-    Uses the unsorted records data structure to read the Complaint object.
-    --------------------------------------------------------------------*/
-    void PrintAllComplaints(const std::string &FILENAME)
+    startPos = file.tellp();
+    recordCount++;
+    file.seekp(0, std::ios::beg);
+    file.write(reinterpret_cast<const char *>(&recordCount), sizeof(int));
+
+    file.close();
+}
+/*
+Writes a Complaint object to a specified file at a given position.
+Uses the unsorted records data structure to add the Complaint object.
+--------------------------------------------------------------------*/
+Complaint GetComplaintDetails(std::streampos &startPos, const std::string &FILENAME)
+{
+    std::ifstream file(FILENAMES[2], std::ios::binary);
+    if (!file)
+    {
+        throw std::runtime_error("Could not open file for reading");
+    }
+    startPos += sizeof(int);
+    file.seekg(startPos);
+    Complaint complaint;
+    file.read(reinterpret_cast<char *>(&complaint), sizeof(Complaint));
+    startPos = file.tellg();
+    return complaint;
+}
+/*
+Reads a Complaint object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Complaint object.
+--------------------------------------------------------------------*/
+void PrintAllComplaints(const std::string &FILENAME)
 {
     std::ifstream file(FILENAMES[2], std::ios::binary);
     if (!file)
     {
         throw FileException("Could not open file 'Complaints.bin' during reading.");
     }
-
+    file.seekg(sizeof(int), std::ios::beg);
     Complaint complaint;
     int recordCount = 0;
     int batchSize = 10;
@@ -294,7 +325,7 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
 
     while (file.read(reinterpret_cast<char *>(&complaint), sizeof(Complaint)))
     {
-            std::cout << std::setw(5) << recordCount + 1 << " ";
+        std::cout << std::setw(5) << recordCount + 1 << " ";
         complaint.DisplayDetails(std::cout);
         recordCount++;
 
@@ -337,67 +368,68 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
     file.close();
 }
 
-
-    bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint, const std::string &FILENAME)
+bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint, const std::string &FILENAME)
+{
+    std::fstream file(FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
+    if (!file)
     {
-        std::fstream file(FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
+        throw FileException("Could not open file 'Complaints.bin' for reading when updating a change.");
+        return false;
+    }
+    file.seekg(sizeof(int), std::ios::beg);
+    Complaint currentComplaint;
+    bool found = false;
+    std::streampos position;
+
+    while (file.read(reinterpret_cast<char *>(&currentComplaint), sizeof(Complaint)))
+    {
+        // read Complaints file
+        if (strcmp(currentComplaint.getComplaintID(), complaintID) == 0)
+        {
+            found = true;
+            position = file.tellg() - static_cast<std::streampos>(sizeof(Complaint));
+            break;
+        }
+    }
+
+    if (found)
+    {
+        file.seekp(position);
+        file.write(reinterpret_cast<const char *>(&updatedComplaint), sizeof(Complaint));
+
+        if (file.fail())
+        {
+            throw FileException("Could not open file 'Complaints.bin' for writing when updating a Change record in the file.");
+            file.close();
+            return false;
+        }
+
+        std::cout << "Complaint record updated successfully." << std::endl;
+        file.close();
+        return true;
+    }
+    else
+    {
+        throw NoRecordFound("No record found matching the complaintID: " + std::string(complaintID));
+        file.close();
+        return false;
+    }
+}
+
+int InitComplaint()
+{
+    std::filesystem::create_directory(DIRECTORY);
+    if (!std::filesystem::exists(FILENAMES[2]))
+    {
+        std::ofstream file(FILENAMES[2], std::ios::binary);
         if (!file)
         {
-            throw FileException("Could not open file 'Complaints.bin' for reading when updating a change.");
-            return false;
+            throw FileException("Startup failed while creating 'Complaints.bin' file.");
         }
-
-        Complaint currentComplaint;
-        bool found = false;
-        std::streampos position;
-
-        while (file.read(reinterpret_cast<char *>(&currentComplaint), sizeof(Complaint)))
-        {
-            // read Complaints file
-            if (strcmp(currentComplaint.getComplaintID(), complaintID) == 0)
-            {
-                found = true;
-                position = file.tellg() - static_cast<std::streampos>(sizeof(Complaint));
-                break;
-            }
-        }
-
-        if (found)
-        {
-            file.seekp(position);
-            file.write(reinterpret_cast<const char *>(&updatedComplaint), sizeof(Complaint));
-
-            if (file.fail())
-            {
-                throw FileException("Could not open file 'Complaints.bin' for writing when updating a Change record in the file.");
-                file.close();
-                return false;
-            }
-
-            std::cout << "Complaint record updated successfully." << std::endl;
-            file.close();
-            return true;
-        }
-        else
-        {
-            throw NoRecordFound("No record found matching the complaintID: " + std::string(complaintID));
-            file.close();
-            return false;
-        }
+        int initialCount = 0;
+        file.write(reinterpret_cast<const char *>(&initialCount), sizeof(int)); // Reserve space for the record count
+        file.close();
+        return 1;
     }
-
-    int InitComplaint()
-    {
-        std::filesystem::create_directory(DIRECTORY);
-        if (!std::filesystem::exists(FILENAMES[2]))
-        {
-            std::ofstream file(FILENAMES[2], std::ios::binary);
-            if (!file)
-            {
-                throw FileException("Startup failed while creating 'Complaints.bin' file.");
-            }
-            file.close();
-            return 1;
-        }
-        return 0;
-    }
+    return 0;
+}

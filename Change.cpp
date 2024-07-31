@@ -40,7 +40,7 @@ Change::Change(const char *changeID, const char *description, const char &status
     }
     else
     {
-        char *generatedID = IDGenerator('3', 7); // Assuming IDGenerator function is used to generate IDs
+        char *generatedID = IDGenerator('1', FILENAMES[1], 7); // Assuming IDGenerator function is used to generate IDs
         safeStrCopy(this->changeID, generatedID, sizeof(this->changeID));
         delete[] generatedID;
     }
@@ -93,7 +93,7 @@ int PrintAllChanges(const std::string &FILENAME)
     {
         throw FileException("Could not open file '" + FILENAME + "' during reading.");
     }
-
+    file.seekg(sizeof(int), std::ios::beg);
     Change change;
     int recordCount = 0;
     int batchSize = 10;
@@ -234,7 +234,7 @@ Change CreateChange(const char *description, const char &status, const char &pri
 {
     // Validate change data before creating a new Change object
 
-    int validation = ValidateChange(description, status, priority, lastUpdate, releaseID);
+    ValidateChange(description, status, priority, lastUpdate, releaseID);
     return Change("", description, status, priority, releaseID, lastUpdate, changeID);
 }
 /*
@@ -278,7 +278,7 @@ int ValidateChange(const char *description, const char &status, const char &prio
         throw FileException("Could not open file 'Changes.bin' for reading during validation.");
     }
 
-    // This part already gets done in complaint.cpp
+    file.seekg(sizeof(int), std::ios::beg);
     Change currentChange;
     while (file.read(reinterpret_cast<char *>(&currentChange), sizeof(Change)))
     {
@@ -325,7 +325,7 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
     {
         throw FileException("Could not open file 'Changes.bin' for reading when creating anticipated changes for product report.");
     }
-
+    file.seekg(sizeof(int), std::ios::beg);
     std::cout << std::left
               << std::setw(5) << " "
               << std::setw(10) << "ChangeID"
@@ -420,7 +420,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     {
         throw FileException("Could not open file 'Changes.bin' for reading.");
     }
-
+    changeFile.seekg(sizeof(int), std::ios::beg);
     Change change;
     bool changeFound = false;
     while (changeFile.read(reinterpret_cast<char *>(&change), sizeof(Change)))
@@ -444,6 +444,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     {
         throw FileException("Could not open file 'Complaints.bin' for reading.");
     }
+    complaintFile.seekg(sizeof(int), std::ios::beg);
 
     std::set<std::string> uniqueCustomerIDs;
     Complaint complaint;
@@ -470,6 +471,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
 
     std::cout << "Customers to be informed about Change ID " << changeID << ":" << std::endl;
     std::cout << std::string(91, '-') << std::endl;
+    customerFile.seekg(sizeof(int), std::ios::beg);
 
     Customer customer;
     int count = 0;
@@ -540,7 +542,8 @@ void CommitUpdatedChange(const Change &change, const std::string &FILENAME)
     {
         throw FileException("Could not open file 'Changes.bin' for writing when updating a Change record in the file.");
     }
-    bool recordFound = false;
+    file.seekg(sizeof(int), std::ios::beg);
+
     Change temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Change)))
     {
@@ -555,17 +558,23 @@ void CommitUpdatedChange(const Change &change, const std::string &FILENAME)
 }
 
 // CommitChange function to commit a Change object to file
-void CommitChange(const Change &change, std::streampos &startPos, const std::string &FILENAME)
+void CommitChange(const Change &change, std::streampos startPos, const std::string &FILENAME)
 {
-    std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    std::fstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file)
     {
         throw FileException("Could not open file 'Changes.bin' for writing when adding a Change record to the file.");
     }
+    int recordCount;
+    file.read(reinterpret_cast<char*>(&recordCount), sizeof(int));
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&change), sizeof(Change));
     startPos = file.tellp();
+    recordCount++;
+    file.seekp(0, std::ios::beg);
+    file.write(reinterpret_cast<const char*>(&recordCount), sizeof(int));
+    file.close();
 }
 /*
 Writes a Change object to a specified file at a given position.
@@ -579,6 +588,7 @@ Change GetChangeDetails(std::streampos startPos, const std::string &FILENAME)
     {
         throw FileException("Could not open file for reading");
     }
+    // startPos += sizeof(int);
     file.seekg(startPos);
     Change change;
     if (!file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
@@ -601,11 +611,11 @@ int InitChange()
         {
             throw FileException("Startup failed while creating 'Changes.bin' file.");
         }
-        else
-        {
-            return 1;
-        }
+        int initialCount = 0;
+        file.write(reinterpret_cast<const char*>(&initialCount), sizeof(int)); // Reserve space for the record count
+
         file.close();
+        return 1;
     }
     return 0;
 }
