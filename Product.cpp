@@ -87,6 +87,19 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
         throw InvalidDataException("ReleaseDate field can only have value in the format of YYYY-MM-DD.");
     }
 
+    if ((year % 4 != 0 && month == 02 && day > 30) || (year % 4 == 0 &&month == 2 && day > 29)){
+        throw InvalidDataException("Invalid date");
+    }
+    if (day > 30){
+        switch (month){
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                throw InvalidDataException("Invalid date");
+        }
+    }
+
     // Check for duplicate product
     std::ifstream file(FILENAMES[3], std::ios::binary);
     if (!file)
