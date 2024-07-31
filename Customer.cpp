@@ -320,7 +320,7 @@ int ValidateCustomer(
     if ((strlen(phone) == 11 && phone[0] == '1') || (strlen(phone) == 10 && isdigit(phone[0])))
     {
 
-        for (int i = 0; i < strlen(phone); i++)
+        for (size_t i = 0; i < strlen(phone); i++)
         {
             if (!isdigit(phone[i]))
                 return -1;

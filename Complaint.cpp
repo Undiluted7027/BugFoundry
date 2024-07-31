@@ -57,7 +57,7 @@ Complaint &Complaint::operator=(const Complaint &other)
 {
     if (this != &other)
     {
-        if (other.complaintID != "" || other.complaintID != nullptr)
+        if (other.complaintID[0] != '\0' || other.complaintID != nullptr)
 
         {
             safeStrCopy(complaintID, other.complaintID, sizeof(this->complaintID));
@@ -204,7 +204,7 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
                           const char *releaseID, const char *custID, const char *productName)
 {
 
-    int validation = ValidateComplaint(description, dateOfComplaint, releaseID, custID);
+    ValidateComplaint(description, dateOfComplaint, releaseID, custID);
     bool changeExists = false;
     std::ifstream changeFile(FILENAMES[1], std::ios::binary);
     Change change;

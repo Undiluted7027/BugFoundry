@@ -234,7 +234,7 @@ Change CreateChange(const char *description, const char &status, const char &pri
 {
     // Validate change data before creating a new Change object
 
-    int validation = ValidateChange(description, status, priority, lastUpdate, releaseID);
+    ValidateChange(description, status, priority, lastUpdate, releaseID);
     return Change("", description, status, priority, releaseID, lastUpdate, changeID);
 }
 /*
@@ -540,7 +540,7 @@ void CommitUpdatedChange(const Change &change, const std::string &FILENAME)
     {
         throw FileException("Could not open file 'Changes.bin' for writing when updating a Change record in the file.");
     }
-    bool recordFound = false;
+    // bool recordFound = false;
     Change temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Change)))
     {
@@ -591,6 +591,23 @@ Change GetChangeDetails(std::streampos startPos, const std::string &FILENAME)
 Reads a Change object from a specified file at a given position and returns it.
 Uses the unsorted records data structure to read the Change object.
 --------------------------------------------------------------------*/
+bool checkChangeDup(const char *otherChangeID)
+{
+    std::ifstream file(FILENAMES[1], std::ios::binary);
+    if (!file)
+    {
+        throw FileException("Could not open file 'Changes.bin' for checking duplicate change ID.");
+    }
+    Change temp;
+    while (file.read(reinterpret_cast<char *>(&temp), sizeof(Change)))
+    {
+        if (strcmp(temp.getChangeID(), otherChangeID) == 0)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
 int InitChange()
 {
     filesystem::create_directory(DIRECTORY);
