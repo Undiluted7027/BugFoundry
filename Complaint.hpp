@@ -77,39 +77,20 @@ class Complaint {
          member variables/C-strings have only null-character in them.
       ----------------------------------------------------------------------*/
 
-      const char* getComplaintID() const { return complaintID; } 
-      /*
-      Getter function for ID of complaint
-      ----------------------------------------------------------------------*/
-      const char* getDescription() const { return description; }
-      /*
-      Getter function for description of complaint
-      ----------------------------------------------------------------------*/
-      const char* getDateOfComplaint() const { return dateOfComplaint; }
-      /*
-      Getter function for date of complaint
-      ----------------------------------------------------------------------*/
-      const char* getChangeID() const { return changeID; }
-      /*
-      Getter function for change ID of complaint
-      ----------------------------------------------------------------------*/
-      const char* getReleaseID() const { return releaseID; } 
-      /*
-      Getter function for release ID of product
-      ----------------------------------------------------------------------*/
-      const char* getCustID() const { return custID; } 
-      /*
-      Getter function for customer ID of product
-      ----------------------------------------------------------------------*/
-
-   private:
-    
-      char complaintID[7];      // Unique ID of complaint
-      char description[31];     // Description of complaint
-      char dateOfComplaint[9];  // Date complaint was created (YYYYMMDD format)
-      char changeID[6];         // Change ID associated with complaint
-      char releaseID[9];        // Release ID of the product
-      char custID[11];          // Customer ID (10 characters + null terminator)
+    // Getters
+    const char* getComplaintID() const { return complaintID; } // returns ID of complaint
+    const char* getDescription() const { return description; } // returns description of complaint
+    const char* getDateOfComplaint() const { return dateOfComplaint; } // returns date of complaint
+    const char* getChangeID() const { return changeID; } // returns change ID of complaint
+    const char* getReleaseID() const { return releaseID; } // returns release ID of product
+    const char* getCustID() const { return custID; } // returns customer ID
+    private:
+    char complaintID[7];      // Unique ID of complaint
+    char description[31];     // Description of complaint
+    char dateOfComplaint[11];  // Date complaint was created (YYYY-MM-DD format)
+    char changeID[7];         // Change ID associated with complaint
+    char releaseID[9];        // Release ID of the product
+    char custID[11];          // Customer ID (10 characters + null terminator)
 };
 // ----------------------------------------------------------------------
 

@@ -103,6 +103,7 @@ GetProductDetails takes in a file pointer,
 reads the file and returns the record at startPos by converting to Product object. 
 This function fails if there is an error in reading the file or casting information.
 ------------------------------------------------------------------*/
+bool checkDupProduct(const char *otherReleaseID);
 int InitProduct(); // Placeholder function declaration for initializing product data
 /*
 InitProduct uses the global variables streampos PRODUCTFILEPOINTER and FILENAMES[3] 

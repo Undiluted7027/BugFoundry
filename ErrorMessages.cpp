@@ -37,7 +37,7 @@ int EmailError(char *msg)
         cout << "Error: Email input has to contain '@' and cannot exceed 24 maximum characters" << endl;
         return 1;
     } 
-    for (int i = 0; i < strlen(msg); i++)
+    for (int i = 0; i < int(strlen(msg)); i++)
     {
         if (msg[i] == '@') return 0;
     }
@@ -55,7 +55,7 @@ int PhoneError(char *msg)
         cout << "Phone number input must follow format [1]DDDDDDDDDD where D is a digit" << endl;
         return 1;
     }
-    for (int i = 0; i < strlen(msg); i++)
+    for (int i = 0; i < int(strlen(msg)); i++)
     {
         if (msg[i] > '9' || msg[i] < '0')
         {
@@ -175,7 +175,7 @@ int ChangeIDError(char *msg)
         cout << "Error: releaseID must be max 6 digits" << endl;
         return 1;
     }
-    for (int i = 0; i < strlen(msg); i++)
+    for (unsigned int i = 0; i < strlen(msg); i++)
     {
         if (msg[i] > '9' && msg[i] < '0')
         {
@@ -189,11 +189,9 @@ int ChangeIDError(char *msg)
 /*
 Checks if the provided msg is empty or contains non-digit characters for releaseID.
 --------------------------------------------------------------------*/
-int StateError(char *msg)
+int StateError(char state)
 {
-    char *state = msg;
-    state[strlen(msg)] = '\0';
-    if (state != "CANCELED" || state != "INPROGRESS" || state != "DONE")
+    if (state != 'X' || state != 'P' || state != 'O')
     {
         cout << "Error: Status must be CANCELED, INPROGRESS, or DONE" << endl;
         return 1;

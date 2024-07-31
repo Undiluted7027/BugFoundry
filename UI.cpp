@@ -34,11 +34,10 @@ int Create_Menu()
         cout << "===Create===" << endl;
         cout << "1) Create User" << endl;
         cout << "2) Create Complaint" << endl;
-        cout << "3) Create Product" << endl;
-        cout << "4) Create Product Release" << endl;
+        cout << "3) Create Product Release" << endl;
         cout << "0) Go back to main menu" << endl;
 
-        cout << "Choose an option and enter (0-3): ";
+        cout << "Choose an option and enter (0-4): ";
         cin >> choice;
         cout << endl;
 
@@ -100,7 +99,7 @@ No noticeable algorithm or data structure used.
 -------------------------------------------------*/
 int ActivateUI()
 {
-    int choice; int subchoice;
+    int choice;
     do 
     {
         cout << endl;
@@ -108,16 +107,15 @@ int ActivateUI()
         switch (choice)
         {
             case 1:
-                subchoice = Create_Menu();
+                Create_Menu();
                 break;
             case 2:
-                subchoice = Update_Menu();
+                Update_Menu();
                 break;
             case 3:
-                subchoice = Report_Menu();
+                Report_Menu();
                 break;
             case 0:
-                subchoice = 0;
                 cout << "Thank you for using Bug Foundry." << endl;
                 break;
             default:

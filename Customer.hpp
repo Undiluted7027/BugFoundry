@@ -92,11 +92,14 @@ class Customer
         -----------------------------------------------------------------------*/
 
     private:
-
-        char custID[10];    // Unique ID of customer
-        char name[31];      // Name of customer
-        char email[31];     // Email of customer
-        char phone[15];     // Phone number of customer
+        char custID[10]; // in
+                        // Unique ID of customer
+        char name[31];   // in
+                        // Name of customer
+        char email[31];  // in
+                        // Email of customer
+        char phone[12];  // in
+                        // Phone number of customer
 };
 // ----------------------------------------------------------------------
 Customer CreateCustomer(
@@ -149,6 +152,7 @@ If same data already exists in system it returns 0, if the format is invalid it 
 This function performs checks on formats of phone number, email, and name of the customer. 
 Call this function with details of the user to check whether the user info is valid.
 ----------------------------------------------------------------------*/
+bool checkDup(const char *otherCustID);
 int InitCustomer();
 /* 
 int InitCustomer() uses the global variables streampos CUSTOMERFILEPOINTER and FILENAMES[0] 

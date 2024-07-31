@@ -40,6 +40,8 @@ const string FILENAMES[NUMBER_OF_FILES] =
 };  
 // Array with names of binary files
 // ----------------------------------------------------------------------
+char* IDGenerator(const char &type, const std::string &FILENAME, int precision);
+/* T IDGenerator(const string &type, const int &precision) generates a random ID for the entity that is passed in type parameter as string. The function returns a template value. It fails if type is null and/or precision is 0.
 char *IDGenerator(
     const char &type,       // in: type of entity that wants the ID (Product, Complaint, Customer, Change)
     const int &precision    // in: Number of digits or characters in the ID
