@@ -55,10 +55,9 @@ No noticeable algorithm or data structure used.
 
 // Constructor: Copy
 Customer::Customer(
-    const Customer &other // in
+    const Customer& other // in
                           // Another Customer object to copy from
-)
-{
+) {
     safeStrCopy(this->custID, other.custID, sizeof(this->custID));
     safeStrCopy(this->name, other.name, sizeof(this->name));
     safeStrCopy(this->email, other.email, sizeof(this->email));
@@ -123,14 +122,13 @@ No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 // CreateCustomer
 Customer CreateCustomer(
-    const char *name,  // in
+    const char* name,  // in
                        // Customer name
-    const char *email, // in
+    const char* email, // in
                        // Customer email
-    const char *phone  // in
+    const char* phone  // in
                        // Customer phone number
-)
-{
+) {
     int validationResult = ValidateCustomer(name, email, phone);
     if (validationResult == 1)
     {
@@ -384,8 +382,7 @@ Validates that the Customer object attributes are acceptable and makes sure no d
 A linear search algorithm is used to iterate through the Customer records.
 --------------------------------------------------------------------*/
 // InitCustomer
-int InitCustomer()
-{
+int InitCustomer() {
     std::filesystem::create_directory(DIRECTORY);
     if (!std::filesystem::exists(FILENAMES[0]))
     {
@@ -405,3 +402,6 @@ int InitCustomer()
     }
     return 0;
 }
+/*
+Initializes customer module with customer file and customer file pointer
+-----------------------------------------------------------------------*/

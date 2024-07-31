@@ -99,5 +99,3 @@ void safeStrCopy(char* dest, const char* src, size_t maxLen) {
     std::strncpy(dest, src, maxLen-1);
     dest[maxLen] = '\0';
 }
-
-

@@ -1,7 +1,10 @@
-/* Main.cpp
+/* drivers.cpp
 REVISION HISTORY:
 Rev. 1 - 24/07/04 Original by Sanchit Jain
-----------------------------------------------------------------------*/
+----------------------------------------------------------------------
+This module, Customer.cpp, implements the Custom low level controls and associated functions.
+---------------------------------------------------------------------*/
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib> //for exit() function.
@@ -9,6 +12,8 @@ Rev. 1 - 24/07/04 Original by Sanchit Jain
 #include <vector>
 
 using namespace std;
+
+//----------------------------------------------------------------------
 
 template <class T>
 T* readFile(const string &filename, streampos fileptr){
@@ -32,7 +37,9 @@ T* readFile(const string &filename, streampos fileptr){
     f.close();
     return dataptr;
 }
-
+/*
+readFile function is used to read the File content in the file at a specific location in the file
+------------------------------------------------------------------*/
 template <typename T>
 T readRecord(const string &filename, streampos fileptr) {
     ifstream f("data/" + filename, ios::in | ios::binary);
@@ -61,7 +68,9 @@ T readRecord(const string &filename, streampos fileptr) {
 
     return data;
 }
-
+/*
+readRecord function is used to read the Record content in the file at a specific location in the file
+------------------------------------------------------------------*/
 template <typename T>
 void writeRecord(const string &filename, streampos &fileptr, T record) {
     ofstream f("data/" + filename, ios::out | ios::binary);
@@ -86,7 +95,9 @@ void writeRecord(const string &filename, streampos &fileptr, T record) {
     f.flush();
     f.close();
 }
-
+/*
+writeRecord function is used to write the Record content in the file at a specific location in the file
+------------------------------------------------------------------*/
 template <class T>
 void updateRecord(const string &filename, streampos fileptr, const T newRecord, const char *id)
 {
@@ -108,7 +119,9 @@ void updateRecord(const string &filename, streampos fileptr, const T newRecord, 
     f.flush();
     f.close();
 }
-
+/*
+updateRecord function is used to update a Record content in the file at a specific location in the file
+------------------------------------------------------------------*/
 template <typename T, typename Q>
 void deleteRecord(const string &filename, streampos fileptr, const Q *id){
     string fpath = "data/" + filename;
@@ -152,7 +165,9 @@ void deleteRecord(const string &filename, streampos fileptr, const Q *id){
         cerr << "Record not found." << endl;
     }
 }
-
+/*
+deleteRecord function is used to delete the Record content in the file at a specific location in the file
+------------------------------------------------------------------*/
 template <typename T>
 void writeFile(const string &filename, streampos &fileptr, const T* &records)
 {
@@ -169,7 +184,9 @@ void writeFile(const string &filename, streampos &fileptr, const T* &records)
     f.seekp(fileptr);
     f.close();
 }
-
+/*
+writeFile function is used to write the File content in the file at a specific location in the file
+------------------------------------------------------------------*/
 size_t getFileSize(const string& filename) {
     fstream file(filename, ios::in|ios::ate);
     if (!file.is_open()) {
@@ -181,9 +198,14 @@ size_t getFileSize(const string& filename) {
     file.close();
     return fileSize;
 }
-
+/*
+getFileSize function returns the size of the filename
+------------------------------------------------------------------*/
 template <typename T>
 void printRecords(T* arr, const int &size){
     for (int i = 0; i < size; i++)
         cout << arr[i] << endl;
 }   
+/*
+printRecords function displays the records
+------------------------------------------------------------------*/

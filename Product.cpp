@@ -15,6 +15,9 @@ Product::Product() : releaseID{0}, releaseDate{0}
 {
     memset(productName, 0, sizeof(productName));
 }
+/*
+The default constructor of Product class
+---------------------------------------------------------------------*/
 
 Product::Product(const char *releaseID, const char *productName, const char *ReleaseDate)
 {
@@ -299,3 +302,6 @@ int InitProduct()
     }
     return 0;
 }
+/*
+Initialize the Product module with product file and the product file pointer
+-------------------------------------------------------------------*/
