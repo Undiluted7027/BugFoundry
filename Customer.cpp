@@ -111,7 +111,8 @@ void Customer::DisplayDetails(
     {
         out.width(15);
         out << std::left << custID;
-        out.width(32);
+        out << std::right << std::setw(10);
+        out.width(20);
         out << std::left << name;
         out.width(24);
         out << std::left << email;
@@ -208,10 +209,7 @@ Reads a Customer object from a specified file at a given position and returns it
 Uses the unsorted records data structure to read the Customer object.
 --------------------------------------------------------------------*/
 // PrintAllCustomers
-void PrintAllCustomers(
-    const std::string &FILENAME // in
-                                // Location-name of file
-)
+void PrintAllCustomers(const std::string &FILENAME)
 {
     std::ifstream file(FILENAME, std::ios::binary);
     if (!file)
@@ -221,6 +219,9 @@ void PrintAllCustomers(
 
     Customer customer;
     int recordCount = 0;
+    int batchSize = 10;
+    char input[3];
+    int choice = 1;
 
     std::cout << std::left
               << std::setw(12) << "Customer ID"
@@ -237,10 +238,35 @@ void PrintAllCustomers(
                   << std::setw(31) << customer.getEmail()
                   << std::setw(15) << customer.getPhone() << std::endl;
         recordCount++;
+
+        if (recordCount % batchSize == 0)
+        {
+            std::cout << std::string(94, '-') << std::endl;
+            std::cout << "Displayed 10 records." << std::endl;
+            std::cout << "Do you want to view the next 10 customers? (1 for Yes, 0 for No): ";
+            std::cin.getline(input, 3);
+            choice = atoi(input);
+
+            if (choice == 0)
+            {
+                break;
+            }
+            else if (choice)
+            {
+                std::cout << std::left
+                          << std::setw(5) << " "
+
+                          << std::setw(12) << "Customer ID"
+                          << std::setw(31) << "Name"
+                          << std::setw(31) << "Email"
+                          << std::setw(15) << "Phone" << std::endl;
+                std::cout << std::string(94, '-') << std::endl;
+            }
+        }
     }
 
-    std::cout << std::string(89, '-') << std::endl;
-    std::cout << "Total records: " << recordCount << std::endl;
+    std::cout << std::string(94, '-') << std::endl;
+    std::cout << "Total records Displayed: " << recordCount + 1 << std::endl;
 
     if (file.eof())
     {
@@ -265,6 +291,8 @@ int ValidateCustomer(
 )
 {
     if (strlen(name) == 0 || strlen(email) == 0 || strlen(phone) == 0)
+        return -1;
+    if (strlen(name) > 16)
         return -1;
     // Validate email
     const char *atSign = strchr(email, '@');

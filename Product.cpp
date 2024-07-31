@@ -42,8 +42,12 @@ void Product::DisplayDetails(std::ostream &out) const
 {
     out << std::left
         << std::setw(11) << productName
-        << std::setw(9) << releaseID
-        << std::setw(11) << releaseDate << std::endl;
+        << std::right
+
+        << std::setw(19) << releaseID
+                  << std::right
+
+        << std::setw(24) << releaseDate << std::endl;
 }
 /*
 Print the attribute details of the Product object to the console.
@@ -150,8 +154,10 @@ Product GetProductDetails(std::streampos startPos, const std::string &FILENAME)
     }
     file.seekg(startPos);
     Product product;
-    file.read(reinterpret_cast<char *>(&product), sizeof(Product));
-    startPos = file.tellg();
+    if (!file.read(reinterpret_cast<char *>(&product), sizeof(Product)))
+    {
+        throw NoRecordFound("FileReadFailed: There was an error in reading the file.");
+    }
     return product;
 }
 /*
@@ -166,25 +172,60 @@ void PrintAllProducts(const std::string &FILENAME)
     {
         throw FileException("Could not open file 'Products.bin' during reading.");
     }
+
     Product product;
     int recordCount = 0;
+    int batchSize = 10;
+    char input[3];
+    int choice = 1;
+
     std::cout << std::left
+              << std::setw(5) << " "
               << std::setw(13) << "Product Name"
               << std::setw(31) << "ReleaseID/AnticipatedReleaseID"
               << std::setw(12) << "ReleaseDate"
               << std::endl;
-    std::cout << std::string(89, '-') << std::endl;
+    std::cout << std::string(94, '-') << std::endl;
+
     while (file.read(reinterpret_cast<char *>(&product), sizeof(product)))
     {
         std::cout << std::left
+                  << std::setw(5) << recordCount + 1 << " "
                   << std::setw(13) << product.getProductName()
                   << std::setw(31) << product.getReleaseID()
                   << std::setw(12) << product.getReleaseDate()
                   << std::endl;
         recordCount++;
+
+        if (recordCount % batchSize == 0)
+        {
+            std::cout << std::string(94, '-') << std::endl;
+            std::cout << "Displayed 10 records." << std::endl;
+            std::cout << "Do you want to view the next 10 products? (1 for Yes, 0 for No): ";
+            do
+            {
+                std::cin.getline(input, 3);
+                choice = atoi(input);
+            } while (choice != 0 || choice != 1);
+
+            if (choice == 0)
+            {
+                break;
+            }
+            else if (choice == 1)
+            {
+                std::cout << std::left
+                          << std::setw(13) << "Product Name"
+                          << std::setw(31) << "ReleaseID/AnticipatedReleaseID"
+                          << std::setw(12) << "ReleaseDate"
+                          << std::endl;
+                std::cout << std::string(89, '-') << std::endl;
+            }
+        }
     }
+
     std::cout << std::string(89, '-') << std::endl;
-    std::cout << "Total records: " << recordCount << std::endl;
+    std::cout << "Total records Displayed: " << recordCount + 1 << std::endl;
 
     if (file.eof())
     {
