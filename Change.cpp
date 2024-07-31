@@ -547,6 +547,27 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     std::cout << "Total customers to be informed: " << count << std::endl;
 }
 
+
+void CommitUpdatedChange(const Change &change, const std::string &FILENAME)
+{
+    std::fstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    if (!file)
+    {
+        throw FileException("Could not open file 'Changes.bin' for writing when updating a Change record in the file.");
+    }
+    // bool recordFound = false;
+    Change temp;
+    while (file.read(reinterpret_cast<char *>(&temp), sizeof(Change)))
+    {
+        if (strcmp(temp.getChangeID(), change.getChangeID()) == 0)
+        {
+            file.seekp(file.tellg() - static_cast<std::streamoff>(sizeof(Change)));
+            file.write(reinterpret_cast<const char *>(&change), sizeof(Change));
+            break;
+        }
+    }
+    file.close();
+}
 // CommitChange function to commit a Change object to file
 void CommitChange(const Change& change, std::streampos& startPos, const std::string& FILENAME) {
     std::ofstream file( FILENAME, std::ios::binary | std::ios::in | std::ios::out);
@@ -591,6 +612,23 @@ GetChangeDetails function to retrieve Change details from file
 Reads a Change object from a specified file at a given position and returns it.
 Uses the unsorted records data structure to read the Change object.
 --------------------------------------------------------------------*/
+bool checkChangeDup(const char *otherChangeID)
+{
+    std::ifstream file(FILENAMES[1], std::ios::binary);
+    if (!file)
+    {
+        throw FileException("Could not open file 'Changes.bin' for checking duplicate change ID.");
+    }
+    Change temp;
+    while (file.read(reinterpret_cast<char *>(&temp), sizeof(Change)))
+    {
+        if (strcmp(temp.getChangeID(), otherChangeID) == 0)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
 int InitChange()
 {
     filesystem::create_directory(DIRECTORY);

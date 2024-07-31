@@ -413,25 +413,50 @@ No noticeable algorithm or data structure used.
 ----------------------------------------------------------------*/
 int UpdateSpecificChange()
 {
-    char changeID[7];
+    std::string changeID;
+    PrintAllChanges(FILENAMES[1]);
     std::cout << "===ChangeID===" << std::endl;
-    std::cout << "Enter the ChangeID (6 Digit ID): ";
-    std::cin.getline(changeID, 7);
+    std::cin.ignore();
+    int dupFound = 0;
+    do
+    {
+        std::cout << "Enter the ChangeID (6 Digit ID): ";
+
+        std::getline(std::cin, changeID);
+        dupFound = checkChangeDup(changeID.data());
+        if (dupFound == 0)
+            std::cout << "Invalid ChangeID. Please enter a valid ChangeID." << endl;
+    } while (dupFound != 1);
 
     try
     {
         std::streampos pos = CHANGEFILEPOINTER;
         Change changeToUpdate = GetChangeDetails(pos, FILENAMES[1]);
-        while (strcmp(changeToUpdate.getChangeID(), changeID) != 0)
+        while (strcmp(changeToUpdate.getChangeID(), changeID.data()) != 0)
         {
             pos += sizeof(Change);
             changeToUpdate = GetChangeDetails(pos, FILENAMES[1]);
         }
-        return UpdateChangeInfo(changeID, pos);
+        return UpdateChangeInfo(changeID.data(), pos);
     }
-    catch (const std::runtime_error &e)
+    catch (const FileException &e)
     {
-        std::cout << "Error: " << e.what() << std::endl;
+        LogException(e);
+        return -1;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        return -1;
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        return 0;
+    }
+    catch (const NoRecordFound &e)
+    {
+        LogException(e);
         return 0;
     }
 }
@@ -657,7 +682,7 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
         LogException(e);
         return 0;
     }
-
+    cout << "Change was updated successfully!" << endl;
     return 1;
 }
 /*

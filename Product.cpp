@@ -134,8 +134,7 @@ A linear search algorithm is used to iterate through the Product records.
 
 Product CreateProduct(const char *productName, const char *ReleaseID, const char *ReleaseDate)
 {
-
-  ValidateProduct(productName, ReleaseID, ReleaseDate);
+    ValidateProduct(productName, ReleaseID, ReleaseDate);
     return Product(ReleaseID, productName, ReleaseDate);
 }
 /*
