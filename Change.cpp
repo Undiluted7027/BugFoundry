@@ -61,7 +61,7 @@ No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 // UpdateChange method to update existing change details
 void Change::UpdateChange(const char *changeID, const char *description, const char &status,
-                          const char &priority, const char *releaseID)
+                          const char &priority, const char *releaseID, const char *lastUpdate)
 {
 
     safeStrCopy(this->changeID, changeID, sizeof(this->changeID));
@@ -69,6 +69,8 @@ void Change::UpdateChange(const char *changeID, const char *description, const c
     this->status = status;
     this->priority = priority;
     safeStrCopy(this->releaseID, releaseID, sizeof(this->releaseID));
+    safeStrCopy(this->lastUpdate, lastUpdate, sizeof(this->lastUpdate));
+
     // cout << "Updated change class" << endl;
 }
 
@@ -84,16 +86,22 @@ void Change::DisplayDetails(std::ostream &out) const
         << std::setw(10) << priority
         << std::setw(32) << releaseID << std::endl;
 }
-void PrintAllChanges(const std::string &FILENAME)
+int PrintAllChanges(const std::string &FILENAME)
 {
     std::ifstream file(FILENAME, std::ios::binary);
     if (!file)
     {
-        throw FileException("Could not open file 'Changes.bin' during reading.");
+        throw FileException("Could not open file '" + FILENAME + "' during reading.");
     }
+
     Change change;
     int recordCount = 0;
+    int batchSize = 10;
+    char input[3];
+    int choice = 1;
+
     std::cout << std::left
+              << std::setw(5) << " "
               << std::setw(10) << "ChangeID"
               << std::setw(15) << "Product Name"
               << std::setw(32) << "Description"
@@ -101,14 +109,49 @@ void PrintAllChanges(const std::string &FILENAME)
               << std::setw(7) << "Status"
               << std::setw(10) << "Priority"
               << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
-    std::cout << std::string(118, '-') << std::endl;
+    std::cout << std::string(123, '-') << std::endl;
+
     while (file.read(reinterpret_cast<char *>(&change), sizeof(change)))
     {
+        std::cout << std::setw(5) << recordCount + 1 << " ";
+
         change.DisplayDetails(std::cout);
         recordCount++;
+
+        if (recordCount % batchSize == 0 && recordCount + 1 > 0)
+        {
+            std::cout << std::string(118, '-') << std::endl;
+            std::cout << "Displayed 10 records." << std::endl;
+            std::cout << "Do you want to view the next 10 changes? (1 for Yes, 0 for No): ";
+            do
+            {
+                std::cin.getline(input, 3);
+                choice = atoi(input);
+            } while (choice != 0 || choice != 1);
+
+            if (choice == 0)
+            {
+                break;
+            }
+            else if (choice == 1)
+            {
+                std::cout << std::endl;
+                std::cout << std::left
+                          << std::setw(5) << " "
+                          << std::setw(10) << "ChangeID"
+                          << std::setw(15) << "Product Name"
+                          << std::setw(32) << "Description"
+                          << std::setw(12) << "Last Update"
+                          << std::setw(7) << "Status"
+                          << std::setw(10) << "Priority"
+                          << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+                std::cout << std::string(123, '-') << std::endl;
+            }
+        }
     }
-    std::cout << std::string(118, '-') << std::endl;
-    std::cout << "Total records: " << recordCount << std::endl;
+
+    std::cout << std::string(123, '-') << std::endl;
+    std::cout << "Total Records Displayed: " << recordCount << std::endl;
 
     if (file.eof())
     {
@@ -116,10 +159,11 @@ void PrintAllChanges(const std::string &FILENAME)
     }
     else if (file.fail())
     {
-        throw FileException("Could not read file 'Changes.bin' during printing.");
+        throw FileException("Could not read file '" + FILENAME + "' during printing.");
     }
 
     file.close();
+    return recordCount;
 }
 /*
 Print the attribute details of the Change object to the console.
@@ -270,23 +314,7 @@ int CreateChangesReport()
         throw FileException("Could not open file 'Changes.bin' for reading when creating changes report.");
     }
 
-    Change change;
-    int count = 0;
-    while (file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
-    {
-        change.DisplayDetails(std::cout);
-        count++;
-        if (count % 10 == 0)
-        {
-            char choice;
-            std::cout << "Press 'N' for next 10 changes, '0' to exit: ";
-            std::cin >> choice;
-            if (choice == '0')
-                break;
-        }
-    }
-    file.close();
-    return count;
+    return PrintAllChanges(FILENAMES[1]);
 }
 
 // CreateAnticipatedChangesProduct function to create a report of anticipated changes for a product
@@ -297,7 +325,9 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
     {
         throw FileException("Could not open file 'Changes.bin' for reading when creating anticipated changes for product report.");
     }
+
     std::cout << std::left
+              << std::setw(5) << " "
               << std::setw(10) << "ChangeID"
               << std::setw(15) << "Product Name"
               << std::setw(32) << "Description"
@@ -305,19 +335,67 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
               << std::setw(7) << "Status"
               << std::setw(10) << "Priority"
               << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
-    std::cout << std::string(118, '-') << std::endl;
+    std::cout << std::string(123, '-') << std::endl;
+
     Change change;
+    int recordCount = 0;
+    int batchSize = 10;
+    char input[3];
+    int choice = 1;
+
     while (file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
     {
-        if (strcmp(change.change_displayRelID(), releaseID) == 0)
+        if (strcmp(change.change_displayRelID(), releaseID) == 0 && change.change_displayStatus() != 'X')
         {
-            if (change.change_displayStatus() != 'X')
+            std::cout << std::setw(5) << recordCount + 1 << " ";
+            change.DisplayDetails(std::cout);
+            recordCount++;
+
+            if (recordCount % batchSize == 0 && recordCount + 1 > 0)
             {
-                change.DisplayDetails(std::cout);
+                std::cout << std::string(118, '-') << std::endl;
+                std::cout << "Displayed 10 records." << std::endl;
+                std::cout << "Do you want to view the next 10 changes? (1 for Yes, 0 for No): ";
+                do
+                {
+                    std::cin.getline(input, 3);
+                    choice = atoi(input);
+                } while (choice != 0 || choice != 1);
+
+                if (choice == 0)
+                {
+                    break;
+                }
+                else if (choice == 1)
+                {
+                    std::cout << std::endl;
+                    std::cout << std::left
+                              << std::setw(5) << " "
+                              << std::setw(10) << "ChangeID"
+                              << std::setw(15) << "Product Name"
+                              << std::setw(32) << "Description"
+                              << std::setw(12) << "Last Update"
+                              << std::setw(7) << "Status"
+                              << std::setw(10) << "Priority"
+                              << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+                    std::cout << std::string(123, '-') << std::endl;
+                }
             }
         }
     }
-    std::cout << std::string(118, '-') << std::endl;
+
+    std::cout << std::string(123, '-') << std::endl;
+    std::cout << "Total Records Displayed: " << recordCount << std::endl;
+
+    if (file.eof())
+    {
+        file.clear(); // Clear EOF flag
+    }
+    else if (file.fail())
+    {
+        throw FileException("Could not read file 'Changes.bin' during report creation.");
+    }
+
     file.close();
 }
 
@@ -333,14 +411,14 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
 {
     if (strlen(changeID) != 6 || changeID[0] != '1')
     {
-        throw InvalidDataException("ChangeID can be of 6 digits at max starting with a 1.");
+        throw InvalidDataException("ChangeID must be 6 characters long and start with '1'.");
     }
 
-    // Find the Change object with given changeID
+    // Find the Change object with the given changeID
     std::ifstream changeFile(FILENAMES[1], std::ios::binary);
     if (!changeFile)
     {
-        throw FileException("Could not open file 'Changes.bin' for reading when creating report for users to be informed about a change related update.");
+        throw FileException("Could not open file 'Changes.bin' for reading.");
     }
 
     Change change;
@@ -364,7 +442,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     std::ifstream complaintFile(FILENAMES[2], std::ios::binary);
     if (!complaintFile)
     {
-        throw FileException("Could not open file 'Complaints.bin' for reading when creating report for users to be informed about a change related update.");
+        throw FileException("Could not open file 'Complaints.bin' for reading.");
     }
 
     std::set<std::string> uniqueCustomerIDs;
@@ -380,32 +458,78 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
 
     if (uniqueCustomerIDs.empty())
     {
-        throw NoRecordFound("No Customers found relating to the changeID: " + std::string(changeID));
+        throw NoRecordFound("No customers found relating to the changeID: " + std::string(changeID));
     }
 
     // Find and display Customer details associated with the Complaints
     std::ifstream customerFile(FILENAMES[0], std::ios::binary);
     if (!customerFile)
     {
-        throw FileException("Could not open file 'Customers.bin' for reading when creating report for users to be informed about a change related update.");
+        throw FileException("Could not open file 'Customers.bin' for reading.");
     }
 
     std::cout << "Customers to be informed about Change ID " << changeID << ":" << std::endl;
-    std::cout << std::string(50, '-') << std::endl;
+    std::cout << std::string(91, '-') << std::endl;
 
     Customer customer;
     int count = 0;
+    int batchSize = 10;
+    char input[3];
+    int choice = 1;
+    std::cout << std::left
+              << std::setw(5) << " "
+              << std::setw(15) << "Customer ID"
+              << std::right
+
+              << std::setw(10) << "Name"
+              << std::setw(24) << "Email"
+              << std::right
+              << std::setw(5) << " "
+              << std::setw(15) << "Phone" << std::endl;
+    std::cout << std::string(91, '-') << std::endl;
     while (customerFile.read(reinterpret_cast<char *>(&customer), sizeof(Customer)))
     {
         if (uniqueCustomerIDs.find(customer.getCustID()) != uniqueCustomerIDs.end())
         {
+            std::cout << std::setw(5) << count + 1 << " ";
+
             customer.DisplayDetails(std::cout);
             count++;
+
+            if (count % batchSize == 0 && count + 1 > 0)
+            {
+                std::cout << std::string(50, '-') << std::endl;
+                std::cout << "Displayed 10 records." << std::endl;
+                std::cout << "Do you want to view the next 10 customers? (1 for Yes, 0 for No): ";
+                do
+                {
+                    std::cin.getline(input, 3);
+                    choice = atoi(input);
+                } while (choice != 0 || choice != 1);
+
+                if (choice == 0)
+                {
+                    break;
+                }
+                else if (choice == 1)
+                {
+                    std::cout << std::left
+                              << std::setw(5) << " "
+                              << std::setw(15) << "Customer ID"
+                              << std::right
+                              << std::setw(10) << "Name"
+                              << std::setw(24) << "Email"
+                              << std::right
+                              << std::setw(5) << " "
+                              << std::setw(15) << "Phone" << std::endl;
+                    std::cout << std::string(91, '-') << std::endl;
+                }
+            }
         }
     }
     customerFile.close();
 
-    std::cout << std::string(50, '-') << std::endl;
+    std::cout << std::string(91, '-') << std::endl;
     std::cout << "Total customers to be informed: " << count << std::endl;
 }
 
@@ -453,13 +577,13 @@ Change GetChangeDetails(std::streampos startPos, const std::string &FILENAME)
     std::ifstream file(FILENAMES[1], std::ios::binary);
     if (!file)
     {
-        throw std::runtime_error("Could not open file for reading");
+        throw FileException("Could not open file for reading");
     }
     file.seekg(startPos);
     Change change;
     if (!file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
     {
-        throw std::runtime_error("FileReadFailed: There was an error in reading the file.");
+        throw NoRecordFound("FileReadFailed: There was an error in reading the file.");
     }
     return change;
 }

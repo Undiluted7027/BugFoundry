@@ -269,43 +269,74 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
     Uses the unsorted records data structure to read the Complaint object.
     --------------------------------------------------------------------*/
     void PrintAllComplaints(const std::string &FILENAME)
+{
+    std::ifstream file(FILENAMES[2], std::ios::binary);
+    if (!file)
     {
-        std::ifstream file(FILENAMES[2], std::ios::binary);
-        if (!file)
-        {
-            throw FileException("Could not open file 'Complaints.bin' during reading.");
-        }
-
-        Complaint complaint;
-        int recordCount = 0;
-
-        std::cout << std::left
-                  << std::setw(10) << "ID"
-                  << std::setw(31) << "Description"
-                  << std::setw(12) << "Date"
-                  << std::setw(10) << "Change"
-                  << std::setw(9) << "Release"
-                  << std::setw(11) << "Customer" << std::endl;
-        std::cout << std::string(72, '-') << std::endl;
-
-        while (file.read(reinterpret_cast<char *>(&complaint), sizeof(Complaint)))
-        {
-            complaint.DisplayDetails(std::cout);
-            recordCount++;
-        }
-
-        std::cout << std::string(72, '-') << std::endl;
-        std::cout << "Total records: " << recordCount << std::endl;
-        if (file.eof())
-        {
-            file.clear(); // Clear EOF flag
-        }
-        else if (file.fail())
-        {
-            throw FileException("Could not read file 'Complaints.bin' during printing.");
-        }
-        file.close();
+        throw FileException("Could not open file 'Complaints.bin' during reading.");
     }
+
+    Complaint complaint;
+    int recordCount = 0;
+    int batchSize = 10;
+    char input[3];
+    int choice = 1;
+
+    std::cout << std::left
+              << std::setw(5) << " "
+              << std::setw(10) << "ID"
+              << std::setw(31) << "Description"
+              << std::setw(12) << "Date"
+              << std::setw(10) << "Change"
+              << std::setw(9) << "Release"
+              << std::setw(11) << "Customer" << std::endl;
+    std::cout << std::string(77, '-') << std::endl;
+
+    while (file.read(reinterpret_cast<char *>(&complaint), sizeof(Complaint)))
+    {
+            std::cout << std::setw(5) << recordCount + 1 << " ";
+        complaint.DisplayDetails(std::cout);
+        recordCount++;
+
+        if (recordCount % batchSize == 0 && recordCount > 0)
+        {
+            std::cout << std::string(72, '-') << std::endl;
+            std::cout << "Displayed 10 records." << std::endl;
+            std::cout << "Do you want to view the next 10 complaints? (1 for Yes, 0 for No): ";
+            std::cin.getline(input, 3);
+            choice = atoi(input);
+
+            if (choice == 0)
+            {
+                break;
+            }
+
+            std::cout << std::left
+                      << std::setw(10) << "ID"
+                      << std::setw(31) << "Description"
+                      << std::setw(12) << "Date"
+                      << std::setw(10) << "Change"
+                      << std::setw(9) << "Release"
+                      << std::setw(11) << "Customer" << std::endl;
+            std::cout << std::string(77, '-') << std::endl;
+        }
+    }
+
+    std::cout << std::string(77, '-') << std::endl;
+    std::cout << "Total Records Displayed: " << recordCount + 1 << std::endl;
+
+    if (file.eof())
+    {
+        file.clear(); // Clear EOF flag
+    }
+    else if (file.fail())
+    {
+        throw FileException("Could not read file 'Complaints.bin' during printing.");
+    }
+
+    file.close();
+}
+
 
     bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint, const std::string &FILENAME)
     {

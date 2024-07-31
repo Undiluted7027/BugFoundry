@@ -29,7 +29,7 @@ public:
 
     void UpdateChange(const char *changeID, const char *description,
                       const char &status, const char &priority,
-                      const char *releaseID); // Update change details
+                      const char *releaseID, const char* lastUpdate); // Update change details
 
     void DisplayDetails(std::ostream &out) const; // Display change details
 
