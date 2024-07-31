@@ -38,13 +38,15 @@ Customer::Customer(
     else
     {
         // Assuming IDGenerator returns a char*
-        char *generatedID = IDGenerator('1', 10);
+        char *generatedID = IDGenerator('0', FILENAMES[0], 10);
         safeStrCopy(this->custID, generatedID, sizeof(this->custID));
         delete[] generatedID;
     }
     safeStrCopy(this->name, name, sizeof(this->name));
     safeStrCopy(this->email, email, sizeof(this->email));
     safeStrCopy(this->phone, phone, sizeof(this->phone));
+        cout << this->custID << endl;
+
 }
 /*
 Create Customer object using attrbibutes provided.
@@ -103,21 +105,17 @@ void Customer::DisplayDetails(
                       // ostream object to handle calling with << operator
 ) const
 {
-    if (name[0] == '\0' || email[0] == '\0' || phone[0] == '\0')
-    {
-        throw InvalidDataException("One or more fields of Customer record has invalid data.");
-    }
-    else
-    {
+    
         out.width(15);
         out << std::left << custID;
-        out.width(32);
+        out << std::right << std::setw(10);
+        out.width(20);
         out << std::left << name;
         out.width(24);
         out << std::left << email;
         out.width(15);
         out << std::left << phone << std::endl;
-    }
+    
 }
 /*
 Print the attribute details of the Customer object to the console.
@@ -137,7 +135,7 @@ Customer CreateCustomer(
     if (validationResult == 1)
     {
         // Generate a new customer ID
-        char *generatedID = IDGenerator('0', 10);
+        char *generatedID = IDGenerator('0', FILENAMES[0], 10);
 
         // Create the customer object
         Customer newCustomer(generatedID, name, email, phone);
@@ -170,15 +168,22 @@ void CommitCustomer(
                                 // Location-name of file
 )
 {
-    std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    std::fstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file)
     {
         throw FileException("Could not open file 'Customers.bin' for writing when adding a Customer record to the file.");
     }
+    int recordCount;
+    file.read(reinterpret_cast<char *>(&recordCount), sizeof(int));
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&customer), sizeof(Customer));
     startPos = file.tellp();
+    recordCount++;
+    file.seekp(0, std::ios::beg);
+    file.write(reinterpret_cast<const char *>(&recordCount), sizeof(int));
+
+    file.close();
 }
 /*
 Writes a Customer object to a specified file at a given position.
@@ -197,9 +202,13 @@ Customer GetCustomerDetails(
     {
         throw FileException("Could not open file 'Customers.bin' for reading a record.");
     }
+    // startPos += sizeof(int);
     file.seekg(startPos);
     Customer customer;
-    file.read(reinterpret_cast<char *>(&customer), sizeof(Customer));
+    if (!file.read(reinterpret_cast<char *>(&customer), sizeof(Customer)))
+    {
+        throw NoRecordFound("FileReadFailed: There was an error in reading the file.");
+    }
     startPos = file.tellg();
     return customer;
 }
@@ -208,19 +217,19 @@ Reads a Customer object from a specified file at a given position and returns it
 Uses the unsorted records data structure to read the Customer object.
 --------------------------------------------------------------------*/
 // PrintAllCustomers
-void PrintAllCustomers(
-    const std::string &FILENAME // in
-                                // Location-name of file
-)
+void PrintAllCustomers(const std::string &FILENAME)
 {
     std::ifstream file(FILENAME, std::ios::binary);
     if (!file)
     {
         throw FileException("Could not open file 'Customers.bin' for printing records.");
     }
-
+    file.seekg(sizeof(int), std::ios::beg);
     Customer customer;
     int recordCount = 0;
+    int batchSize = 10;
+    char input[3];
+    int choice = 1;
 
     std::cout << std::left
               << std::setw(12) << "Customer ID"
@@ -237,10 +246,35 @@ void PrintAllCustomers(
                   << std::setw(31) << customer.getEmail()
                   << std::setw(15) << customer.getPhone() << std::endl;
         recordCount++;
+
+        if (recordCount % batchSize == 0)
+        {
+            std::cout << std::string(94, '-') << std::endl;
+            std::cout << "Displayed 10 records." << std::endl;
+            std::cout << "Do you want to view the next 10 customers? (1 for Yes, 0 for No): ";
+            std::cin.getline(input, 3);
+            choice = atoi(input);
+
+            if (choice == 0)
+            {
+                break;
+            }
+            else if (choice)
+            {
+                std::cout << std::left
+                          << std::setw(5) << " "
+
+                          << std::setw(12) << "Customer ID"
+                          << std::setw(31) << "Name"
+                          << std::setw(31) << "Email"
+                          << std::setw(15) << "Phone" << std::endl;
+                std::cout << std::string(94, '-') << std::endl;
+            }
+        }
     }
 
-    std::cout << std::string(89, '-') << std::endl;
-    std::cout << "Total records: " << recordCount << std::endl;
+    std::cout << std::string(94, '-') << std::endl;
+    std::cout << "Total records Displayed: " << recordCount + 1 << std::endl;
 
     if (file.eof())
     {
@@ -265,6 +299,8 @@ int ValidateCustomer(
 )
 {
     if (strlen(name) == 0 || strlen(email) == 0 || strlen(phone) == 0)
+        return -1;
+    if (strlen(name) > 16)
         return -1;
     // Validate email
     const char *atSign = strchr(email, '@');
@@ -292,7 +328,7 @@ int ValidateCustomer(
     if ((strlen(phone) == 11 && phone[0] == '1') || (strlen(phone) == 10 && isdigit(phone[0])))
     {
 
-        for (int i = 0; i < strlen(phone); i++)
+        for (size_t i = 0; i < strlen(phone); i++)
         {
             if (!isdigit(phone[i]))
                 return -1;
@@ -309,12 +345,12 @@ int ValidateCustomer(
     {
         throw FileException("Could not open file 'Customers.bin' for reading records during validation.");
     }
-
+    file.seekg(sizeof(int), std::ios::beg);
     Customer temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Customer)))
     {
         // read through the file
-        if (strcmp(temp.getEmail(), email) == 0 || strcmp(temp.getPhone(), phone) == 0)
+        if (strcmp(temp.getEmail(), email) == 0 && strcmp(temp.getPhone(), phone) == 0)
         {
             throw DuplicateRecordException("Duplicate Customer record found.");
         }
@@ -331,6 +367,7 @@ bool checkDup(const char *otherCustID)
     {
         throw FileException("Could not open file 'Customers.bin' for checking duplicate customer ID.");
     }
+    file.seekg(sizeof(int), std::ios::beg);
     Customer temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Customer)))
     {
@@ -359,6 +396,9 @@ int InitCustomer()
         }
         else
         {
+            int initialCount = 0;
+            file.write(reinterpret_cast<const char *>(&initialCount), sizeof(int)); // Reserve space for the record count
+
             file.close();
             return 1;
         }
