@@ -505,7 +505,7 @@ int ListAndSelectChange()
 
         start = end;
         end += 10;
-    } while (choice != 0);
+    } while (choice != '0');
 
     return 0;
 }
