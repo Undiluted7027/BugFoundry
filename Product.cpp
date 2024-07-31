@@ -9,6 +9,7 @@ This CPP file called Changes.cpp handles the changes of the program.
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include "Exceptions.hpp"
 
 Product::Product() : releaseID{0}, releaseDate{0}
 {
@@ -61,20 +62,16 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
 {
     if (strlen(productName) == 0 || strlen(productName) > 10)
     {
-        std::cout << "Invalid product name length" << std::endl;
-        return -1;
     }
-    cout << strlen(ReleaseID) << endl;
+    // cout << strlen(ReleaseID) << endl;
     if (strlen(ReleaseID) > 8 && strlen(ReleaseID) && strlen(ReleaseID) != 0)
     {
-        std::cout << "Invalid ReleaseID length" << std::endl;
-        return -1;
+        throw InvalidDataException("ReleaseID field can be of 8 characters at max.");
     }
 
     if (strlen(ReleaseDate) != 10 && strlen(ReleaseDate) != 0)
     {
-        std::cout << "Invalid ReleaseDate format" << std::endl;
-        return -1;
+        throw InvalidDataException("ReleaseDate field can only have value in the format of YYYY-MM-DD.");
     }
 
     // Check ReleaseDate format (YYYY-MM-DD)
@@ -83,8 +80,7 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
     int day = (ReleaseDate[8] - '0') * 10 + (ReleaseDate[9] - '0');
     if (year < 2024 || year > 2099 || month < 1 || month > 12 || day < 1 || day > 31)
     {
-        std::cout << "Invalid ReleaseDate values" << std::endl;
-        return -1;
+        throw InvalidDataException("ReleaseDate field can only have value in the format of YYYY-MM-DD.");
     }
 
     // Check for duplicate product
@@ -100,14 +96,14 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
     {
         if (strcmp(currentProduct.getReleaseID(), ReleaseID) == 0)
         {
-            std::cout << "Product already exists" << std::endl;
-            file.close();
-            return 0;
+            throw DuplicateRecordException("Duplicate Product record found.");
+            break;
         }
     }
 
     file.close();
-    std::cout << "Product is valid!" << std::endl;
+    std::cout << "Validation of data for 'Product' record succeeded!" << std::endl;
+
     return 1;
 }
 /*
@@ -117,19 +113,9 @@ A linear search algorithm is used to iterate through the Product records.
 
 Product CreateProduct(const char *productName, const char *ReleaseID, const char *ReleaseDate)
 {
+
     int validationResult = ValidateProduct(productName, ReleaseID, ReleaseDate);
-    if (validationResult == 1)
-    {
-        return Product(ReleaseID, productName, ReleaseDate);
-    }
-    else if (validationResult == 0)
-    {
-        throw std::runtime_error("FailedToCreateProduct: Product with same ReleaseID already exists!");
-    }
-    else
-    {
-        throw std::runtime_error("FailedToCreateProduct: Invalid ReleaseID or ReleaseDate");
-    }
+    return Product(ReleaseID, productName, ReleaseDate);
 }
 /*
 Create new Product object and also validates it.
@@ -140,14 +126,14 @@ void CommitProduct(const Product &product, std::streampos &startPos, const std::
     std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file)
     {
-        throw std::runtime_error("FileWriteFailed: Could not open file for writing");
+        throw FileException("Could not open file 'Products.bin' for writing when adding a Change record to the file.");
     }
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&product), sizeof(Product));
     if (file.fail())
     {
-        throw std::runtime_error("FileWriteFailed: There was an error in writing to the file");
+        throw FileException("Could not open file 'Products.bin' for writing when adding a Change record to the file.");
     }
     startPos = file.tellp();
 }
@@ -178,8 +164,7 @@ void PrintAllProducts(const std::string &FILENAME)
     std::ifstream file(FILENAME, std::ios::binary);
     if (!file)
     {
-        std::cerr << "Error: Could not open file " << FILENAME << " for reading." << std::endl;
-        return;
+        throw FileException("Could not open file 'Products.bin' during reading.");
     }
     Product product;
     int recordCount = 0;
@@ -201,29 +186,35 @@ void PrintAllProducts(const std::string &FILENAME)
     std::cout << std::string(89, '-') << std::endl;
     std::cout << "Total records: " << recordCount << std::endl;
 
-    if (file.eof()) {
-        file.clear();  // Clear EOF flag
+    if (file.eof())
+    {
+        file.clear(); // Clear EOF flag
     }
-    else if (file.fail()) {
-        std::cerr << "Error occurred while reading the file." << std::endl;
+    else if (file.fail())
+    {
+        throw FileException("Could not read file 'Products.bin' during printing.");
     }
 
     file.close();
 }
 
-bool checkDupProduct(const char *otherReleaseID){
+bool checkDupProduct(const char *otherReleaseID)
+{
     std::ifstream file(FILENAMES[3], std::ios::binary);
-    if (!file) {
-        throw std::runtime_error("Could not open file for reading");
-        return 0;
+    if (!file)
+    {
+        throw FileException("Could not open file 'Products.bin' for checking duplicate releaseID.");
     }
     Product temp;
-    while (file.read(reinterpret_cast<char*>(&temp), sizeof(Product))){
-        if (strcmp(temp.getReleaseID(), otherReleaseID) == 0) {
-            std::cout << "Record already exists :/" << std::endl;
+    while (file.read(reinterpret_cast<char *>(&temp), sizeof(Product)))
+    {
+        if (strcmp(temp.getReleaseID(), otherReleaseID) == 0)
+        {
+            file.close();
             return 1;
         }
     }
+    file.close();
     return 0;
 }
 
@@ -235,7 +226,7 @@ int InitProduct()
         std::ofstream file(FILENAMES[3], std::ios::binary);
         if (!file)
         {
-            return -1;
+            throw FileException("Startup failed while creating 'Products.bin' file.");
         }
         file.close();
         return 1;
