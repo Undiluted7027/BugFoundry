@@ -68,7 +68,7 @@ void CreateAnticipatedChangesProduct(const char *releaseID); // Create a report 
 
 void CreateUsersInformedOnUpdateReport(const char *changeID); // Create a report of users to be informed on update from changeID
 
-void CommitChange(const Change &change, std::streampos &startPos = CHANGEFILEPOINTER,
+void CommitChange(const Change &change, std::streampos startPos = CHANGEFILEPOINTER,
                   const std::string &FILENAME = FILENAMES[1]); // Commit a Change object to file
 
 Change GetChangeDetails(std::streampos startPos = CHANGEFILEPOINTER,

@@ -100,7 +100,7 @@ No noticeable algorithm or data structure used.
 
 int ActivateUI()
 {
-    int choice; int subchoice;
+    int choice;
     do 
     {
         cout << endl;
@@ -108,16 +108,15 @@ int ActivateUI()
         switch (choice)
         {
             case 1:
-                subchoice = Create_Menu();
+                Create_Menu();
                 break;
             case 2:
-                subchoice = Update_Menu();
+                Update_Menu();
                 break;
             case 3:
-                subchoice = Report_Menu();
+                Report_Menu();
                 break;
             case 0:
-                subchoice = 0;
                 cout << "Thank you for using Bug Foundry." << endl;
                 break;
             default:
