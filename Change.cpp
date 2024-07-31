@@ -9,6 +9,7 @@ This CPP file called Changes.cpp handles the changes of the program.
 #include "Complaint.cpp" // Include for handling Complaints (assuming Complaint class is defined here)
 #include "Customer.hpp"  // Include for handling Customers (assuming Customer class is defined here)
 #include "Globals.hpp"   // Include necessary global constants and declarations
+#include "Exceptions.hpp"
 #include <cstring>
 #include <iostream>
 #include <set>
@@ -68,7 +69,7 @@ void Change::UpdateChange(const char *changeID, const char *description, const c
     this->status = status;
     this->priority = priority;
     safeStrCopy(this->releaseID, releaseID, sizeof(this->releaseID));
-    cout << "Updated change class" << endl;
+    // cout << "Updated change class" << endl;
 }
 
 // DisplayDetails method to display change details
@@ -88,8 +89,7 @@ void PrintAllChanges(const std::string &FILENAME)
     std::ifstream file(FILENAME, std::ios::binary);
     if (!file)
     {
-        std::cerr << "Error: Could not open file " << FILENAME << " for reading." << std::endl;
-        return;
+        throw FileException("Could not open file 'Changes.bin' during reading.");
     }
     Change change;
     int recordCount = 0;
@@ -116,7 +116,7 @@ void PrintAllChanges(const std::string &FILENAME)
     }
     else if (file.fail())
     {
-        std::cerr << "Error occurred while reading the file." << std::endl;
+        throw FileException("Could not read file 'Changes.bin' during printing.");
     }
 
     file.close();
@@ -128,6 +128,8 @@ No noticeable algorithm or data structure used.
 // Accessor methods for Change class attributes
 const char *Change::getChangeID() const
 {
+    if (changeID == nullptr)
+        throw InvalidDataException("ChangeID field is null");
     return changeID;
 }
 /*
@@ -137,6 +139,8 @@ No noticeable algorithm or data structure used.
 
 const char *Change::change_displayProductName() const
 {
+    if (productName == nullptr)
+        throw InvalidDataException("ProductName field is null");
     return productName;
 }
 /*
@@ -145,11 +149,15 @@ No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 const char *Change::change_displayDesc() const
 {
+    if (description == nullptr)
+        throw InvalidDataException("Description field is null");
     return description;
 }
 
 char Change::change_displayStatus() const
 {
+    if (status == '\0')
+        throw InvalidDataException("Status field is null");
     return status;
 }
 /*
@@ -158,6 +166,8 @@ No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 char Change::change_displayPriority() const
 {
+    if (priority == '\0')
+        throw InvalidDataException("Priority field is null");
     return priority;
 }
 /*
@@ -166,6 +176,8 @@ No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 const char *Change::change_displayRelID() const
 {
+    if (releaseID == nullptr)
+        throw InvalidDataException("ReleaseID field is null");
     return releaseID;
 }
 /*
@@ -177,14 +189,9 @@ Change CreateChange(const char *description, const char &status, const char &pri
                     const char *lastUpdate, const char *releaseID, const char *changeID)
 {
     // Validate change data before creating a new Change object
-    if (ValidateChange(description, status, priority, lastUpdate, releaseID) == 1)
-    {
-        return Change("", description, status, priority, releaseID, lastUpdate, changeID);
-    }
-    else
-    {
-        throw std::runtime_error("Could not create a new change!");
-    }
+
+    int validation = ValidateChange(description, status, priority, lastUpdate, releaseID);
+    return Change("", description, status, priority, releaseID, lastUpdate, changeID);
 }
 /*
 Create new Change object and also validates it.
@@ -197,40 +204,34 @@ int ValidateChange(const char *description, const char &status, const char &prio
     // Check each attribute for validity
     if (strlen(description) == 0 || strlen(description) > 30)
     {
-        std::cout << "Invalid description length" << std::endl;
-        return -1;
+        throw InvalidDataException("Description field can be of 30 characters at max.");
     }
 
     if (status != '-' && status != 'X' && status != 'P')
     {
-        std::cout << "Invalid status" << std::endl;
-        return -1;
+        throw InvalidDataException("Status field can only have '-' or 'X' or 'P' as a value.");
     }
 
     if (priority < '1' || priority > '5')
     {
-        std::cout << "Invalid priority" << std::endl;
-        return -1;
+        throw InvalidDataException("Priority field can only have values between 1 and 5.");
     }
 
     if (strlen(lastUpdate) != 10)
     {
-        std::cout << "Invalid lastUpdate format" << std::endl;
-        return -1;
+        throw InvalidDataException("LastUpdate field can only have value in the format of YYYY-MM-DD.");
     }
 
     if (strlen(releaseID) > 8)
     {
-        std::cout << "Invalid releaseID" << std::endl;
-        return -1;
+        throw InvalidDataException("ReleaseID field can be of 8 characters at max.");
     }
 
     // Check for duplicate change in the file
     std::ifstream file(FILENAMES[1], std::ios::binary);
     if (!file)
     {
-        std::cerr << "Error: Could not open file for reading" << std::endl;
-        return -1;
+        throw FileException("Could not open file 'Changes.bin' for reading during validation.");
     }
 
     // This part already gets done in complaint.cpp
@@ -239,27 +240,26 @@ int ValidateChange(const char *description, const char &status, const char &prio
     {
         if (/*(trcmp(currentChange.change_displayRelID(), releaseID) == 0) && */ (strcmp(currentChange.change_displayDesc(), description) == 0))
         {
-            std::cout << "Change already exists" << std::endl;
-            file.close();
-            return 0;
+            throw DuplicateRecordException("Duplicate Change record found.");
+            break;
         }
     }
 
     file.close();
-    std::cout << "Change is valid!" << std::endl;
+    std::cout << "Validation of data for 'Change' record succeeded!" << std::endl;
     return 1;
 }
 /*
 Validates that the Change object attributes are acceptable and makes sure no duplicate Change records exists.
 A linear search algorithm is used to iterate through the Change records.
 --------------------------------------------------------------------*/
-void UpdateLatestChange(const char *description, const char &status, const char &priority,
-                        const char *releaseID, const char *lastUpdate)
-{
-    // Implementation depends on how you want to identify the latest change
-    // This is a placeholder implementation
-    std::cout << "UpdateLatestChange: Not implemented" << std::endl;
-}
+// void UpdateLatestChange(const char *description, const char &status, const char &priority,
+//                         const char *releaseID, const char *lastUpdate)
+// {
+//     // Implementation depends on how you want to identify the latest change
+//     // This is a placeholder implementation
+//     std::cout << "UpdateLatestChange: Not implemented" << std::endl;
+// }
 
 // CreateChangesReport function to create a report of all changes
 int CreateChangesReport()
@@ -267,8 +267,7 @@ int CreateChangesReport()
     std::ifstream file(FILENAMES[1], std::ios::binary);
     if (!file)
     {
-        std::cerr << "Error: Could not open file for reading" << std::endl;
-        return -1;
+        throw FileException("Could not open file 'Changes.bin' for reading when creating changes report.");
     }
 
     Change change;
@@ -296,8 +295,7 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
     std::ifstream file(FILENAMES[1], std::ios::binary);
     if (!file)
     {
-        std::cerr << "Error: Could not open file for reading" << std::endl;
-        return;
+        throw FileException("Could not open file 'Changes.bin' for reading when creating anticipated changes for product report.");
     }
     std::cout << std::left
               << std::setw(10) << "ChangeID"
@@ -335,16 +333,14 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
 {
     if (strlen(changeID) != 6 || changeID[0] != '1')
     {
-        std::cerr << "Invalid changeID format. It should be 5 digits starting with 1." << std::endl;
-        return;
+        throw InvalidDataException("ChangeID can be of 6 digits at max starting with a 1.");
     }
 
     // Find the Change object with given changeID
     std::ifstream changeFile(FILENAMES[1], std::ios::binary);
     if (!changeFile)
     {
-        std::cerr << "Error: Could not open Changes file." << std::endl;
-        return;
+        throw FileException("Could not open file 'Changes.bin' for reading when creating report for users to be informed about a change related update.");
     }
 
     Change change;
@@ -361,16 +357,14 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
 
     if (!changeFound)
     {
-        std::cout << "No Change found with ID: " << changeID << std::endl;
-        return;
+        throw NoRecordFound("No record found matching the changeID: " + std::string(changeID));
     }
 
     // Find all Complaints associated with this Change
     std::ifstream complaintFile(FILENAMES[2], std::ios::binary);
     if (!complaintFile)
     {
-        std::cerr << "Error: Could not open Complaints file." << std::endl;
-        return;
+        throw FileException("Could not open file 'Complaints.bin' for reading when creating report for users to be informed about a change related update.");
     }
 
     std::set<std::string> uniqueCustomerIDs;
@@ -386,16 +380,14 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
 
     if (uniqueCustomerIDs.empty())
     {
-        std::cout << "No customers found for Change ID: " << changeID << std::endl;
-        return;
+        throw NoRecordFound("No Customers found relating to the changeID: " + std::string(changeID));
     }
 
     // Find and display Customer details associated with the Complaints
     std::ifstream customerFile(FILENAMES[0], std::ios::binary);
     if (!customerFile)
     {
-        std::cerr << "Error: Could not open Customers file." << std::endl;
-        return;
+        throw FileException("Could not open file 'Customers.bin' for reading when creating report for users to be informed about a change related update.");
     }
 
     std::cout << "Customers to be informed about Change ID " << changeID << ":" << std::endl;
@@ -422,7 +414,7 @@ void CommitUpdatedChange(const Change &change, const std::string &FILENAME)
     std::fstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file)
     {
-        throw std::runtime_error("Could not open file for writing");
+        throw FileException("Could not open file 'Changes.bin' for writing when updating a Change record in the file.");
     }
     bool recordFound = false;
     Change temp;
@@ -432,13 +424,11 @@ void CommitUpdatedChange(const Change &change, const std::string &FILENAME)
         {
             file.seekp(file.tellg() - static_cast<std::streamoff>(sizeof(Change)));
             file.write(reinterpret_cast<const char *>(&change), sizeof(Change));
-            cout << "Updated change" << endl;
             break;
         }
     }
     file.close();
 }
-
 
 // CommitChange function to commit a Change object to file
 void CommitChange(const Change &change, std::streampos &startPos, const std::string &FILENAME)
@@ -446,7 +436,7 @@ void CommitChange(const Change &change, std::streampos &startPos, const std::str
     std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file)
     {
-        throw std::runtime_error("Could not open file for writing");
+        throw FileException("Could not open file 'Changes.bin' for writing when adding a Change record to the file.");
     }
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
@@ -485,7 +475,7 @@ int InitChange()
         ofstream file(FILENAMES[1], ios::binary);
         if (!file)
         {
-            return -1;
+            throw FileException("Startup failed while creating 'Changes.bin' file.");
         }
         else
         {
@@ -493,11 +483,7 @@ int InitChange()
         }
         file.close();
     }
-    else
-    {
-        return 0;
-    }
-    return -1;
+    return 0;
 }
 /* int InitChange() uses the global variables streampos CHANGEFILEPOINTER and FILENAMES[1] to check if binary file "Changes.bin" exist in the DIRECTORY to essentially check if the program is being run for the first time. If it does, then it returns 0, if it doesn't then the files is created. If file was created successfully, it returns 1 else -1. The function does not fail.
 ----------------------------------------------------------------------*/

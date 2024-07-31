@@ -3,6 +3,7 @@
 #include "Change.cpp"
 #include "Product.cpp"
 #include "ErrorMessages.cpp"
+#include "Exceptions.hpp"
 #include <iostream>
 #include <cstring>
 
@@ -81,9 +82,24 @@ int NewCustomer()
         std::cout << "User Successfully Created" << std::endl;
         return 1;
     }
-    catch (const std::runtime_error &e)
+    catch (const FileException &e)
     {
-        std::cout << e.what() << std::endl;
+        LogException(e);
+        return -1;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        return -1;
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        return 0;
+    }
+    catch (const NoRecordFound &e)
+    {
+        LogException(e);
         return 0;
     }
 }
@@ -127,19 +143,27 @@ int CreateNewComplaint()
         strftime(date, sizeof(date), "%Y-%m-%d", localtime(&now));
 
         Complaint newComplaint = CreateComplaint(desc.data(), date, relID.data(), userID.data(), product.data());
-        // std::streampos pos = COMPLAINTFILEPOINTER;
-        // CommitComplaint(newComplaint, pos, FILENAMES[2]);
-
-        // Change newChange = CreateChange(desc.data(), '-', '3', date, relID.data());
-        // pos = CHANGEFILEPOINTER;
-        // CommitChange(newChange, pos, FILENAMES[1]);
-
         std::cout << "Complaint Created Successfully" << std::endl;
         return 1;
     }
-    catch (const std::runtime_error &e)
+    catch (const FileException &e)
     {
-        std::cout << e.what() << std::endl;
+        LogException(e);
+        return -1;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        return -1;
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        return 0;
+    }
+    catch (const NoRecordFound &e)
+    {
+        LogException(e);
         return 0;
     }
 }
@@ -219,9 +243,24 @@ int CreateNewProduct()
         std::cout << "Product Created Successfully" << std::endl;
         return 1;
     }
-    catch (const std::runtime_error &e)
+    catch (const FileException &e)
     {
-        std::cout << e.what() << std::endl;
+        LogException(e);
+        return -1;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        return -1;
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        return 0;
+    }
+    catch (const NoRecordFound &e)
+    {
+        LogException(e);
         return 0;
     }
 }
@@ -258,9 +297,24 @@ int CreateNewProductRel()
         std::cout << "Product Release Created Successfully" << std::endl;
         return 1;
     }
-    catch (const std::runtime_error &e)
+    catch (const FileException &e)
     {
-        std::cout << e.what() << std::endl;
+        LogException(e);
+        return -1;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        return -1;
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        return 0;
+    }
+    catch (const NoRecordFound &e)
+    {
+        LogException(e);
         return 0;
     }
 }
@@ -285,9 +339,24 @@ int UpdateSpecificChange()
         }
         return UpdateChangeInfo(changeID.data(), pos);
     }
-    catch (const std::runtime_error &e)
+    catch (const FileException &e)
     {
-        std::cout << "Error: " << e.what() << std::endl;
+        LogException(e);
+        return -1;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        return -1;
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        return 0;
+    }
+    catch (const NoRecordFound &e)
+    {
+        LogException(e);
         return 0;
     }
 }
@@ -324,9 +393,25 @@ int ListAndSelectChange()
                 change.DisplayDetails(std::cout);
                 pos += sizeof(Change);
             }
-            catch (const std::runtime_error &e)
+            catch (const FileException &e)
             {
-                break;
+                LogException(e);
+                return -1;
+            }
+            catch (const InvalidDataException &e)
+            {
+                LogException(e);
+                return -1;
+            }
+            catch (const DuplicateRecordException &e)
+            {
+                LogException(e);
+                return 0;
+            }
+            catch (const NoRecordFound &e)
+            {
+                LogException(e);
+                return 0;
             }
         }
 
@@ -386,10 +471,11 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
             status = currentChange.change_displayStatus();
         cout << "Current Priority: " << currentChange.change_displayPriority() << endl;
         cout << "Enter new Priority (1-5) (or press Enter to keep current): ";
-        
-        do{
+
+        do
+        {
             cin >> priority;
-        } while(priority == '\0' || priority < 48 || priority > 54);
+        } while (priority == '\0' || priority < 48 || priority > 54);
         if (priority == '\0')
             priority = currentChange.change_displayPriority();
         cout << "Current ReleaseID: " << currentChange.change_displayRelID() << endl;
@@ -398,16 +484,42 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
         do
         {
             // cout << "Product doesn't exist." << endl;
+            cin.ignore();
             std::getline(std::cin, releaseID);
-        } while (!checkDupProduct(releaseID.data()) || releaseID.empty());
+            if (releaseID.empty())
+                break;
+        } while (checkDupProduct(releaseID.data()));
 
         if (releaseID.empty())
             releaseID = currentChange.change_displayRelID();
-        currentChange.UpdateChange(currentChange.getChangeID(), description.data(), status[0], priority, releaseID.data());
-        CommitUpdatedChange(currentChange, FILENAMES[1]);
+        try
+        {
+            currentChange.UpdateChange(currentChange.getChangeID(), description.data(), status[0], priority, releaseID.data());
+            CommitUpdatedChange(currentChange, FILENAMES[1]);
+        }
+        catch (const FileException &e)
+        {
+            LogException(e);
+            return -1;
+        }
+        catch (const InvalidDataException &e)
+        {
+            LogException(e);
+            return -1;
+        }
+        catch (const DuplicateRecordException &e)
+        {
+            LogException(e);
+            return 0;
+        }
+        catch (const NoRecordFound &e)
+        {
+            LogException(e);
+            return 0;
+        }
     }
 
-return 1;
+    return 1;
 }
 
 int ProductOnChange()
@@ -431,7 +543,30 @@ int ProductOnChange()
 
     cout << "ANTICIPATED CHANGES FOR " << "Product with ReleaseID: " << relID << endl
          << endl;
-    CreateAnticipatedChangesProduct(relID);
+    try
+    {
+        CreateAnticipatedChangesProduct(relID);
+    }
+    catch (const FileException &e)
+    {
+        LogException(e);
+        return -1;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        return -1;
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        return 0;
+    }
+    catch (const NoRecordFound &e)
+    {
+        LogException(e);
+        return 0;
+    }
     return 1;
 }
 
@@ -449,17 +584,46 @@ int UserOnChange()
     std::cin.ignore();
     std::getline(std::cin, changeID);
     // if (strlen(changeID.data()) > 6) validation for incorrect changeID
-    CreateUsersInformedOnUpdateReport(changeID.data());
+    try
+    {
+        CreateUsersInformedOnUpdateReport(changeID.data());
+    }
+    catch (const FileException &e)
+    {
+        LogException(e);
+        return -1;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        return -1;
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        return 0;
+    }
+    catch (const NoRecordFound &e)
+    {
+        LogException(e);
+        return 0;
+    }
     return 1;
 }
 
 int InitControl()
 {
-    int CustomerStart = InitCustomer();
-    int ComplaintStart = InitComplaint();
-    int ChangeStart = InitChange();
-    int ProductStart = InitProduct();
-    if (CustomerStart == -1 || ComplaintStart == -1 || ChangeStart == -1 || ProductStart == -1)
+    try
+    {
+        InitCustomer();
+        InitComplaint();
+        InitChange();
+        InitProduct();
+        return 1;
+    }
+    catch (const FileException &e)
+    {
+        LogException(e);
         return 0;
-    return 1;
+    }
 }
