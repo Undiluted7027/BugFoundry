@@ -345,7 +345,7 @@ int UpdateSpecificChange()
                 change = GetChangeDetails(pos, FILENAMES[1]);
                 std::cout << std::setw(5) << i + 1 << " ";
                 change.DisplayDetails(std::cout);
-    std::cout << std::string(123, '-') << std::endl;
+                std::cout << std::string(123, '-') << std::endl;
 
                 pos += sizeof(Change);
                 hasMoreChanges = true;
@@ -408,13 +408,13 @@ int UpdateSpecificChange()
     return 0;
 }
 
-
 int ListAndSelectChange()
 {
     int start = 0;
     int end = 10;
-    char input[3];
+    string input;
     int choice;
+    bool hasMoreChanges = true;
 
     std::cout << "LATEST CHANGES" << std::endl
               << std::endl;
@@ -440,8 +440,8 @@ int ListAndSelectChange()
                 Change change = GetChangeDetails(pos, FILENAMES[1]);
                 std::cout << std::setw(5) << i + 1 << " ";
                 change.DisplayDetails(std::cout);
-    std::cout << std::string(118, '-') << std::endl;
-                
+                std::cout << std::string(118, '-') << std::endl;
+
                 pos += sizeof(Change);
             }
             catch (const FileException &e)
@@ -461,21 +461,46 @@ int ListAndSelectChange()
             }
             catch (const NoRecordFound &e)
             {
-                LogException(e);
-                return 0;
+                hasMoreChanges = false;
+                break;
             }
         }
-
-        std::cout << "Type the number to select a change, '1' to show the next list, '0' to quit: ";
-        std::cin.ignore();
-        std::cin.getline(input, 3);
-        choice = atoi(input);
-
-        if (choice > 0 && choice <= (end - start))
+        if (hasMoreChanges)
+            std::cout << "Type the number to select a change, 'N' to show the next list, '0' to quit: ";
+        else
+            std::cout << "Type the number to select a change, '0' to quit: ";
+        do
         {
-            std::streampos selectedPos = CHANGEFILEPOINTER + static_cast<std::streamoff>((choice - 1) * sizeof(Change));
-            Change selectedChange = GetChangeDetails(selectedPos, FILENAMES[1]);
-            return UpdateChangeInfo(selectedChange.getChangeID(), selectedPos);
+            // std::cin.ignore();
+            std::getline(std::cin, input);
+            choice = char(input[0]);
+            if (choice == 'N' && !hasMoreChanges)
+            {
+                std::cout << "No more changes to show. Can't use 'N'" << std::endl;
+                std::cout << "Type the number to select a change, '0' to quit: ";
+            }
+            else if (choice == 'N' || choice == '0')
+                break;
+        } while (choice < '0' || choice > '9');
+
+        if (choice != 'N' && choice != '0')
+        {
+            int selectedIndex = choice - '0';
+
+            if (selectedIndex > 0 && selectedIndex <= (end - start))
+            {
+                std::streampos selectedPos = CHANGEFILEPOINTER + static_cast<std::streamoff>((selectedIndex - 1) * sizeof(Change));
+                try
+                {
+                    Change selectedChange = GetChangeDetails(selectedPos, FILENAMES[1]);
+                    return UpdateChangeInfo(selectedChange.getChangeID(), selectedPos);
+                }
+                catch (const AppException &e)
+                {
+                    LogException(e);
+                    return -1;
+                }
+            }
         }
 
         start = end;
@@ -614,7 +639,7 @@ int ProductOnChange()
                 product = GetProductDetails(pos, FILENAMES[3]);
                 std::cout << std::setw(5) << i + 1 << " ";
                 product.DisplayDetails(std::cout);
-        std::cout << std::string(123, '-') << std::endl;
+                std::cout << std::string(123, '-') << std::endl;
 
                 pos += sizeof(Product);
                 hasMoreProducts = true;
@@ -716,7 +741,7 @@ int UserOnChange()
                 change = GetChangeDetails(pos, FILENAMES[1]);
                 std::cout << std::setw(5) << i + 1 << " ";
                 change.DisplayDetails(std::cout);
-        std::cout << std::string(123, '-') << std::endl;
+                std::cout << std::string(123, '-') << std::endl;
 
                 pos += sizeof(Change);
             }
@@ -749,7 +774,8 @@ int UserOnChange()
         {
             std::getline(std::cin, input);
             choice = input[0];
-            if (choice == 'N' && !do10){
+            if (choice == 'N' && !do10)
+            {
                 std::cout << "No more products to show. Can't use 'N'" << std::endl;
                 std::cout << "Type the number to select a product, '0' to quit: ";
             }
