@@ -351,59 +351,63 @@ int ListAndSelectChange()
 
 int UpdateChangeInfo(const char *changeID, std::streampos position)
 {
-    Change theChange = GetChangeDetails(position, FILENAMES[1]);
-    char status;
-    int priority;
-
-    std::string description;
-    std::string releaseID;
-
-    std::cout << "Updating Change " << changeID << std::endl;
-
-    std::cout << "Current Description: " << theChange.change_displayDesc() << std::endl;
-    std::cout << "Enter new Description (or press Enter to keep current): ";
-    std::getline(std::cin, description);
-    if (description[0] == '\0')
+    std::fstream file(FILENAMES[1], std::ios::in | std::ios::out | std::ios::binary);
+    if (!file)
     {
-        strcpy(description.data(), theChange.change_displayDesc());
+        std::cerr << "Error: could not open file for reading" << std::endl;
+        return -1;
+    }
+    Change currentChange;
+    bool changeFound = false;
+    while (file.read(reinterpret_cast<char *>(&currentChange), sizeof(Change)))
+    {
+        if (strcmp(currentChange.getChangeID(), changeID) == 0)
+        {
+            cout << "Change found!" << endl;
+            changeFound = true;
+            break;
+        }
+    }
+    if (changeFound)
+    {
+        std::string description, releaseID, productName, status;
+        char priority;
+
+        cout << "Updating Change with ChangeID: " << changeID << endl;
+        cout << "Current Description: " << currentChange.change_displayDesc() << endl;
+        cout << "Enter new Description (or press Enter to keep current): ";
+        std::getline(std::cin, description);
+        if (description == "")
+            description = currentChange.change_displayDesc();
+        cout << "Current Status: " << currentChange.change_displayStatus() << endl;
+        cout << "Enter new Status (P/X/-) (or press Enter to keep current): ";
+        std::getline(std::cin, status);
+        if (status.empty())
+            status = currentChange.change_displayStatus();
+        cout << "Current Priority: " << currentChange.change_displayPriority() << endl;
+        cout << "Enter new Priority (1-5) (or press Enter to keep current): ";
+        
+        do{
+            cin >> priority;
+        } while(priority == '\0' || priority < 48 || priority > 54);
+        if (priority == '\0')
+            priority = currentChange.change_displayPriority();
+        cout << "Current ReleaseID: " << currentChange.change_displayRelID() << endl;
+        cout << "Enter new ReleaseID (or press Enter to keep current): ";
+        // std::getline(std::cin, releaseID);
+        do
+        {
+            // cout << "Product doesn't exist." << endl;
+            std::getline(std::cin, releaseID);
+        } while (!checkDupProduct(releaseID.data()) || releaseID.empty());
+
+        if (releaseID.empty())
+            releaseID = currentChange.change_displayRelID();
+        currentChange.UpdateChange(currentChange.getChangeID(), description.data(), status[0], priority, releaseID.data());
+        CommitUpdatedChange(currentChange, FILENAMES[1]);
     }
 
-    std::cout << "Current Status: " << theChange.change_displayStatus() << std::endl;
-    std::cout << "Enter new Status (P/X/-) (or press Enter to keep current): ";
-    std::cin >> status;
-    std::cin.ignore();
-    if (status == '\n')
-    {
-        status = theChange.change_displayStatus();
-    }
-
-    std::cout << "Current Priority: " << theChange.change_displayPriority() << std::endl;
-    std::cout << "Enter new Priority (1-5) (or press Enter to keep current): ";
-    std::string priorityInput;
-    std::getline(std::cin, priorityInput);
-    if (priorityInput.empty())
-    {
-        priority = theChange.change_displayPriority() - '0';
-    }
-    else
-    {
-        priority = std::stoi(priorityInput);
-    }
-
-    std::cout << "Current ReleaseID: " << theChange.change_displayRelID() << std::endl;
-    std::cout << "Enter new ReleaseID (or press Enter to keep current): ";
-    std::getline(std::cin, releaseID);
-    if (releaseID[0] == '\0')
-    {
-        strcpy(releaseID.data(), theChange.change_displayRelID());
-    }
-
-    theChange.UpdateChange(changeID, description.data(), status, priority + '0', releaseID.data());
-
-    CommitChange(theChange, position, FILENAMES[1]);
-
-    std::cout << "Change updated successfully" << std::endl;
-    return 1;
+return 1;
 }
 
 int ProductOnChange()
@@ -418,7 +422,8 @@ int ProductOnChange()
     cout << "Enter the ReleaseID (max 8 characters): ";
     cin.ignore();
     cin.getline(relID, 8);
-    if (!checkDupProduct(relID)){
+    if (!checkDupProduct(relID))
+    {
         cout << "Product doesn't exist." << endl;
         return -1;
     }

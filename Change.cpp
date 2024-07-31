@@ -62,11 +62,13 @@ No noticeable algorithm or data structure used.
 void Change::UpdateChange(const char *changeID, const char *description, const char &status,
                           const char &priority, const char *releaseID)
 {
+
     safeStrCopy(this->changeID, changeID, sizeof(this->changeID));
     safeStrCopy(this->description, description, sizeof(this->description));
     this->status = status;
     this->priority = priority;
     safeStrCopy(this->releaseID, releaseID, sizeof(this->releaseID));
+    cout << "Updated change class" << endl;
 }
 
 // DisplayDetails method to display change details
@@ -414,6 +416,29 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     std::cout << std::string(50, '-') << std::endl;
     std::cout << "Total customers to be informed: " << count << std::endl;
 }
+
+void CommitUpdatedChange(const Change &change, const std::string &FILENAME)
+{
+    std::fstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    if (!file)
+    {
+        throw std::runtime_error("Could not open file for writing");
+    }
+    bool recordFound = false;
+    Change temp;
+    while (file.read(reinterpret_cast<char *>(&temp), sizeof(Change)))
+    {
+        if (strcmp(temp.getChangeID(), change.getChangeID()) == 0)
+        {
+            file.seekp(file.tellg() - static_cast<std::streamoff>(sizeof(Change)));
+            file.write(reinterpret_cast<const char *>(&change), sizeof(Change));
+            cout << "Updated change" << endl;
+            break;
+        }
+    }
+    file.close();
+}
+
 
 // CommitChange function to commit a Change object to file
 void CommitChange(const Change &change, std::streampos &startPos, const std::string &FILENAME)
