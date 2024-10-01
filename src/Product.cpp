@@ -4,12 +4,12 @@ Rev. 1 - 24/07/15 Original by Seoyoung Kim
 ----------------------------------------------------------------------
 This CPP file called Changes.cpp handles the changes of the program.
 --------------------------------------------------------------------*/
-#include "Product.hpp"
+#include "../include/Product.hpp"
 #include <cstring>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include "Exceptions.hpp"
+#include "../include/Exceptions.hpp"
 
 Product::Product() : releaseID{0}, releaseDate{0}
 {

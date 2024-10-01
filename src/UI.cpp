@@ -3,7 +3,7 @@ REVISION HISTORY:
 Rev. 2 - 24/07/11 Moved New User to be part of Create submenu by Jason Lee
 Rev. 1 - 24/07/03 Original by Jason Lee
 --------------------------------------------------------------------*/
-#include "UI.hpp"
+#include "../include/UI.hpp"
 #include "ScenarioControl.cpp"
 //--------------------------------------------------------------------
 

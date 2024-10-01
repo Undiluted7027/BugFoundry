@@ -5,10 +5,10 @@ Rev. 1 - 24/07/17 Original by Sanchit Jain
 This module, Customer.cpp, implements the Customer class and associated functions.
 ----------------------------------------------------------------------*/
 
-#include "Customer.hpp"
+#include "../include/Customer.hpp"
 #include "drivers.cpp"
 #include "Globals.cpp"
-#include "Exceptions.hpp"
+#include "../include/Exceptions.hpp"
 
 // Constructor: Default
 Customer::Customer()

@@ -2,7 +2,7 @@
 REVISION HISTORY:
 Rev. 1 - 24/07/03 Original by Sanchit Jain
 ----------------------------------------------------------------------*/
-#include "Globals.hpp"
+#include "../include/Globals.hpp"
 #include <ctime>
 #include <fstream>
 #include <cstring>

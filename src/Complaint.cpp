@@ -5,10 +5,10 @@ Rev. 1 - 24/07/10 Original by Nicholas Susanto
 This CPP file called Complaint.cpp handles the complaints of the program.
 --------------------------------------------------------------------*/
 
-#include "Complaint.hpp"
-#include "Change.hpp"
-#include "Globals.hpp"
-#include "Product.hpp"
+#include "../include/Complaint.hpp"
+#include "../include/Change.hpp"
+#include "../include/Globals.hpp"
+#include "../include/Product.hpp"
 // #include "drivers.cpp"
 #include <cstring>
 #include <iostream>

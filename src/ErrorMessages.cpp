@@ -2,7 +2,7 @@
 REVISION HISTORY:
 Rev. 1 - 24/07/13 Original by Jason Lee 
 --------------------------------------------------------------------*/
-#include "ErrorMessages.hpp"
+#include "../include/ErrorMessages.hpp"
 
 int YesNoError(char msg)
 {

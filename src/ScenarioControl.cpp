@@ -1,9 +1,9 @@
-#include "ScenarioControl.hpp"
+#include "../include/ScenarioControl.hpp"
 #include "Customer.cpp"
 #include "Change.cpp"
 #include "Product.cpp"
 #include "ErrorMessages.cpp"
-#include "Exceptions.hpp"
+#include "../include/Exceptions.hpp"
 #include <iostream>
 #include <cstring>
 

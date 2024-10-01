@@ -178,7 +178,7 @@ void testChangeClass() {
     assert(oss.str().find("Test description") != std::string::npos);
 
     // Test UpdateChange
-    c1.UpdateChange(c1.getChangeID(), "Updated description", 'X', '4', "17654321");
+    c1.UpdateChange(c1.getChangeID(), "Updated description", 'X', '4', "17654321", "2024-01-01");
     assert(strcmp(c1.change_displayDesc(), "Updated description") == 0);
     assert(c1.change_displayStatus() == 'X');
     assert(c1.change_displayPriority() == '4');
