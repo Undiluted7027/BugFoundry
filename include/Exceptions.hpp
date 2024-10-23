@@ -53,7 +53,7 @@ public:
 inline void LogException(const AppException &e)
 {
     // You can implement logging to a file or any other logging mechanism here
-    std::cerr << "Error: " << e.what() << std::endl;
+    std::cerr << "Error: " << e.what() << std::endl << std::endl;
 }
 
 #endif // EXCEPTIONS_HPP

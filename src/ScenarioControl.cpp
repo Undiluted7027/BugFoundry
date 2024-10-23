@@ -190,10 +190,6 @@ Gets all change object and present its information to the user.
 -----------------------------------------------------------------------------------------------*/
 int DisplayChangeReport()
 {
-    int start = 0;
-    int end = 10;
-    int choice;
-
     std::cout << "CHANGE REPORT" << std::endl
               << std::endl;
 

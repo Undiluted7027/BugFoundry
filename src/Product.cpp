@@ -148,7 +148,7 @@ No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 Product CreateProduct(const char *productName, const char *ReleaseID, const char *ReleaseDate)
 {
-    int validationResult = ValidateProduct(productName, ReleaseID, ReleaseDate);
+    ValidateProduct(productName, ReleaseID, ReleaseDate);
     return Product(ReleaseID, productName, ReleaseDate);
 }
 

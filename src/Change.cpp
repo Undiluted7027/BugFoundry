@@ -188,7 +188,7 @@ No algorithm or data structure used.
 --------------------------------------------------------------------*/
 const char *Change::getChangeID() const
 {
-    if (changeID == nullptr)
+    if (changeID[0] == 0)
         throw InvalidDataException("ChangeID field is null");
     return changeID;
 }
@@ -199,7 +199,7 @@ No algorithm or data structure used.
 --------------------------------------------------------------------*/
 const char *Change::change_displayProductName() const
 {
-    if (productName == nullptr)
+    if (productName[0] == 0)
         throw InvalidDataException("ProductName field is null");
     return productName;
 }
@@ -210,7 +210,7 @@ No algorithm or data structure used.
 --------------------------------------------------------------------*/
 const char *Change::change_displayDesc() const
 {
-    if (description == nullptr)
+    if (description[0] == 0)
         throw InvalidDataException("Description field is null");
     return description;
 }
@@ -243,8 +243,8 @@ No algorithm or data structure used.
 --------------------------------------------------------------------*/
 const char *Change::change_displayRelID() const
 {
-    if (releaseID == nullptr)
-        throw InvalidDataException("ReleaseID field is null");
+    if (releaseID[0] == 0)
+        throw InvalidDataException("ReleaseID field is empty");
     return releaseID;
 }
 
@@ -256,7 +256,7 @@ Change CreateChange(const char *description, const char &status, const char &pri
                     const char *lastUpdate, const char *releaseID, const char *changeID)
 {
     // Validate change data before creating a new Change object
-    int validation = ValidateChange(description, status, priority, lastUpdate, releaseID);
+    ValidateChange(description, status, priority, lastUpdate, releaseID);
     return Change("", description, status, priority, releaseID, lastUpdate, changeID);
 }
 
@@ -563,7 +563,7 @@ void CommitUpdatedChange(const Change &change, const std::string &FILENAME)
     {
         throw FileException("Could not open file 'Changes.bin' for writing when updating a Change record in the file.");
     }
-    bool recordFound = false;
+
     Change temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Change)))
     {

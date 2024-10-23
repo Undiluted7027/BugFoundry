@@ -285,7 +285,7 @@ int ValidateCustomer(const char *name, const char *email, const char *phone)
     if ((strlen(phone) == 11 && phone[0] == '1') || (strlen(phone) == 10 && isdigit(phone[0])))
     {
 
-        for (int i = 0; i < strlen(phone); i++)
+        for (int i = 0; i < int(strlen(phone)); i++)
         {
             if (!isdigit(phone[i]))
                 return -1;
