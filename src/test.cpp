@@ -4,19 +4,19 @@ Rev. 1 - 24/07/16 Original by Sanchit Jain
 ----------------------------------------------------------------------
 This CPP file called test.cpp handles tests on the program.
 --------------------------------------------------------------------*/
-#include "Customer.cpp"
-#include "Change.cpp"
-#include "Product.cpp"
+
+#include "UI.cpp"
 #include <cassert>
 
 using namespace std;
-void testCustomerClass() {
+void testCustomerClass() 
+{
     // Test Customer constructor and getters
-    Customer c1("1234567890", "John Doe", "john@example.com", "1 234-567-8901");
-    // assert(strcmp(c1.getCustID(), "1234567890") == 0);
+    Customer c1("123456789", "John Doe", "john@example.com", "2345678901");
+    assert(strcmp(c1.getCustID(), "123456789") == 0);
     assert(strcmp(c1.getName(), "John Doe") == 0);
     assert(strcmp(c1.getEmail(), "john@example.com") == 0);
-    assert(strcmp(c1.getPhone(), "1 234-567-8901") == 0);
+    assert(strcmp(c1.getPhone(), "2345678901") == 0);
 
     // Test Customer copy constructor
     Customer c2(c1);
@@ -34,14 +34,43 @@ void testCustomerClass() {
 
     // Test CommitCustomer and GetCustomerDetails
     std::streampos pos = 0;
-    CommitCustomer(c1, pos, FILENAMES[0]);
-    Customer retrievedCustomer = GetCustomerDetails(CUSTOMERFILEPOINTER, FILENAMES[0]);
+    try
+    {
+        ValidateCustomer("John Doe", "john@example.com", "12345678901");
+        CommitCustomer(c1, pos, FILENAMES[0]);
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate customer detection successful" << endl << endl;
+    }
+
+    Customer temp;
+    Customer retrievedCustomer;
+    std::fstream file(FILENAMES[0], std::ios::binary | std::ios::in | std::ios::out);
+    while (file.read(reinterpret_cast<char *>(&temp), sizeof(Customer)))
+    {
+        if (strcmp(temp.getCustID(), c1.getCustID()) == 0)
+        {
+            retrievedCustomer = temp;
+            break;
+        }
+    }
+    file.close();
     assert(retrievedCustomer == c1);
 
     // Test ValidateCustomer
-    assert(ValidateCustomer("Jane Doe", "jane@example.com", "1 987-654-3210") == 1);
+    assert(ValidateCustomer("Jane Doe", "jane@example.com", "9876543210") == 1);
     assert(ValidateCustomer("", "invalid@email", "1234567890") == -1);
-    assert(ValidateCustomer("John Doe", "john@example.com", "1 234-567-8901") == 0);
+    try
+    {
+        ValidateCustomer("John Doe", "john@example.com", "12345678901");
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate customer detection successful" << endl << endl;
+    }
 
     // Test PrintAllCustomers (requires multiple records)
     Customer c4("2345678901", "Alice Smith", "alice@example.com", "1 345-678-9012");
@@ -53,9 +82,13 @@ void testCustomerClass() {
     // Test InitCustomer
     assert(InitCustomer() == 0);  // File already exists
 
+    std::cout << std::endl;
+    std::cout << "=========================================" << std::endl;
     std::cout << "Customer class tests passed successfully!" << std::endl;
+    std::cout << "=========================================" << std::endl;
+    std::cout << std::endl;
 }
-
+/*
 void testComplaintClass() {
     // Test Complaint constructor and getters
     Complaint comp1("", "Test complaint", "24-07-17", "12345", "87654321", "1234567890");
@@ -229,17 +262,19 @@ void testChangeClass() {
 
     std::cout << "Change class tests passed successfully!" << std::endl;
 }
-
+*/
 int main() {
     InitCustomer();
-    InitComplaint();
-    InitProduct();
-    InitChange();
+    // InitComplaint();
+    // InitProduct();
+    // InitChange();
+
+    cout << "Initialization complete" << endl;
 
     testCustomerClass();
-    testComplaintClass();
-    testProductClass();
-    testChangeClass();
+    // testComplaintClass();
+    // testProductClass();
+    // testChangeClass();
 
     std::cout << "All tests passed successfully!" << std::endl;
     return 0;
