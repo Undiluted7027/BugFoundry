@@ -1,3 +1,9 @@
+/* ScenarioControl.cpp
+REVISION HISTORY:
+Rev. 2 - 24/07/11 Edited by Sanchit Jain
+Rev. 1 - 24/07/03 Original by Jason Lee
+----------------------------------------------------------------------*/
+
 #include "../include/ScenarioControl.hpp"
 #include "Customer.cpp"
 #include "Change.cpp"
@@ -7,9 +13,11 @@
 #include <iostream>
 #include <cstring>
 
-// 967774000
-// 144721
+//----------------------------------------------------------------------
 
+/*
+Handles which scenario to run based on the choices made by the user.
+----------------------------------------------------------------------*/
 int ScenarioControl(int choice, int subchoice)
 {
     switch (choice)
@@ -49,6 +57,11 @@ int ScenarioControl(int choice, int subchoice)
     return 1;
 }
 
+/*
+Creating new customer scenario.
+Gets all information of the new customer, validates all information.
+If validates, proceed to create new customer object and store the object into the data file
+--------------------------------------------------------------------------*/
 int NewCustomer()
 {
     std::string name;
@@ -67,6 +80,7 @@ int NewCustomer()
     char choice;
     std::cout << "Confirm to create user (Y/N): ";
     std::cin >> choice;
+
     if (choice == 'N')
     {
         std::cout << "User Creation Canceled" << std::endl;
@@ -104,11 +118,13 @@ int NewCustomer()
     }
 }
 
+/*
+Creating new complaint scenario.
+Gets all information of the new complaint, validates all information.
+If validates, proceed to create new complaint object and store the object into the data file
+----------------------------------------------------------------------*/
 int CreateNewComplaint()
 {
-    // char* generatedID = IDGenerator('3', 6);
-    // cout << endl << generatedID << endl;
-
     std::string userID;
     std::string relID;
     std::string desc;
@@ -168,8 +184,10 @@ int CreateNewComplaint()
     }
 }
 
-// Implement other functions (CreateNewProduct, CreateNewProductRel, UpdateSpecificChange, etc.) similarly...
-
+/*
+Display changes report scenario.
+Gets all change object and present its information to the user.
+-----------------------------------------------------------------------------------------------*/
 int DisplayChangeReport()
 {
     int start = 0;
@@ -207,6 +225,11 @@ int DisplayChangeReport()
     return 1;
 }
 
+/*
+Creating new product scenario.
+Gets all information of the new product, validates all information.
+If validates, proceed to create new product object and store the object into the data file
+--------------------------------------------------------------------------------*/
 int CreateNewProduct()
 {
     char productName[11];
@@ -255,6 +278,11 @@ int CreateNewProduct()
     }
 }
 
+/*
+Creating new product release scenario.
+Gets all information of the new product release object and validates all information.
+If validates, proceed to create new product release object and store the object into the data file
+------------------------------------------------------------------------------------------------*/
 int CreateNewProductRel()
 {
     std::string productName;
@@ -309,6 +337,10 @@ int CreateNewProductRel()
     }
 }
 
+/*
+Updating a specific change scenario.
+Find a change object in the data file that the user want to update its attribute information
+------------------------------------------------------------------------------------*/
 int UpdateSpecificChange()
 {
     int start = 0;
@@ -408,6 +440,10 @@ int UpdateSpecificChange()
     return 0;
 }
 
+/*
+Display a list of recent changes and allow user to select one of changes
+they want to edit its attribute information.
+------------------------------------------------------------------------------------*/
 int ListAndSelectChange()
 {
     int start = 0;
@@ -510,6 +546,11 @@ int ListAndSelectChange()
     return 0;
 }
 
+/*
+Given the changeID of a change object to update its attribute,
+get new attribute information, validate the new information, and apply the information
+to the change object.
+-------------------------------------------------------------------------------------------*/
 int UpdateChangeInfo(const char *changeID, std::streampos position)
 {
     std::fstream file(FILENAMES[1], std::ios::in | std::ios::out | std::ios::binary);
@@ -606,6 +647,10 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
     return 1;
 }
 
+/*
+Creates a report of all changes object that is associated with a particular product object.
+This function uses linear search to find all changes that are related to the prduct.
+---------------------------------------------------------------------------------------------*/
 int ProductOnChange()
 {
     int start = 0;
@@ -813,6 +858,9 @@ int UserOnChange()
     return 0;
 }
 
+/*
+Initializes all data classes: customer, complaint, change, and product.
+-----------------------------------------------------------------------*/
 int InitControl()
 {
     try

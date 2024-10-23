@@ -4,6 +4,7 @@ Rev. 1 - 24/07/15 Original by Seoyoung Kim
 ----------------------------------------------------------------------
 This CPP file called Changes.cpp handles the changes of the program.
 --------------------------------------------------------------------*/
+
 #include "../include/Product.hpp"
 #include <cstring>
 #include <iostream>
@@ -11,11 +12,21 @@ This CPP file called Changes.cpp handles the changes of the program.
 #include <iomanip>
 #include "../include/Exceptions.hpp"
 
+//--------------------------------------------------------------------
+
+/*
+Default constrctor for the Product class
+--------------------------------------------------------------------*/
 Product::Product() : releaseID{0}, releaseDate{0}
 {
     memset(productName, 0, sizeof(productName));
 }
 
+/*
+Parameterized constructor for Product class.
+Create Product object using attrbibutes provided.
+No algorithm or data structure used.
+--------------------------------------------------------------------*/
 Product::Product(const char *releaseID, const char *productName, const char *ReleaseDate)
 {
     safeStrCopy(this->productName, productName, sizeof(this->productName));
@@ -34,9 +45,10 @@ Product::Product(const char *releaseID, const char *productName, const char *Rel
         delete[] generatedID;
     }
 }
+
 /*
-Create Product object using attrbibutes provided.
-No noticeable algorithm or data structure used.
+Print the attribute details of the Product object to the console.
+No algorithm or data structure used.
 --------------------------------------------------------------------*/
 void Product::DisplayDetails(std::ostream &out) const
 {
@@ -49,23 +61,26 @@ void Product::DisplayDetails(std::ostream &out) const
 
         << std::setw(24) << releaseDate << std::endl;
 }
+
 /*
-Print the attribute details of the Product object to the console.
+Equality operator overloader for Product class.
+Checks if two Product objects are equal based on releaseID or releaseDate.
 No noticeable algorithm or data structure used.
 --------------------------------------------------------------------*/
 bool Product::operator==(const Product &other) const
 {
     return (strcmp(releaseID, other.releaseID) == 0 || strcmp(releaseDate, other.releaseDate) == 0);
 }
-/*
-Checks if two Product objects are equal based on releaseID or releaseDate.
-No noticeable algorithm or data structure used.
---------------------------------------------------------------------*/
 
+/*
+Validates that the Product object attributes are acceptable and makes sure no duplicate Product records exists.
+A linear search algorithm is used to iterate through the Product records.
+--------------------------------------------------------------------*/
 int ValidateProduct(const char *productName, const char *ReleaseID, const char *ReleaseDate)
 {
     if (strlen(productName) == 0 || strlen(productName) > 10)
     {
+        throw InvalidDataException("ProductName field must be at least 1 and at most 9 characters");
     }
     // cout << strlen(ReleaseID) << endl;
     if (strlen(ReleaseID) > 8 && strlen(ReleaseID) && strlen(ReleaseID) != 0)
@@ -87,11 +102,14 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
         throw InvalidDataException("ReleaseDate field can only have value in the format of YYYY-MM-DD.");
     }
 
-    if ((year % 4 != 0 && month == 02 && day > 30) || (year % 4 == 0 &&month == 2 && day > 29)){
+    if ((year % 4 != 0 && month == 02 && day > 30) || (year % 4 == 0 &&month == 2 && day > 29))
+    {
         throw InvalidDataException("Invalid date");
     }
-    if (day > 30){
-        switch (month){
+    if (day > 30)
+    {
+        switch (month)
+        {
             case 4:
             case 6:
             case 9:
@@ -123,20 +141,20 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
 
     return 1;
 }
-/*
-Validates that the Product object attributes are acceptable and makes sure no duplicate Product records exists.
-A linear search algorithm is used to iterate through the Product records.
---------------------------------------------------------------------*/
 
-Product CreateProduct(const char *productName, const char *ReleaseID, const char *ReleaseDate)
-{
-
-    int validationResult = ValidateProduct(productName, ReleaseID, ReleaseDate);
-    return Product(ReleaseID, productName, ReleaseDate);
-}
 /*
 Create new Product object and also validates it.
 No noticeable algorithm or data structure used.
+--------------------------------------------------------------------*/
+Product CreateProduct(const char *productName, const char *ReleaseID, const char *ReleaseDate)
+{
+    int validationResult = ValidateProduct(productName, ReleaseID, ReleaseDate);
+    return Product(ReleaseID, productName, ReleaseDate);
+}
+
+/*
+Writes a Product object to a specified file at a given position.
+Uses the unsorted records data structure to add the Product object.
 --------------------------------------------------------------------*/
 void CommitProduct(const Product &product, std::streampos &startPos, const std::string &FILENAME)
 {
@@ -145,18 +163,21 @@ void CommitProduct(const Product &product, std::streampos &startPos, const std::
     {
         throw FileException("Could not open file 'Products.bin' for writing when adding a Change record to the file.");
     }
+
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&product), sizeof(Product));
+
     if (file.fail())
     {
         throw FileException("Could not open file 'Products.bin' for writing when adding a Change record to the file.");
     }
     startPos = file.tellp();
 }
+
 /*
-Writes a Product object to a specified file at a given position.
-Uses the unsorted records data structure to add the Product object.
+Reads a Product object from a specified file at a given position and returns it.
+Uses the unsorted records data structure to read the Product object.
 --------------------------------------------------------------------*/
 Product GetProductDetails(std::streampos startPos, const std::string &FILENAME)
 {
@@ -165,19 +186,21 @@ Product GetProductDetails(std::streampos startPos, const std::string &FILENAME)
     {
         throw std::runtime_error("FileReadFailed: Could not open file for reading");
     }
+
     file.seekg(startPos);
     Product product;
+
     if (!file.read(reinterpret_cast<char *>(&product), sizeof(Product)))
     {
         throw NoRecordFound("FileReadFailed: There was an error in reading the file.");
     }
     return product;
 }
+
 /*
-Reads a Product object from a specified file at a given position and returns it.
-Uses the unsorted records data structure to read the Product object.
---------------------------------------------------------------------*/
-// PrintAllProducts
+Displays all Product objects with their attribute information.
+Uses unsorted records data structure to read the Product object.
+------------------------------------------------------------------------------------------*/
 void PrintAllProducts(const std::string &FILENAME)
 {
     std::ifstream file(FILENAME, std::ios::binary);
@@ -252,6 +275,10 @@ void PrintAllProducts(const std::string &FILENAME)
     file.close();
 }
 
+/*
+Check if there is a Product object with the same ReleaseID in the Product data file.
+Uses linear search through the data file to check for the duplicate.
+------------------------------------------------------------------------------------------------*/
 bool checkDupProduct(const char *otherReleaseID)
 {
     std::ifstream file(FILENAMES[3], std::ios::binary);
@@ -272,6 +299,10 @@ bool checkDupProduct(const char *otherReleaseID)
     return 0;
 }
 
+/*
+Initialization for Product class.
+Set up the data file for Product class and file descriptor if they hasn't been set up yet.
+------------------------------------------------------------------------------------------------*/
 int InitProduct()
 {
     std::filesystem::create_directory(DIRECTORY);

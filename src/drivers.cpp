@@ -10,8 +10,12 @@ Rev. 1 - 24/07/04 Original by Sanchit Jain
 
 using namespace std;
 
+/*
+Reads all record from a file
+----------------------------------------------------------------------------------*/
 template <class T>
-T* readFile(const string &filename, streampos fileptr){
+T* readFile(const string &filename, streampos fileptr)
+{
     fstream f("data/"+filename, ios::in);
     int length = f.tellg();
     if (!f.good())
@@ -21,7 +25,8 @@ T* readFile(const string &filename, streampos fileptr){
     cout << length << endl;
     T data;
     int i = 0;
-    while(i != length && f.read(reinterpret_cast<char *>(&data), sizeof data)){
+    while(i != length && f.read(reinterpret_cast<char *>(&data), sizeof data))
+    {
         cout << "Data read from file " << filename << " was: " << endl;
         cout << data << endl;
         dataptr[i] = data;
@@ -33,8 +38,12 @@ T* readFile(const string &filename, streampos fileptr){
     return dataptr;
 }
 
+/*
+Reads and return a record from a file
+----------------------------------------------------------------------------------*/
 template <typename T>
-T readRecord(const string &filename, streampos fileptr) {
+T readRecord(const string &filename, streampos fileptr) 
+{
     ifstream f("data/" + filename, ios::in | ios::binary);
     if (!f) {
         cerr << "Error opening file!" << endl;
@@ -62,6 +71,9 @@ T readRecord(const string &filename, streampos fileptr) {
     return data;
 }
 
+/*
+Writes a record to a file
+----------------------------------------------------------------------------------*/
 template <typename T>
 void writeRecord(const string &filename, streampos &fileptr, T record) {
     ofstream f("data/" + filename, ios::out | ios::binary);
@@ -87,6 +99,9 @@ void writeRecord(const string &filename, streampos &fileptr, T record) {
     f.close();
 }
 
+/*
+Updates information of a record with a specific id 
+----------------------------------------------------------------------------------*/
 template <class T>
 void updateRecord(const string &filename, streampos fileptr, const T newRecord, const char *id)
 {
@@ -109,6 +124,9 @@ void updateRecord(const string &filename, streampos fileptr, const T newRecord, 
     f.close();
 }
 
+/*
+Deletes a record with a specific id from a file
+----------------------------------------------------------------------------------*/
 template <typename T, typename Q>
 void deleteRecord(const string &filename, streampos fileptr, const Q *id){
     string fpath = "data/" + filename;
@@ -153,6 +171,9 @@ void deleteRecord(const string &filename, streampos fileptr, const Q *id){
     }
 }
 
+/*
+Write a record to a file
+----------------------------------------------------------------------------------*/
 template <typename T>
 void writeFile(const string &filename, streampos &fileptr, const T* &records)
 {
@@ -170,6 +191,9 @@ void writeFile(const string &filename, streampos &fileptr, const T* &records)
     f.close();
 }
 
+/*
+Gets the file size
+----------------------------------------------------------------------------------*/
 size_t getFileSize(const string& filename) {
     fstream file(filename, ios::in|ios::ate);
     if (!file.is_open()) {
@@ -182,6 +206,9 @@ size_t getFileSize(const string& filename) {
     return fileSize;
 }
 
+/*
+Displays a record file
+----------------------------------------------------------------------------------*/
 template <typename T>
 void printRecords(T* arr, const int &size){
     for (int i = 0; i < size; i++)
