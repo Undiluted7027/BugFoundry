@@ -73,10 +73,20 @@ void testCustomerClass()
     }
 
     // Test PrintAllCustomers (requires multiple records)
-    Customer c4("2345678901", "Alice Smith", "alice@example.com", "1 345-678-9012");
-    Customer c5("3456789012", "Bob Johnson", "bob@example.com", "1 456-789-0123");
-    CommitCustomer(c4, pos, FILENAMES[0]);
-    CommitCustomer(c5, pos, FILENAMES[0]);
+    Customer c4("2345678901", "Alice Smith", "alice@example.com", "3456789012");
+    Customer c5("3456789012", "Bob Johnson", "bob@example.com", "4567890123");
+    try
+    {
+        ValidateCustomer("Alice Smith", "alice@example.com", "3456789012");
+        ValidateCustomer("Bob Johnson", "bob@example.com", "4567890123");
+        CommitCustomer(c4, pos, FILENAMES[0]);
+        CommitCustomer(c5, pos, FILENAMES[0]);
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate customer detection successful" << endl << endl;
+    }
     PrintAllCustomers(FILENAMES[0]);
 
     // Test InitCustomer
