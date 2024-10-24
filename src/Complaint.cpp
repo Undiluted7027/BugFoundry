@@ -56,7 +56,12 @@ Copy constructor for Complaint class
 -----------------------------------------------------------------------------------------------------------------------*/
 Complaint::Complaint(const Complaint &other)
 {
-    *this = other;
+    safeStrCopy(this->complaintID, other.complaintID, sizeof(this->complaintID));
+    safeStrCopy(this->description, other.description, sizeof(this->description));
+    safeStrCopy(this->dateOfComplaint, other.dateOfComplaint, sizeof(this->dateOfComplaint));
+    safeStrCopy(this->changeID, other.changeID, sizeof(this->changeID));
+    safeStrCopy(this->releaseID, other.releaseID, sizeof(this->releaseID));
+    safeStrCopy(this->custID, other.custID, sizeof(this->custID));
 }
 
 /*
@@ -66,7 +71,7 @@ Complaint &Complaint::operator=(const Complaint &other)
 {
     if (this != &other)
     {
-        if (other.complaintID[0] == 0)
+        if (strlen(other.complaintID) != 0)
         {
             safeStrCopy(complaintID, other.complaintID, sizeof(this->complaintID));
         }

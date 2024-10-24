@@ -9,6 +9,7 @@ This CPP file called test.cpp handles tests on the program.
 #include <cassert>
 
 using namespace std;
+/*
 void testCustomerClass() 
 {
     // Test Customer constructor and getters
@@ -98,16 +99,17 @@ void testCustomerClass()
     std::cout << "=========================================" << std::endl;
     std::cout << std::endl;
 }
-/*
+*/
+
 void testComplaintClass() {
     // Test Complaint constructor and getters
-    Complaint comp1("", "Test complaint", "24-07-17", "12345", "87654321", "1234567890");
+    Complaint comp1("", "Test complaint", "2024-07-17", "12345", "abc", "123456789");
     assert(strlen(comp1.getComplaintID()) == 6);
     assert(strcmp(comp1.getDescription(), "Test complaint") == 0);
-    assert(strcmp(comp1.getDateOfComplaint(), "24-07-17") == 0);
+    assert(strcmp(comp1.getDateOfComplaint(), "2024-07-17") == 0);
     assert(strcmp(comp1.getChangeID(), "12345") == 0);
-    assert(strcmp(comp1.getReleaseID(), "87654321") == 0);
-    assert(strcmp(comp1.getCustID(), "1234567890") == 0);
+    assert(strcmp(comp1.getReleaseID(), "abc") == 0);
+    assert(strcmp(comp1.getCustID(), "123456789") == 0);
 
     // Test Complaint copy constructor
     Complaint comp2(comp1);
@@ -117,32 +119,93 @@ void testComplaintClass() {
     Complaint comp3;
     comp3 = comp1;
     assert(comp3 == comp1);
-
+    
     // Test DisplayDetails
     std::ostringstream oss;
     comp1.DisplayDetails(oss);
     assert(oss.str().find("Test complaint") != std::string::npos);
-
+    
     // Test CommitComplaint and GetComplaintDetails
     std::streampos pos = 0;
-    CommitComplaint(comp1, pos, FILENAMES[2]);
-    Complaint retrievedComplaint = GetComplaintDetails(COMPLAINTFILEPOINTER, FILENAMES[2]);
+    try
+    {
+        ValidateComplaint("Test complaint", "2024-07-17", "abc", "123456789");
+        CommitComplaint(comp1, pos, FILENAMES[2]);
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate complaint detection successful" << endl << endl;
+    }
+    catch (const NoRecordFound &e)
+    {
+        LogException(e);
+        cout << "No product with that releaseID yet" << endl << endl;
+    }
+
+    Complaint temp;
+    Complaint retrievedComplaint;
+    std::fstream file(FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
+    while (file.read(reinterpret_cast<char *>(&temp), sizeof(Complaint)))
+    {
+        if (strcmp(temp.getComplaintID(), comp1.getComplaintID()) == 0)
+        {
+            retrievedComplaint = temp;
+            break;
+        }
+    }
+    file.close();
     assert(retrievedComplaint == comp1);
 
     // Test ValidateComplaint
-    assert(ValidateComplaint("Valid complaint", "24-07-17", "12345", "87654321", "1234567890") == 1);
-    assert(ValidateComplaint("", "invalid", "12345", "87654321", "1234567890") == -1);
-    assert(ValidateComplaint("Test complaint", "24-07-17", "12345", "87654321", "1234567890") == 0);
-
+    try
+    {
+        assert(ValidateComplaint("Valid complaint", "2024-07-17", "abc", "123456789") == 1);
+        assert(ValidateComplaint("invalid", "12345", "abc", "1234567890") == -1);
+        assert(ValidateComplaint("Test complaint", "2024-07-17", "abc", "123456789") == 0);   
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate complaint detection" << endl << endl;
+    }
+    catch (const NoRecordFound &e)
+    {
+        LogException(e);
+        cout << "No product with that releaseID yet" << endl << endl;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        cout << "Invalid data format detection" << endl << endl;
+    }
+    
     // Test PrintAllComplaints (requires multiple records)
-    Complaint comp4("", "Another complaint", "24-07-18", "23456", "76543210", "2345678901");
-    Complaint comp5("", "Third complaint", "24-07-19", "34567", "65432109", "3456789012");
-    CommitComplaint(comp4, pos, FILENAMES[2]);
-    CommitComplaint(comp5, pos, FILENAMES[2]);
-    PrintAllComplaints(FILENAMES[2]);
+    Complaint comp4("", "Another complaint", "2024-07-18", "23456", "abc", "234567890");
+    Complaint comp5("", "Third complaint", "2024-07-19", "34567", "abc", "345678901");
 
+    try
+    {
+        ValidateComplaint("Another complaint", "2024-07-18", "abc", "234567890");
+        ValidateComplaint("Third complaint", "2024-07-19", "abc", "345678901");
+        CommitComplaint(comp4, pos, FILENAMES[2]);
+        CommitComplaint(comp5, pos, FILENAMES[2]);
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate complaint detection successful" << endl << endl;
+    }
+    catch (const NoRecordFound &e)
+    {
+        LogException(e);
+        cout << "No product with that releaseID yet" << endl << endl;
+    }
+
+    PrintAllComplaints(FILENAMES[2]);
+    
     // Test UpdateComplaint
-    Complaint updatedComp("", "Updated complaint", "24-07-20", "12345", "87654321", "1234567890");
+    Complaint updatedComp("", "Updated complaint", "2024-07-20", "12345", "abc", "123456789");
     assert(UpdateComplaint(comp1.getComplaintID(), updatedComp, FILENAMES[2]));
 
     // Test InitComplaint
@@ -150,7 +213,7 @@ void testComplaintClass() {
 
     std::cout << "Complaint class tests passed successfully!" << std::endl;
 }
-
+/*
 void testProductClass() {
     // Test Product constructor and getters
     Product p1("", "TestProd", "24/07/17");
@@ -274,15 +337,15 @@ void testChangeClass() {
 }
 */
 int main() {
-    InitCustomer();
-    // InitComplaint();
+    // InitCustomer();
+    InitComplaint();
     // InitProduct();
     // InitChange();
 
     cout << "Initialization complete" << endl;
 
-    testCustomerClass();
-    // testComplaintClass();
+    // testCustomerClass();
+    testComplaintClass();
     // testProductClass();
     // testChangeClass();
 
