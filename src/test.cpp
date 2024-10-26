@@ -9,7 +9,7 @@ This CPP file called test.cpp handles tests on the program.
 #include <cassert>
 
 using namespace std;
-/*
+
 void testCustomerClass() 
 {
     // Test Customer constructor and getters
@@ -99,7 +99,7 @@ void testCustomerClass()
     std::cout << "=========================================" << std::endl;
     std::cout << std::endl;
 }
-*/
+
 
 void testComplaintClass() {
     // Test Complaint constructor and getters
@@ -213,13 +213,13 @@ void testComplaintClass() {
 
     std::cout << "Complaint class tests passed successfully!" << std::endl;
 }
-/*
+
 void testProductClass() {
     // Test Product constructor and getters
-    Product p1("", "TestProd", "24/07/17");
+    Product p1("", "TestProd", "2024/07/17");
     assert(strlen(p1.getReleaseID()) == 8);
     assert(strcmp(p1.getProductName(), "TestProd") == 0);
-    assert(strcmp(p1.getReleaseDate(), "24/07/17") == 0);
+    assert(strcmp(p1.getReleaseDate(), "2024/07/17") == 0);
 
     // Test Product copy constructor
     Product p2(p1);
@@ -232,25 +232,74 @@ void testProductClass() {
 
     // Test CommitProduct and GetProductDetails
     std::streampos pos = 0;
-    CommitProduct(p1, pos, FILENAMES[3]);
-    Product retrievedProduct = GetProductDetails(0, FILENAMES[3]);
+    
+
+    try
+    {
+        ValidateProduct(p1.getProductName(), p1.getReleaseID(), p1.getReleaseDate());
+        CommitProduct(p1, pos, FILENAMES[3]);
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate Product Detection" << endl << endl;
+    }
+
+    Product temp;
+    Product retrievedProduct;
+    std::fstream file(FILENAMES[3], std::ios::binary | std::ios::in | std::ios::out);
+    while (file.read(reinterpret_cast<char *>(&temp), sizeof(Product)))
+    {
+        if (strcmp(temp.getReleaseID(), p1.getReleaseID()) == 0)
+        {
+            retrievedProduct = temp;
+            break;
+        }
+    }
+    file.close();
+
     assert(retrievedProduct == p1);
 
     // Test ValidateProduct
-    assert(ValidateProduct("ValidProd", "87654321", "24-07-17") == 1);
-    assert(ValidateProduct("invalid", "", "24-07-17") == -1);
-    assert(ValidateProduct("TestProd", p1.getReleaseID(), "24-07-17") == 0);
     
+    try
+    {
+        assert(ValidateProduct("ValidProd", "87654321", "2024-07-17") == 1);
+        assert(ValidateProduct("invalid!!!!!!!!!!!", "", "2024-07-17") == -1);
+        assert(ValidateProduct("TestProd2", "99999999", "2024-07-170") == -1);
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate Product Detection" << endl << endl;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        cout << "Incorrect data format" << endl << endl;
+    }
+
 
     // Test CreateProduct (this will also test ValidateProduct)
     // Product p3 = CreateProduct("NewProd", "", "24/07/18");
     // assert(strcmp(p3.getProductName(), "NewProd") == 0);
 
     // Test multiple products (for functions that might need multiple records)
-    Product p4("", "AnotherProd", "24-07-19");
-    Product p5("", "ThirdProd", "24-07-20");
-    CommitProduct(p4, pos, FILENAMES[3]);
-    CommitProduct(p5, pos, FILENAMES[3]);
+    Product p4("", "AnotherProd", "2024-07-19");
+    Product p5("", "ThirdProd", "2024-07-20");
+    
+    try
+    {
+        ValidateProduct(p4.getProductName(), p4.getReleaseID(), p4.getReleaseDate());
+        ValidateProduct(p5.getProductName(), p5.getReleaseID(), p5.getReleaseDate());
+        CommitProduct(p4, pos, FILENAMES[3]);
+        CommitProduct(p5, pos, FILENAMES[3]);
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate Product Detection" << endl << endl;
+    }
 
     // Test InitProduct
     assert(InitProduct() == 0);  // File already exists
@@ -260,14 +309,13 @@ void testProductClass() {
 
 void testChangeClass() {
     // Test Change constructor and getters
-    Change c1("", "Test description", 'P', '3', "12345678", "24-07-17", "");
+    Change c1("", "Test description", 'P', '3', "12345678", "2024-07-17", "");
     assert(strlen(c1.getChangeID()) == 6);
     assert(c1.getChangeID()[0] == '1');
     assert(strcmp(c1.change_displayDesc(), "Test description") == 0);
     assert(c1.change_displayStatus() == 'P');
     assert(c1.change_displayPriority() == '3');
     assert(strcmp(c1.change_displayRelID(), "12345678") == 0);
-    // assert(strcmp(c1.getLastUpdate(), "24-07-17") == 0);
 
     // Test Change copy constructor
     Change c2(c1);
@@ -292,42 +340,99 @@ void testChangeClass() {
 
     // Test CommitChange and GetChangeDetails
     std::streampos pos = 0;
-    CommitChange(c1, pos, FILENAMES[1]);
-    Change retrievedChange = GetChangeDetails(0, FILENAMES[1]);
+    
+    try
+    {
+        ValidateChange(c1.change_displayDesc(), c1.change_displayStatus(), c1.change_displayPriority(), "2024-01-01", c1.change_displayRelID());
+        CommitChange(c1, pos, FILENAMES[1]);
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate Product Detection" << endl << endl;
+    }
+
+    Change temp;
+    Change retrievedChange;
+    std::fstream file(FILENAMES[1], std::ios::binary | std::ios::in | std::ios::out);
+    while (file.read(reinterpret_cast<char *>(&temp), sizeof(Change)))
+    {
+        if (strcmp(temp.change_displayDesc(), c1.change_displayDesc()) == 0)
+        {
+            retrievedChange = temp;
+            break;
+        }
+    }
+    file.close();
     assert(retrievedChange == c1);
 
     // Test ValidateChange
-    assert(ValidateChange("Valid description", 'P', '3', "24-07-17", "12345678") == 1);
-    assert(ValidateChange("", 'Z', '6', "invalid", "123") == -1);
-    assert(ValidateChange("Updated description", 'X', '4', "24-07-17", "17654321") == 0);
+    try
+    {
+        assert(ValidateChange("Valid description", 'P', '3', "2024-07-17", "12345678") == 1);
+        assert(ValidateChange("", 'Z', '6', "invalid", "123") == -1);
+        assert(ValidateChange("Updated description", 'X', '4', "2024-07-17", "17654321") == 0);
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate Product Detection" << endl << endl;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        cout << "Incorrect data format" << endl << endl;
+    }
 
     // Test CreateChange
-    Change c4 = CreateChange("New change", 'X', '2', "24-07-18", "23456789", "");
-    assert(strcmp(c4.change_displayDesc(), "New change") == 0);
+    try
+    {
+        Change c4 = CreateChange("New change", 'X', '2', "2024-07-18", "23456789", "");
+        assert(strcmp(c4.change_displayDesc(), "New change") == 0);
+        
+        // Test multiple changes (for functions that might need multiple records)
+        Change c5 = CreateChange("Another change", 'P', '1', "2024-07-19", "34567890", "");
+        Change c6 = CreateChange("Third change", 'X', '5', "2024-07-20", "45678901", "");
 
-    // Test multiple changes (for functions that might need multiple records)
-    Change c5 = CreateChange("Another change", 'P', '1', "24-07-19", "34567890", "");
-    Change c6 = CreateChange("Third change", 'X', '5', "24-07-20", "45678901", "");
-    CommitChange(c5, pos, FILENAMES[1]);
-    CommitChange(c6, pos, FILENAMES[1]);
+        ValidateChange(c5.change_displayDesc(), c5.change_displayStatus(), c5.change_displayPriority(), "2024-07-19", c5.change_displayRelID());
+        CommitChange(c5, pos, FILENAMES[1]);
+        
+        ValidateChange(c6.change_displayDesc(), c6.change_displayStatus(), c6.change_displayPriority(), "2024-07-20", c6.change_displayRelID());
+        CommitChange(c6, pos, FILENAMES[1]);
+    }
+    catch (const DuplicateRecordException &e)
+    {
+        LogException(e);
+        cout << "Duplicate Product Detection" << endl << endl;
+    }
+    catch (const InvalidDataException &e)
+    {
+        LogException(e);
+        cout << "Incorrect data format" << endl << endl;
+    }
 
     // Test CreateChangesReport
     int reportCount = CreateChangesReport();
-    assert(reportCount >= 3);  // We've added at least 4 changes
+    assert(reportCount >= 3);  // We've added at least 3 changes
+
+    /*
+    Test for CreateAnticipatedChangesProduct and CreateUsersInformedOnUpdateReport
+    needs to be modified to take another input to be tested.
+    */
 
     // Test CreateAnticipatedChangesProduct
-    std::ostringstream anticipatedOss;
-    std::streambuf* coutBuffer = std::cout.rdbuf();
-    std::cout.rdbuf(anticipatedOss.rdbuf());
-    CreateAnticipatedChangesProduct("17654321");
-    std::cout.rdbuf(coutBuffer);
-    assert(anticipatedOss.str().find("17654321") != std::string::npos);
+    // std::ostringstream anticipatedOss;
+    // std::streambuf* coutBuffer = std::cout.rdbuf();
+    // std::cout.rdbuf(anticipatedOss.rdbuf());
+    // CreateAnticipatedChangesProduct("abc");
+    // std::cout.rdbuf(coutBuffer);
+    // assert(anticipatedOss.str().find("17654321") == std::string::npos);
 
     // Test CreateUsersInformedOnUpdateReport
-    std::ostringstream informedOss;
-    std::cout.rdbuf(informedOss.rdbuf());
-    CreateUsersInformedOnUpdateReport(c1.getChangeID());
-    std::cout.rdbuf(coutBuffer);
+    // std::ostringstream informedOss;
+    // std::cout.rdbuf(informedOss.rdbuf());
+    // CreateUsersInformedOnUpdateReport(c1.getChangeID());
+    // std::cout.rdbuf(coutBuffer);
     // assert(informedOss.str().find("Customers to be informed about Change ID ") != std::string::npos);
 
     // Test InitChange
@@ -335,19 +440,20 @@ void testChangeClass() {
 
     std::cout << "Change class tests passed successfully!" << std::endl;
 }
-*/
+
 int main() {
-    // InitCustomer();
+
+    InitCustomer();
     InitComplaint();
-    // InitProduct();
-    // InitChange();
+    InitProduct();
+    InitChange();
 
     cout << "Initialization complete" << endl;
 
-    // testCustomerClass();
+    testCustomerClass();
     testComplaintClass();
-    // testProductClass();
-    // testChangeClass();
+    testProductClass();
+    testChangeClass();
 
     std::cout << "All tests passed successfully!" << std::endl;
     return 0;

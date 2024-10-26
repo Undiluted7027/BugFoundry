@@ -270,7 +270,7 @@ int ValidateChange(const char *description, const char &status, const char &prio
     // Check each attribute for validity
     if (strlen(description) == 0 || strlen(description) > 30)
     {
-        throw InvalidDataException("Description field can be of 30 characters at max.");
+        throw InvalidDataException("Description field can be of 30 characters at max and cannot be empty");
     }
 
     if (status != '-' && status != 'X' && status != 'P')
@@ -304,7 +304,7 @@ int ValidateChange(const char *description, const char &status, const char &prio
     Change currentChange;
     while (file.read(reinterpret_cast<char *>(&currentChange), sizeof(Change)))
     {
-        if (/*(trcmp(currentChange.change_displayRelID(), releaseID) == 0) && */ (strcmp(currentChange.change_displayDesc(), description) == 0))
+        if (strcmp(currentChange.change_displayDesc(), description) == 0)
         {
             throw DuplicateRecordException("Duplicate Change record found.");
             break;
