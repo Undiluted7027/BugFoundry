@@ -156,7 +156,14 @@ Fetch the Change object from the data file with all its attributes
 Change GetChangeDetails(
     std::streampos startPos = CHANGEFILEPOINTER,    // in: The location (file descriptor) in data file to find the Change object
     const std::string &FILENAME = FILENAMES[1]      // in: The data file for storing Change objects
-); // Retrieve Change details from file
+);
+/*
+Overwrite a Change object with its updated Change attribute information on the Change datafile
+------------------------------------------------------------------------------*/
+void CommitUpdatedChange(
+    const Change &change,           // in: The updated Change object to overwrite its Change object with previous information
+    const std::string &FILENAME     // in: The data file for storing Change objects
+);
 /*
 Checks and initializes the Change data file and file descriptor
 ------------------------------------------------------------------------------*/

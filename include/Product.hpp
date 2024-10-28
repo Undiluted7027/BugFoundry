@@ -105,6 +105,12 @@ Checks if there is another Product object exists with the same releaseID
 bool checkDupProduct(
     const char *otherReleaseID  // in: The releaseID to look for
 );
+/*
+Displays all products and their information in the product data file
+--------------------------------------------------------------------------------------*/
+void PrintAllProducts(
+    const std::string &FILENAME // in: The datafile of Product objects
+);
 /* 
 Checks and initializes the data file for Product objects and file descriptor
 --------------------------------------------------------------------------------------*/
