@@ -14,6 +14,8 @@ menus display in the system.
 #include <iostream>
 #include <string>
 
+#include "ScenarioControl.hpp"
+
 using namespace std;
 
 /*---------------------------------------------------------------------
@@ -78,5 +80,13 @@ The input from the user must be from 0 to 3.
 int Report_Menu(
 
 );
+
+/*
+
+--------------------------------------------------------------------*/
+int ActivateUI(
+
+);
+
 
 #endif

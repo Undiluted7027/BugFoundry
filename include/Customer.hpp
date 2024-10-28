@@ -15,6 +15,9 @@ Customer.hpp keeps its high cohesion by encapsulating all possible customer entr
 #include <cstring>
 #include <stdexcept>
 #include <filesystem>
+
+#include "drivers.hpp"
+#include "Exceptions.hpp"
 #include "Globals.hpp"
 
 /*----------------------------------------------------------------------

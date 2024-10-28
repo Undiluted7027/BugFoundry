@@ -12,6 +12,10 @@ Complaint.hpp keeps its high cohesion by encapsulating all possible complaint en
 #include <string> 
 #include <iostream>
 #include <filesystem>
+
+#include "Change.hpp"
+#include "Product.hpp"
+#include "Exceptions.hpp"
 #include "Globals.hpp"
 
 /*----------------------------------------------------------------------

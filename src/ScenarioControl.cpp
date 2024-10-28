@@ -4,14 +4,9 @@ Rev. 2 - 24/07/11 Edited by Sanchit Jain
 Rev. 1 - 24/07/03 Original by Jason Lee
 ----------------------------------------------------------------------*/
 
-#include "../include/ScenarioControl.hpp"
-#include "Customer.cpp"
-#include "Change.cpp"
-#include "Product.cpp"
-#include "ErrorMessages.cpp"
-#include "../include/Exceptions.hpp"
 #include <iostream>
 #include <cstring>
+#include "../include/ScenarioControl.hpp"
 
 //----------------------------------------------------------------------
 

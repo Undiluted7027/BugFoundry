@@ -6,9 +6,6 @@ This module, Customer.cpp, implements the Customer class and associated function
 ----------------------------------------------------------------------*/
 
 #include "../include/Customer.hpp"
-#include "drivers.cpp"
-#include "Globals.cpp"
-#include "../include/Exceptions.hpp"
 
 /*
 Default constructor for the Customer class

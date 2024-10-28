@@ -5,14 +5,11 @@ Rev. 1 - 24/07/15 Original by Nicholas Susanto
 This CPP file called Changes.cpp handles the changes of the program.
 --------------------------------------------------------------------*/
 
-#include "../include/Change.hpp"
-#include "Complaint.cpp" // Include for handling Complaints (assuming Complaint class is defined here)
-#include "../include/Customer.hpp"  // Include for handling Customers (assuming Customer class is defined here)
-#include "../include/Globals.hpp"   // Include necessary global constants and declarations
-#include "../include/Exceptions.hpp"
 #include <cstring>
 #include <iostream>
 #include <set>
+
+#include "../include/Change.hpp"
 
 using namespace std;
 

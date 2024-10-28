@@ -16,6 +16,11 @@ all change attributes, its helper functions, and related functions.
 #include <string>
 #include <iostream>
 #include <filesystem>
+
+#include "Complaint.hpp"
+#include "Customer.hpp"  // Include for handling Customers (assuming Customer class is defined here)
+#include "Globals.hpp"   // Include necessary global constants and declarations
+#include "Exceptions.hpp"
 #include "Globals.hpp" // Include necessary global constants and declarations
 
 class Change 
@@ -157,6 +162,13 @@ Change GetChangeDetails(
     std::streampos startPos = CHANGEFILEPOINTER,    // in: The location (file descriptor) in data file to find the Change object
     const std::string &FILENAME = FILENAMES[1]      // in: The data file for storing Change objects
 ); // Retrieve Change details from file
+/*
+
+------------------------------------------------------------------------------*/
+void CommitUpdatedChange(
+    const Change &change, 
+    const std::string &FILENAME
+);
 /*
 Checks and initializes the Change data file and file descriptor
 ------------------------------------------------------------------------------*/

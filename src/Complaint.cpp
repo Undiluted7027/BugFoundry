@@ -5,12 +5,10 @@ Rev. 1 - 24/07/10 Original by Nicholas Susanto
 This CPP file called Complaint.cpp handles the complaints of the program.
 --------------------------------------------------------------------*/
 
-#include "../include/Complaint.hpp"
-#include "../include/Change.hpp"
-#include "../include/Globals.hpp"
-#include "../include/Product.hpp"
 #include <cstring>
 #include <iostream>
+
+#include "../include/Complaint.hpp"
 
 /*
 Default constructor for Complaint class

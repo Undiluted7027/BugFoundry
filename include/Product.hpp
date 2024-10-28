@@ -14,7 +14,9 @@ It keeps its high cohesion by encapsulating all possible product entries in the 
 #include <iostream>
 #include <filesystem> // Added for filesystem operations (assuming C++17 or later)
 #include <string>
+
 #include "Globals.hpp"
+#include "Exceptions.hpp"
 
 //---------------------------------------------------------------------------------------
 
@@ -104,6 +106,12 @@ Checks if there is another Product object exists with the same releaseID
 --------------------------------------------------------------------------------------*/
 bool checkDupProduct(
     const char *otherReleaseID  // in: The releaseID to look for
+);
+
+/*
+--------------------------------------------------------------------------------------*/
+void PrintAllProducts(
+    const std::string &FILENAME
 );
 /* 
 Checks and initializes the data file for Product objects and file descriptor

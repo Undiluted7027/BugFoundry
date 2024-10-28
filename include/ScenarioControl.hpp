@@ -15,6 +15,11 @@ of the system with the event calls.
 --------------------------------------------------------------------*/
 #include <iostream>
 
+#include "Complaint.hpp"
+#include "Customer.hpp"
+#include "Change.hpp"
+#include "Product.hpp"
+#include "Exceptions.hpp"
 /*--------------------------------------------------------------------
 // Exported constants/types/variables
 This module does not export any constants/types/variables

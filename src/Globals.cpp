@@ -3,11 +3,12 @@ REVISION HISTORY:
 Rev. 1 - 24/07/03 Original by Sanchit Jain
 ----------------------------------------------------------------------*/
 
-#include "../include/Globals.hpp"
 #include <ctime>
 #include <fstream>
 #include <cstring>
 #include <cstdlib>
+
+#include "../include/Globals.hpp"
 
 //--------------------------------------------------------------------
 

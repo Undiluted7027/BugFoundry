@@ -11,7 +11,9 @@ It also mentions the coding convention used in this assignment.
 #include <string>
 #include <fstream>
 #include <filesystem>
-#include "UI.cpp"
+
+#include "../include/UI.hpp"
+#include "../include/ScenarioControl.hpp"
 
 using namespace std;
 
