@@ -1,7 +1,8 @@
 # BugFoundry
 
 ## About
-BugFoundry, a bug-tracking software, was developed in SFU CMPT 276 in the 2024 Summer semester by 4 computing science students.  
+BugFoundry, a bug-tracking software, was developed in SFU CMPT 276 Software Engineering course  
+in the 2024 Summer semester by 4 computing science students.  
 
 ## Developers
 Sanchit Jain  
@@ -10,18 +11,44 @@ Jason Lee
 Nicholas Susanto  
 
 ## Environment
-BugFoundry is developed and designed to operate on Windows 11 by the Visual Studio Code terminal,  
-as all the members were familiar with that particular environment.
+BugFoundry supports Linux and Windows operating system.  
+Initially, BugFoundry was developed and designed to operate on Windows 11 by the Visual Studio Code terminal,  
+as all the members were familiar with that particular environment.  
 
-## How to Run System
-1. Download the repository
+## How to Run System - Linux
+1. Download the repository and unzip the file
+2. Open the terminal
+3. Navigate to the file in the terminal
+4. In the file, create a new directory called "build":
+   ```mkdir build```
+6. Move into the "build" directory and call command:
+   ```cmake ../```
+8. To compile, call command:
+   ```cmake --build .```
+10. To run the system, call command:
+    ```./system```
+
+## How to Run System - Windows
+1. Download the repository and unzip the file
 2. Open Visual Studio Code (VS Code)
 3. Open the downloaded file with VS Code
 4. Open VS Code terminal
-5. Call command: 
+5. To compile, call command in the terminal:
+   ```g++ -Wall src/Main.cpp```
+7. To run the system, call command:
+   ```./a.exe```
 
-## How to Run Test Cases
+## How to Run Test Cases - Linux
+1. Follow steps 1 to 6 in "How to Run System - Linux" instruction
+2. To run the test cases, call command
+    ```./test```
 
+## How to Run Test Cases - Windows
+1. Follow steps 1 to 4 in "How to Run System - Windows" instruction
+2. To compile, call command:
+   ```g++ -Wall src/Test.cpp```
+4. To run the test cases, call command:
+   ```./a.exe```
 
 ## Documents
 Throughout the course, we have written 5 different documents to plan, present, and guide the project.  
