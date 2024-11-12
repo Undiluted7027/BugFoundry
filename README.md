@@ -16,7 +16,7 @@ Initially, BugFoundry was developed and designed to operate on Windows 11 by the
 as all the members were familiar with that particular environment.  
 
 ## How to Run System - Linux
-1. Download the repository and unzip the file
+1. Download the Bug Foundry **linux branch** repository and unzip the file
 2. Open the terminal
 3. Navigate to the file in the terminal
 4. In the file, create a new directory called "build":
@@ -29,7 +29,7 @@ as all the members were familiar with that particular environment.
     ```./system```
 
 ## How to Run System - Windows
-1. Download the repository and unzip the file
+1. Download the Bug Foundry **stable branch** repository and unzip the file
 2. Open Visual Studio Code (VS Code)
 3. Open the downloaded file with VS Code
 4. Open VS Code terminal
@@ -40,12 +40,14 @@ as all the members were familiar with that particular environment.
 
 ## How to Run Test Cases - Linux
 1. Follow steps 1 to 6 in "How to Run System - Linux" instruction
-2. To run the test cases, call command
+2. If the system is ran before testing, deleting all data files in the data folder is recommended.  
+3. To run the test cases, call command
     ```./test```
 
 ## How to Run Test Cases - Windows
 1. Follow steps 1 to 4 in "How to Run System - Windows" instruction
-2. To compile, call command:
+2. If the system is ran before testing, deleting all data files in the data folder is recommended.
+3. To compile, call command:
    ```g++ -Wall src/Test.cpp```
 4. To run the test cases, call command:
    ```./a.exe```
