@@ -29,6 +29,7 @@ as all the members were familiar with that particular environment.
     ```./system```
 
 ## How to Run System - Windows
+Please make sure that a recent GCC/G++ compiler is set up prior to following the instruction  
 1. Download the Bug Foundry **stable branch** repository and unzip the file
 2. Open Visual Studio Code (VS Code)
 3. Open the downloaded file with VS Code
