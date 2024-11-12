@@ -1,4 +1,5 @@
 *.o
 *.hpp.gch
 *.out
+/build/*
 /.vscode

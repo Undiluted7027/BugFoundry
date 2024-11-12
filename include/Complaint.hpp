@@ -11,6 +11,7 @@ Complaint.hpp keeps its high cohesion by encapsulating all possible complaint en
 
 #include <string> 
 #include <iostream>
+#include <iomanip>
 #include <filesystem>
 
 #include "Change.hpp"
@@ -141,7 +142,6 @@ This function returns whether the input is valid or not. If invalid, returns -1;
 int ValidateComplaint(
    const char* description,     // in: Description of complaint
    const char* dateOfComplaint, // in: Date the complaint was created
-   const char* changeID,        // in: Change ID of complaint
    const char* releaseID,       // in: Release ID of product
    const char* custID           // in: Customer ID
 );
