@@ -30,7 +30,7 @@ int Create_Menu()
     int choice;
     do
     {
-        cout << "===Create===" << endl;
+        cout << endl << "===Create===" << endl;
         cout << "1) Create User" << endl;
         cout << "2) Create Complaint" << endl;
         cout << "3) Create Product Release" << endl;
@@ -54,7 +54,7 @@ int Update_Menu()
     int choice;
     do
     {
-        cout << "===Update===" << endl;
+        cout << endl << "===Update===" << endl;
         cout << "1) Update Specific Change" << endl;
         cout << "2) Update one of the latest Change" << endl;
         cout << "0) Go back to main menu" << endl;
@@ -77,7 +77,7 @@ int Report_Menu()
     int choice;
     do
     {
-        cout << "===Report===" << endl;
+        cout << endl << "===Report===" << endl;
         cout << "1) Report of Changes" << endl;
         cout << "2) Report of Anticipated Changes for a product" << endl;
         cout << "3) Report of Users to be informed on update on Change" << endl;

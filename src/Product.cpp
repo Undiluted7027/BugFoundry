@@ -261,7 +261,7 @@ void PrintAllProducts(const std::string &FILENAME)
     }
 
     std::cout << std::string(89, '-') << std::endl;
-    std::cout << "Total records Displayed: " << recordCount + 1 << std::endl;
+    std::cout << "Total records Displayed: " << recordCount << std::endl << std::endl;
 
     if (file.eof())
     {

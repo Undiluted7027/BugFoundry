@@ -193,7 +193,7 @@ void PrintAllCustomers(const std::string &FILENAME)
     int choice = 1;
 
     std::cout << std::left
-              << std::setw(12) << "Customer ID"
+              << std::setw(12) << "CustomerID"
               << std::setw(31) << "Name"
               << std::setw(31) << "Email"
               << std::setw(15) << "Phone" << std::endl;
@@ -225,7 +225,7 @@ void PrintAllCustomers(const std::string &FILENAME)
                 std::cout << std::left
                           << std::setw(5) << " "
 
-                          << std::setw(12) << "Customer ID"
+                          << std::setw(12) << "CustomerID"
                           << std::setw(31) << "Name"
                           << std::setw(31) << "Email"
                           << std::setw(15) << "Phone" << std::endl;
@@ -323,7 +323,7 @@ bool checkDup(const char *otherCustID)
     std::ifstream file(FILENAMES[0], std::ios::binary);
     if (!file)
     {
-        throw FileException("Could not open file 'Customers.bin' for checking duplicate customer ID.");
+        throw FileException("Could not open file 'Customers.bin' for checking duplicate customerID.");
     }
     Customer temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Customer)))

@@ -357,7 +357,7 @@ int UpdateSpecificChange()
                   << std::setw(12) << "Last Update"
                   << std::setw(7) << "Status"
                   << std::setw(10) << "Priority"
-                  << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+                  << std::setw(32) << "ReleaseID" << std::endl;
         std::cout << std::string(123, '-') << std::endl;
         bool hasMoreChanges = false;
 
@@ -427,7 +427,8 @@ int UpdateSpecificChange()
         start = end;
         end += 10;
     } while (choice != '0');
-
+    
+    cout << endl;
     return 0;
 }
 
@@ -454,7 +455,7 @@ int ListAndSelectChange()
               << std::setw(12) << "Last Update"
               << std::setw(7) << "Status"
               << std::setw(10) << "Priority"
-              << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+              << std::setw(32) << "ReleaseID" << std::endl;
     std::cout << std::string(118, '-') << std::endl;
 
     do
@@ -534,6 +535,7 @@ int ListAndSelectChange()
         end += 10;
     } while (choice != '0');
 
+    cout << endl << "Change Update Successful" << endl;
     return 0;
 }
 
@@ -566,18 +568,18 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
         std::string description, releaseID, productName, status, priority_input;
         char priority = '\0';
 
-        cout << "Updating Change with ChangeID: " << changeID << endl;
+        cout << endl << "Updating Change with ChangeID: " << changeID << endl;
         cout << "Current Description: " << currentChange.change_displayDesc() << endl;
         cout << "Enter new Description (or press Enter to keep current): ";
         std::getline(std::cin, description);
         if (description == "")
             description = currentChange.change_displayDesc();
-        cout << "Current Status: " << currentChange.change_displayStatus() << endl;
+        cout << endl << "Current Status: " << currentChange.change_displayStatus() << endl;
         cout << "Enter new Status (P/X/-) (or press Enter to keep current): ";
         std::getline(std::cin, status);
         if (status.empty())
             status = currentChange.change_displayStatus();
-        cout << "Current Priority: " << currentChange.change_displayPriority() << endl;
+        cout << endl << "Current Priority: " << currentChange.change_displayPriority() << endl;
         cout << "Enter new Priority (1-5) (or press Enter to keep current): ";
 
         do
@@ -590,7 +592,7 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
         } while (priority < 48 || priority > 54);
         if (priority == '\0')
             priority = currentChange.change_displayPriority();
-        cout << "Current ReleaseID: " << currentChange.change_displayRelID() << endl;
+        cout << endl << "Current ReleaseID: " << currentChange.change_displayRelID() << endl;
         cout << "Enter new ReleaseID (or press Enter to keep current): ";
         // std::getline(std::cin, releaseID);
         do
@@ -634,7 +636,7 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
             return 0;
         }
     }
-
+    cout << endl << "Update Successful" << endl << endl;
     return 1;
 }
 
@@ -661,7 +663,7 @@ int ProductOnChange()
                   << std::setw(5) << " "
                   << std::setw(12) << "Product Name"
                   << std::right
-                  << std::setw(31) << "ReleaseID/AnticipatedReleaseID"
+                  << std::setw(20) << "ReleaseID"
                   << std::right
 
                   << std::setw(12) << "ReleaseDate" << std::endl;
@@ -767,7 +769,7 @@ int UserOnChange()
                   << std::setw(12) << "Last Update"
                   << std::setw(7) << "Status"
                   << std::setw(10) << "Priority"
-                  << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+                  << std::setw(32) << "ReleaseID" << std::endl;
         std::cout << std::string(123, '-') << std::endl;
         bool do10 = true;
         for (int i = start; i < end; i++)

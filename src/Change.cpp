@@ -120,7 +120,7 @@ int PrintAllChanges(const std::string &FILENAME)
               << std::setw(12) << "Last Update"
               << std::setw(7) << "Status"
               << std::setw(10) << "Priority"
-              << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+              << std::setw(32) << "ReleaseID" << std::endl;
     std::cout << std::string(123, '-') << std::endl;
 
     while (file.read(reinterpret_cast<char *>(&change), sizeof(change)))
@@ -156,14 +156,14 @@ int PrintAllChanges(const std::string &FILENAME)
                           << std::setw(12) << "Last Update"
                           << std::setw(7) << "Status"
                           << std::setw(10) << "Priority"
-                          << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+                          << std::setw(32) << "ReleaseID" << std::endl;
                 std::cout << std::string(123, '-') << std::endl;
             }
         }
     }
 
     std::cout << std::string(123, '-') << std::endl;
-    std::cout << "Total Records Displayed: " << recordCount << std::endl;
+    std::cout << "Total Records Displayed: " << recordCount << std::endl << std::endl;
 
     if (file.eof())
     {
@@ -338,7 +338,7 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
     {
         throw FileException("Could not open file 'Changes.bin' for reading when creating anticipated changes for product report.");
     }
-
+    std::cout << std::endl;
     std::cout << std::left
               << std::setw(5) << " "
               << std::setw(10) << "ChangeID"
@@ -347,7 +347,7 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
               << std::setw(12) << "Last Update"
               << std::setw(7) << "Status"
               << std::setw(10) << "Priority"
-              << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+              << std::setw(32) << "ReleaseID" << std::endl;
     std::cout << std::string(123, '-') << std::endl;
 
     Change change;
@@ -398,7 +398,7 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
     }
 
     std::cout << std::string(123, '-') << std::endl;
-    std::cout << "Total Records Displayed: " << recordCount << std::endl;
+    std::cout << "Total Records Displayed: " << recordCount << std::endl << std::endl;
 
     if (file.eof())
     {
@@ -483,7 +483,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     {
         throw FileException("Could not open file 'Customers.bin' for reading.");
     }
-
+    std::cout << std::endl;
     std::cout << "Customers to be informed about Change ID " << changeID << ":" << std::endl;
     std::cout << std::string(91, '-') << std::endl;
 
@@ -546,7 +546,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     customerFile.close();
 
     std::cout << std::string(91, '-') << std::endl;
-    std::cout << "Total customers to be informed: " << count << std::endl;
+    std::cout << "Total customers to be informed: " << count << std::endl << std::endl;
 }
 
 /*
