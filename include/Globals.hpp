@@ -31,21 +31,29 @@ extern streampos PRODUCTFILEPOINTER;    //  fstream file pointer for "Products.b
 #define DIRECTORY "data/"   // Directory where binary files will be stored
 #define NUMBER_OF_FILES 4   // Number of binary files
 // ----------------------------------------------------------------------
+
+// Array with names of binary files
 const string FILENAMES[NUMBER_OF_FILES] = 
 {
         "data/Customers.bin",
         "data/Changes.bin",
         "data/Complaints.bin",
         "data/Products.bin"
-};  // Array with names of binary files
-// ----------------------------------------------------------------------
-char *IDGenerator(
-    const char &type,     // in
-                            // type of entity that wants the ID (Product, Complaint, Customer, Change)
-    const int &precision    // in
-                            // Number of digits or characters in the ID
-);
-/* T IDGenerator(const string &type, const int &precision) generates a random ID for the entity that is passed in type parameter as string. The function returns a template value. It fails if type is null and/or precision is 0.
+}; 
+
+/* 
+T IDGenerator(const string &type, const int &precision) generates a random ID for the entity that is passed in type parameter as string. The function returns a template value. It fails if type is null and/or precision is 0.
 ----------------------------------------------------------------------*/
-void safeStrCopy(char* dest, const char* src, size_t maxLen);
+char *IDGenerator(
+    const char &type,     // in: type of entity that wants the ID (Product, Complaint, Customer, Change)
+    const int &precision  // in: Number of digits or characters in the ID
+);
+/*
+A string copy function. Makes sure that when copying a string, it places a terminating character at the end of the string.
+----------------------------------------------------------------------*/
+void safeStrCopy(
+    char* dest,         // out: The destination string to hold the string of src
+    const char* src,    // in: The string to copy
+    size_t maxLen       // in: The length of the string 
+);
 #endif

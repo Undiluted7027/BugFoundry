@@ -3,7 +3,7 @@ REVISION HISTORY:
 Rev. 2 - 24/07/11 Moved New User to be part of Create submenu by Jason Lee
 Rev. 1 - 24/07/03 Original by Jason Lee
 --------------------------------------------------------------------*/
-#include "UI.hpp"
+#include "../include/UI.hpp"
 #include "ScenarioControl.cpp"
 //--------------------------------------------------------------------
 
@@ -100,7 +100,7 @@ No noticeable algorithm or data structure used.
 
 int ActivateUI()
 {
-    int choice; int subchoice;
+    int choice;
     do 
     {
         cout << endl;
@@ -108,17 +108,16 @@ int ActivateUI()
         switch (choice)
         {
             case 1:
-                subchoice = Create_Menu();
+                Create_Menu();
                 break;
             case 2:
-                subchoice = Update_Menu();
+                Update_Menu();
                 break;
             case 3:
-                subchoice = Report_Menu();
+                Report_Menu();
                 break;
             case 0:
-                subchoice = 0;
-                cout << "Thank you for using Bug Foundry." << endl;
+                cout << "Thank you for using Bug Foundry. :)" << endl;
                 break;
             default:
                 cout << "Error: Your option is not an available choice" << endl;

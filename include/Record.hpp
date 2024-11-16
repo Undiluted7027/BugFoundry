@@ -8,11 +8,15 @@ Record.hpp keeps its high cohesion by encapsulating all possible product entries
 #include "Globals.hpp"
 
 template <class T>
-class Record{
+class Record
+{
     private:
+
         char *id;
         T data;
+
     public:
+    
         Record(const char *id, T data): id(id), data(data){}
 
         char *getId() const;

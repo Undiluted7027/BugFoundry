@@ -2,19 +2,22 @@
 REVISION HISTORY:
 Rev. 1 - 24/07/04 Original by Sanchit Jain
 -------------------------------------------------------*/
-#include "Globals.hpp"
-#include "Record.hpp"
+#include "../include/Globals.hpp"
+#include "../include/Record.hpp"
 
 template <class T>
 Record<T>::Record(const char *id, T data): id(id), data(data){}
 
+/*
+Returns the ID member of Record template.
+--------------------------------------------------------------------*/
 template <typename T>
 char *Record<T>::getId() const{
     return id;
 };
 
 /*
-Returns the ID member of Record template.
+Returns the data member of Record template.
 --------------------------------------------------------------------*/
 template <typename T>
 T Record<T>::getData() const{
@@ -22,7 +25,7 @@ T Record<T>::getData() const{
 }
 
 /*
-Returns the data member of Record template.
+Set the ID member of Record template.
 --------------------------------------------------------------------*/
 template <typename T>
 void Record<T>::setID(const char* id){
@@ -30,7 +33,7 @@ void Record<T>::setID(const char* id){
 }
 
 /*
-Set the ID member of Record template.
+Set the data member of Record template.
 --------------------------------------------------------------------*/
 template <typename T>
 void Record<T>::setData(T &data){
@@ -38,13 +41,9 @@ void Record<T>::setData(T &data){
 }
 
 /*
-Set the data member of Record template.
+Retrieves the id of Record object and returns it.
 --------------------------------------------------------------------*/
 template <typename T>
 char *extractID(const Record<T> &record){
     return record.getId();
 }
-
-/*
-Retrieves the id of Record object and returns it.
---------------------------------------------------------------------*/
