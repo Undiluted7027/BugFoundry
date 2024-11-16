@@ -29,12 +29,21 @@
     right after the code version history, separated by the dividing comment
 
  - Function prototype format
+<<<<<<< HEAD:emptyMain.cpp
     // ------------------------------------------------------------------
     // int ScenarioControl(
     //     int choice,     // in: Indicates the choice made in the main menu
     //     int subchoice   // in: Indicates the choice made in a sub menu 
     // );
     // /*
+=======
+/*
+>>>>>>> pr/64:main/CodingConvention.cpp
     // Function Description 
     // ------------------------------------------------------------------
+    // int ScenarioControl(
+    //     int choice,     // in: Indicates the choice made in the main menu
+    //     int subchoice   // in: Indicates the choice made in a sub menu
+    // );
+    // 
 */

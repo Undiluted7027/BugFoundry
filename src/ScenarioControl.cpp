@@ -1,3 +1,4 @@
+<<<<<<< HEAD:ScenarioControl.cpp
 /* ScenarioControl.hpp
 REVISION HISTORY:
 Rev. 2 - 24/07/16 Revised by Sanchit Jain
@@ -11,9 +12,26 @@ This CPP file called ScenarioControl.cpp all possible scenarios in the program.
 #include "Product.cpp"
 #include "ErrorMessages.cpp"
 #include "Exceptions.hpp"
+=======
+/* ScenarioControl.cpp
+REVISION HISTORY:
+Rev. 2 - 24/07/11 Edited by Sanchit Jain
+Rev. 1 - 24/07/03 Original by Jason Lee
+----------------------------------------------------------------------*/
+
+>>>>>>> pr/64:src/ScenarioControl.cpp
 #include <iostream>
 #include <cstring>
+#include "../include/ScenarioControl.hpp"
 
+<<<<<<< HEAD:ScenarioControl.cpp
+=======
+//----------------------------------------------------------------------
+
+/*
+Handles which scenario to run based on the choices made by the user.
+----------------------------------------------------------------------*/
+>>>>>>> pr/64:src/ScenarioControl.cpp
 int ScenarioControl(int choice, int subchoice)
 {
     switch (choice)
@@ -52,10 +70,19 @@ int ScenarioControl(int choice, int subchoice)
     }
     return 1;
 }
+<<<<<<< HEAD:ScenarioControl.cpp
 /*
 ScenarioControl identifies which scenario is chosen and execute that scenario
 No noticeable algorithm or data structure used. 
 ----------------------------------------------------------------*/
+=======
+
+/*
+Creating new customer scenario.
+Gets all information of the new customer, validates all information.
+If validates, proceed to create new customer object and store the object into the data file
+--------------------------------------------------------------------------*/
+>>>>>>> pr/64:src/ScenarioControl.cpp
 int NewCustomer()
 {
     std::string name;
@@ -74,6 +101,7 @@ int NewCustomer()
     char choice;
     std::cout << "Confirm to create user (Y/N): ";
     std::cin >> choice;
+
     if (choice == 'N')
     {
         std::cout << "User Creation Canceled" << std::endl;
@@ -110,6 +138,7 @@ int NewCustomer()
         return 0;
     }
 }
+<<<<<<< HEAD:ScenarioControl.cpp
 /*
 Takes new user's information input and tries to commit the new customer into file
 No noticeable algorithm or data structure used. 
@@ -121,6 +150,16 @@ int CreateNewComplaint()
     int choice;
     std::string input;
     Customer customer;
+=======
+
+/*
+Creating new complaint scenario.
+Gets all information of the new complaint, validates all information.
+If validates, proceed to create new complaint object and store the object into the data file
+----------------------------------------------------------------------*/
+int CreateNewComplaint()
+{
+>>>>>>> pr/64:src/ScenarioControl.cpp
     std::string userID;
     std::string relID;
     std::string desc;
@@ -263,10 +302,18 @@ int CreateNewComplaint()
         return 0;
     }
 }
+<<<<<<< HEAD:ScenarioControl.cpp
 /*
 Takes new complaint information input and tries to commit the new complaint into file
 No noticeable algorithm or data structure used.
 ----------------------------------------------------------------*/
+=======
+
+/*
+Display changes report scenario.
+Gets all change object and present its information to the user.
+-----------------------------------------------------------------------------------------------*/
+>>>>>>> pr/64:src/ScenarioControl.cpp
 int DisplayChangeReport()
 {
     std::cout << "CHANGE REPORT" << std::endl
@@ -299,10 +346,19 @@ int DisplayChangeReport()
 
     return 1;
 }
+<<<<<<< HEAD:ScenarioControl.cpp
 /*
 Displays the recent 10 changes. User can choose to display the next 10 changes
 Goes through the unsorted change file to get the change data
 ----------------------------------------------------------------*/
+=======
+
+/*
+Creating new product scenario.
+Gets all information of the new product, validates all information.
+If validates, proceed to create new product object and store the object into the data file
+--------------------------------------------------------------------------------*/
+>>>>>>> pr/64:src/ScenarioControl.cpp
 int CreateNewProduct()
 {
     char productName[11];
@@ -350,10 +406,19 @@ int CreateNewProduct()
         return 0;
     }
 }
+<<<<<<< HEAD:ScenarioControl.cpp
 /*
 Gets new product information input and tries to commit the new product in file
 No noticeable algorithm or data structure used.
 ----------------------------------------------------------------*/
+=======
+
+/*
+Creating new product release scenario.
+Gets all information of the new product release object and validates all information.
+If validates, proceed to create new product release object and store the object into the data file
+------------------------------------------------------------------------------------------------*/
+>>>>>>> pr/64:src/ScenarioControl.cpp
 int CreateNewProductRel()
 {
     std::string productName;
@@ -407,10 +472,18 @@ int CreateNewProductRel()
         return 0;
     }
 }
+<<<<<<< HEAD:ScenarioControl.cpp
 /*
 Gets new product release information input and tries to commit it in file
 No noticeable algorithm or data structure used.
 ----------------------------------------------------------------*/
+=======
+
+/*
+Updating a specific change scenario.
+Find a change object in the data file that the user want to update its attribute information
+------------------------------------------------------------------------------------*/
+>>>>>>> pr/64:src/ScenarioControl.cpp
 int UpdateSpecificChange()
 {
     char changeID[7];
@@ -420,13 +493,33 @@ int UpdateSpecificChange()
 
     try
     {
+<<<<<<< HEAD:ScenarioControl.cpp
         std::streampos pos = CHANGEFILEPOINTER;
         Change changeToUpdate = GetChangeDetails(pos, FILENAMES[1]);
         while (strcmp(changeToUpdate.getChangeID(), changeID) != 0)
+=======
+        pos = CHANGEFILEPOINTER;
+        std::cout << "AVAILABLE CHANGES" << std::endl
+                  << std::endl;
+        std::cout << std::left
+                  << std::setw(5) << " "
+                  << std::setw(10) << "ChangeID"
+                  << std::setw(15) << "Product Name"
+                  << std::setw(32) << "Description"
+                  << std::setw(12) << "Last Update"
+                  << std::setw(7) << "Status"
+                  << std::setw(10) << "Priority"
+                  << std::setw(32) << "ReleaseID" << std::endl;
+        std::cout << std::string(123, '-') << std::endl;
+        bool hasMoreChanges = false;
+
+        for (int i = start; i < end; i++)
+>>>>>>> pr/64:src/ScenarioControl.cpp
         {
             pos += sizeof(Change);
             changeToUpdate = GetChangeDetails(pos, FILENAMES[1]);
         }
+<<<<<<< HEAD:ScenarioControl.cpp
         return UpdateChangeInfo(changeID, pos);
     }
     catch (const std::runtime_error &e)
@@ -434,8 +527,61 @@ int UpdateSpecificChange()
         std::cout << "Error: " << e.what() << std::endl;
         return 0;
     }
+=======
+
+        if (hasMoreChanges)
+            std::cout << "Type the number to select a change, 'N' to show the next list, '0' to quit: ";
+        else
+            std::cout << "Type the number to select a change, '0' to quit: ";
+
+        do
+        {
+            // std::cin.ignore();
+            std::getline(std::cin, input);
+            choice = char(input[0]);
+            if (choice == 'N' && !hasMoreChanges)
+            {
+                std::cout << "No more changes to show. Can't use 'N'" << std::endl;
+                std::cout << "Type the number to select a change, '0' to quit: ";
+            }
+            else if (choice == 'N' || choice == '0')
+                break;
+        } while (choice < '0' || choice > '9');
+
+        if (choice != 'N' && choice != '0')
+        {
+            int selectedIndex = choice - '0';
+
+            if (selectedIndex > 0 && selectedIndex <= (end - start))
+            {
+                std::streampos selectedPos = CHANGEFILEPOINTER + static_cast<std::streamoff>((selectedIndex - 1) * sizeof(Change));
+                try
+                {
+                    Change selectedChange = GetChangeDetails(selectedPos, FILENAMES[1]);
+                    std::string changeID = selectedChange.getChangeID();
+                    return UpdateChangeInfo(changeID.data(), selectedPos);
+                }
+                catch (const AppException &e)
+                {
+                    LogException(e);
+                    return -1;
+                }
+            }
+        }
+
+        start = end;
+        end += 10;
+    } while (choice != '0');
+    
+    cout << endl;
+    return 0;
+>>>>>>> pr/64:src/ScenarioControl.cpp
 }
 
+/*
+Display a list of recent changes and allow user to select one of changes
+they want to edit its attribute information.
+------------------------------------------------------------------------------------*/
 int ListAndSelectChange()
 {
     int start = 0;
@@ -456,7 +602,7 @@ int ListAndSelectChange()
               << std::setw(12) << "Last Update"
               << std::setw(7) << "Status"
               << std::setw(10) << "Priority"
-              << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+              << std::setw(32) << "ReleaseID" << std::endl;
     std::cout << std::string(118, '-') << std::endl;
 
     do
@@ -556,14 +702,24 @@ int ListAndSelectChange()
         end += 10;
     } while (true);
 
+    cout << endl << "Change Update Successful" << endl;
     return 0;
 }
+<<<<<<< HEAD:ScenarioControl.cpp
 /*
 Lists 10 latest changes and allow user to select a change from the list or 
 display the next 10 changes. When a change is selected, UpdateChangeInfo gets called
 with the changeID of the selected change.
 This function goes through the unsorted change file to fetch the change data
 ----------------------------------------------------------------*/
+=======
+
+/*
+Given the changeID of a change object to update its attribute,
+get new attribute information, validate the new information, and apply the information
+to the change object.
+-------------------------------------------------------------------------------------------*/
+>>>>>>> pr/64:src/ScenarioControl.cpp
 int UpdateChangeInfo(const char *changeID, std::streampos position)
 {
     std::fstream file(FILENAMES[1], std::ios::in | std::ios::out | std::ios::binary);
@@ -587,10 +743,48 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
         return -1;
     }
 
+<<<<<<< HEAD:ScenarioControl.cpp
     std::cout << "Change found!" << std::endl;
 
     std::string description, releaseID, status, priority_input;
     char priority = '\0';
+=======
+        cout << endl << "Updating Change with ChangeID: " << changeID << endl;
+        cout << "Current Description: " << currentChange.change_displayDesc() << endl;
+        cout << "Enter new Description (or press Enter to keep current): ";
+        std::getline(std::cin, description);
+        if (description == "")
+            description = currentChange.change_displayDesc();
+        cout << endl << "Current Status: " << currentChange.change_displayStatus() << endl;
+        cout << "Enter new Status (P/X/-) (or press Enter to keep current): ";
+        std::getline(std::cin, status);
+        if (status.empty())
+            status = currentChange.change_displayStatus();
+        cout << endl << "Current Priority: " << currentChange.change_displayPriority() << endl;
+        cout << "Enter new Priority (1-5) (or press Enter to keep current): ";
+
+        do
+        {
+            // cin.ignore();
+            std::getline(std::cin, priority_input);
+            if (priority_input.empty())
+                break;
+            priority = priority_input[0];
+        } while (priority < 48 || priority > 54);
+        if (priority == '\0')
+            priority = currentChange.change_displayPriority();
+        cout << endl << "Current ReleaseID: " << currentChange.change_displayRelID() << endl;
+        cout << "Enter new ReleaseID (or press Enter to keep current): ";
+        // std::getline(std::cin, releaseID);
+        do
+        {
+            // cout << "Product doesn't exist." << endl;
+            // cin.ignore();
+            std::getline(std::cin, releaseID);
+            if (releaseID.empty())
+                break;
+        } while (checkDupProduct(releaseID.data()));
+>>>>>>> pr/64:src/ScenarioControl.cpp
 
     // Description
     std::cout << "Current Description: " << currentChange.change_displayDesc() << std::endl;
@@ -657,14 +851,22 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
         LogException(e);
         return 0;
     }
-
+    cout << endl << "Update Successful" << endl << endl;
     return 1;
 }
+<<<<<<< HEAD:ScenarioControl.cpp
 /*
 Updates a change with givin changeID.
 User can choose to update specific attributes of that change.
 No noticeable algorithm or data structure used.
 ----------------------------------------------------------------*/
+=======
+
+/*
+Creates a report of all changes object that is associated with a particular product object.
+This function uses linear search to find all changes that are related to the prduct.
+---------------------------------------------------------------------------------------------*/
+>>>>>>> pr/64:src/ScenarioControl.cpp
 int ProductOnChange()
 {
     int start = 0;
@@ -683,7 +885,13 @@ int ProductOnChange()
                   << std::setw(5) << " "
                   << std::setw(12) << "Product Name"
                   << std::right
+<<<<<<< HEAD:ScenarioControl.cpp
                   << std::setw(31) << "ReleaseID/AnticipatedReleaseID"
+=======
+                  << std::setw(20) << "ReleaseID"
+                  << std::right
+
+>>>>>>> pr/64:src/ScenarioControl.cpp
                   << std::setw(12) << "ReleaseDate" << std::endl;
         std::cout << std::string(123, '-') << std::endl;
 
@@ -758,7 +966,7 @@ int UserOnChange()
                   << std::setw(12) << "Last Update"
                   << std::setw(7) << "Status"
                   << std::setw(10) << "Priority"
-                  << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+                  << std::setw(32) << "ReleaseID" << std::endl;
         std::cout << std::string(123, '-') << std::endl;
 
         bool hasMoreChanges = true;
@@ -865,6 +1073,9 @@ int UserOnChange()
     return 0;
 }
 
+/*
+Initializes all data classes: customer, complaint, change, and product.
+-----------------------------------------------------------------------*/
 int InitControl()
 {
     try

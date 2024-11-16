@@ -2,18 +2,23 @@
 REVISION HISTORY:
 Rev. 1 - 24/07/03 Original by Sanchit Jain
 ----------------------------------------------------------------------*/
-#include "Globals.hpp"
+
 #include <ctime>
 #include <fstream>
 #include <cstring>
 #include <cstdlib>
 #include "Exceptions.hpp"
 
+#include "../include/Globals.hpp"
+
+//--------------------------------------------------------------------
+
 streampos CUSTOMERFILEPOINTER = 0;
 streampos COMPLAINTFILEPOINTER = 0;
 streampos CHANGEFILEPOINTER = 0;
 streampos PRODUCTFILEPOINTER = 0;
 
+<<<<<<< HEAD:Globals.cpp
 int GetRecordCount(const std::string &FILENAME)
 {
     std::ifstream file(FILENAME, std::ios::binary);
@@ -45,6 +50,23 @@ char* IDGenerator(const char &type, const std::string &FILENAME, int precision) 
         case '1': // Example: 'ch' (2 characters)
             leadingChars = 2;
             leadingStr = "ch";
+=======
+//--------------------------------------------------------------------
+
+/*
+Generates a random ID of a specific length based on a type character, intializing the ID with a leading digit 
+depending on the type and filling the rest with random digits.
+--------------------------------------------------------------------*/
+char* IDGenerator(const char &type, const int &precision)
+{
+    srand(static_cast<unsigned int>(time(nullptr)));
+    char* id = new char[precision + 1];
+    switch(type){
+        case '2':
+            id[0] = '0';
+            for (int i = 1; i < precision; i++)
+                id[i] = '0' + (rand() % 10);;
+>>>>>>> pr/64:src/Globals.cpp
             break;
         case '2': // Example: 'co' (2 characters)
             leadingChars = 2;
@@ -91,11 +113,19 @@ char* IDGenerator(const char &type, const std::string &FILENAME, int precision) 
 
     return id;
 }
+
 /*
-Generates a random ID of a specific length based on a type character, intializing the ID with a leading digit 
-depending on the type and filling the rest with random digits.
+String copy function.
+Includes a terminating character at the end of the string.
 --------------------------------------------------------------------*/
+<<<<<<< HEAD:Globals.cpp
 void safeStrCopy(char* dest, const char* src, size_t maxLen) {
     std::strncpy(dest, src, maxLen-1);
     dest[maxLen] = '\0';
+=======
+void safeStrCopy(char* dest, const char* src, size_t maxLen) 
+{
+    std::strncpy(dest, src, maxLen - 1);
+    dest[maxLen - 1] = '\0';
+>>>>>>> pr/64:src/Globals.cpp
 }

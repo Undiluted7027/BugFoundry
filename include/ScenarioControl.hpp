@@ -15,6 +15,11 @@ of the system with the event calls.
 --------------------------------------------------------------------*/
 #include <iostream>
 
+#include "Complaint.hpp"
+#include "Customer.hpp"
+#include "Change.hpp"
+#include "Product.hpp"
+#include "Exceptions.hpp"
 /*--------------------------------------------------------------------
 // Exported constants/types/variables
 This module does not export any constants/types/variables
@@ -47,70 +52,60 @@ Main menu 3, Submenu 3: Report of Users to be informed on Update on Change
 Main menu 0, Submenu 0: Shutdown
 --------------------------------------------------------------------*/
 
-int InitControl();
 /*
 InitControl is used to initialize all other objects: Complaint, Change, Customer, Product.
 This function gets called whenever the system starts up. When the function
 successfully finishes, returns 1. Else, returns 0.
 --------------------------------------------------------------------*/
-
-void Shutdown();
+int InitControl();
 /*
 Shutdown is used to exit the whole system. The restriction is not applicable.
 --------------------------------------------------------------------*/
-
-int NewCustomer();
+void Shutdown();
 /*
 NewCustomer is used to create a new customer by retrieving the customer information
 through the input from the user. The restriction for each attribute for a user 
 is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-
-int CreateNewComplaint();
+int NewCustomer();
 /*
 CreateNewComplaint is used to create a new complaint by retrieving the 
 complaint information through the input from the user. The restriction 
 for each attribute for a complaint is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-
-int CreateNewProduct();
+int CreateNewComplaint();
 /*
 CreateNewProduct is used to create a new product by retrieving the 
 product information through the input from the user. The restriction 
 for each attribute for a product is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-
-int CreateNewProductRel();
+int CreateNewProduct();
 /*
 CreateNewProductRel is used to create a new product release by retrieving the 
 product release information through the input from the user. The restriction 
 for each attribute for a product release is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-
-int CreateNewChange();
+int CreateNewProductRel();
 /*
 CreateNewChange is used to create a new change by retrieving the change
 information through the input from the user. The restriction for each 
 attribute for a change is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-
-int UpdateSpecificChange();
+int CreateNewChange();
 /*
 UpdateSpecificChange is used to get and validate the changeID that the user wants to update. 
 The restriction for the changeID is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-
-int UpdateChangeInfo(
-    const char *changeID,  // in: A changeID to update its attributes
-    std::streampos position // in: Position of the change in the file
-);
+int UpdateSpecificChange();
 /*
 UpdateChangeInfo is used to update the attribute of the 'change' in the
 function parameter. The output will be 1 if successful and 0 if unsuccessful.
 The restriction for each attribute for a change is mentioned in the User Manual.
 --------------------------------------------------------------------*/
-
-int ListAndSelectChange();
+int UpdateChangeInfo(
+    const char *changeID,       // in: A changeID to update its attributes
+    std::streampos position     // in: Position of the change in the file
+);
 /*
 ListAndSelectChange is used to display the next 10 latest changes and take
 the user input of an option selecting one of the changes displayed, 
@@ -118,32 +113,29 @@ display the next 10 latest changes, or exit the event. The output will be
 the user selection. For the user input restriction, refer to the
 Update one of the latest Change event in the User Manual.
 --------------------------------------------------------------------*/
-
-int ExistingChanges();
+int ListAndSelectChange();
 /*
 ExistingChanges is used to check if there is at least one change.
 If exists, returns 1. If not, returns 0. The restriction for this function
 is not applicable.
 --------------------------------------------------------------------*/
-
-int DisplayChangeReport();
+int ExistingChanges();
 /*
 DisplayChangeReport is used to display the next 10 latest changes and take
 the user input of an option of displaying the next 10 latest changes, 
 or exit the event. For the user input restriction, refer to the
 Report Changes event in the User Manual.
 --------------------------------------------------------------------*/
-
-int ProductOnChange();
+int DisplayChangeReport();
 /*
 ProductOnChange is used to get a particular product to display its 
 next 10 anticipated changes. The function input restriction is not applicable.
 --------------------------------------------------------------------*/
-
-int UserOnChange();
+int ProductOnChange();
 /*
 UserOnChange is used to get a change to display the next 10 users that are
 related to the change the user inputted. The function input restriction is not applicable.
 --------------------------------------------------------------------*/
+int UserOnChange();
 
 #endif // SCENARIOCONTROL_HPP

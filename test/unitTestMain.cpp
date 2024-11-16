@@ -5,10 +5,10 @@ Rev. 1 - 24/07/03 Original by Jason Lee
 --------------------------------------------------------------------*/
 #include <iostream>
 #include <string.h>
-#include "Customer.hpp"
-#include "Change.hpp"
-#include "Complaint.hpp"
-#include "Product.hpp"
+#include "../include/Customer.hpp"
+#include "../include/Change.hpp"
+#include "../include/Complaint.hpp"
+#include "../include/Product.hpp"
 
 int main()
 {

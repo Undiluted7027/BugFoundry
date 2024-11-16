@@ -31,12 +31,15 @@ extern streampos PRODUCTFILEPOINTER;    //  fstream file pointer for "Products.b
 #define DIRECTORY "data/"   // Directory where binary files will be stored
 #define NUMBER_OF_FILES 4   // Number of binary files
 // ----------------------------------------------------------------------
+
+// Array with names of binary files
 const string FILENAMES[NUMBER_OF_FILES] = 
 {
         "data/Customers.bin",
         "data/Changes.bin",
         "data/Complaints.bin",
         "data/Products.bin"
+<<<<<<< HEAD:Globals.hpp
 };  
 // Array with names of binary files
 // ----------------------------------------------------------------------
@@ -58,4 +61,23 @@ void safeStrCopy(
 Copies a character array to another destination and adds the null character at the end.
 Therefore, safely copies a character array.
 -----------------------------------------------------------------------*/
+=======
+}; 
+
+/* 
+T IDGenerator(const string &type, const int &precision) generates a random ID for the entity that is passed in type parameter as string. The function returns a template value. It fails if type is null and/or precision is 0.
+----------------------------------------------------------------------*/
+char *IDGenerator(
+    const char &type,     // in: type of entity that wants the ID (Product, Complaint, Customer, Change)
+    const int &precision  // in: Number of digits or characters in the ID
+);
+/*
+A string copy function. Makes sure that when copying a string, it places a terminating character at the end of the string.
+----------------------------------------------------------------------*/
+void safeStrCopy(
+    char* dest,         // out: The destination string to hold the string of src
+    const char* src,    // in: The string to copy
+    size_t maxLen       // in: The length of the string 
+);
+>>>>>>> pr/64:include/Globals.hpp
 #endif

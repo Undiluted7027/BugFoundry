@@ -3,8 +3,7 @@ REVISION HISTORY:
 Rev. 2 - 24/07/11 Moved New User to be part of Create submenu by Jason Lee
 Rev. 1 - 24/07/03 Original by Jason Lee
 --------------------------------------------------------------------*/
-#include "UI.hpp"
-#include "ScenarioControl.cpp"
+#include "../include/UI.hpp"
 //--------------------------------------------------------------------
 
 int Main_Menu()
@@ -31,7 +30,7 @@ int Create_Menu()
     int choice;
     do
     {
-        cout << "===Create===" << endl;
+        cout << endl << "===Create===" << endl;
         cout << "1) Create User" << endl;
         cout << "2) Create Complaint" << endl;
         cout << "3) Create Product Release" << endl;
@@ -55,7 +54,7 @@ int Update_Menu()
     int choice;
     do
     {
-        cout << "===Update===" << endl;
+        cout << endl << "===Update===" << endl;
         cout << "1) Update Specific Change" << endl;
         cout << "2) Update one of the latest Change" << endl;
         cout << "0) Go back to main menu" << endl;
@@ -78,7 +77,7 @@ int Report_Menu()
     int choice;
     do
     {
-        cout << "===Report===" << endl;
+        cout << endl << "===Report===" << endl;
         cout << "1) Report of Changes" << endl;
         cout << "2) Report of Anticipated Changes for a product" << endl;
         cout << "3) Report of Users to be informed on update on Change" << endl;
@@ -116,7 +115,11 @@ int ActivateUI()
                 Report_Menu();
                 break;
             case 0:
+<<<<<<< HEAD:UI.cpp
                 cout << "Thank you for using Bug Foundry." << endl;
+=======
+                cout << "Thank you for using Bug Foundry. :)" << endl;
+>>>>>>> pr/64:src/UI.cpp
                 break;
             default:
                 cout << "Error: Your option is not an available choice" << endl;
