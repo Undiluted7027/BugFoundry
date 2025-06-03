@@ -119,7 +119,7 @@ void Complaint::DisplayDetails(std::ostream &out) const
         << std::setw(31) << description
         << std::setw(12) << dateOfComplaint
         << std::setw(10) << changeID
-        << std::setw(9) << releaseID
+        << std::setw(10) << releaseID
         << std::setw(11) << custID << std::endl;
 }
 
@@ -168,19 +168,16 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
         throw InvalidDataException("DateOfComplaint field can only have value in the format of YYYY-MM-DD.");
     }
 
-    if ((year % 4 != 0 && month == 02 && day > 30) || (year % 4 == 0 && month == 2 && day > 29))
-    {
-        throw InvalidDataException("ReleaseDate field has invalid YYYY-MM-DD.");
+    if ((year % 4 != 0 && month == 02 && day > 30) || (year % 4 == 0 &&month == 2 && day > 29)){
+        throw InvalidDataException("Invalid date");
     }
-    if (day > 30)
-    {
-        switch (month)
-        {
-        case 4:
-        case 6:
-        case 9:
-        case 11:
-            throw InvalidDataException("Invalid date");
+    if (day > 30){
+        switch (month){
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                throw InvalidDataException("Invalid date");
         }
     }
 
@@ -198,7 +195,6 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
     {
         throw FileException("Could not open file 'Complaints.bin' for reading during validation.");
     }
-    file.seekg(sizeof(int), std::ios::beg);
 
     Complaint currentComplaint;
     while (file.read(reinterpret_cast<char *>(&currentComplaint), sizeof(Complaint)))
@@ -214,7 +210,7 @@ int ValidateComplaint(const char *description, const char *dateOfComplaint, cons
     }
 
     file.close();
-    std::cout << "Validation of data for 'Complaint' record succeeded!" << std::endl;
+    std::cout << std::endl << "Validation of data for 'Complaint' record succeeded!" << std::endl;
     return 1;
 }
 
@@ -313,7 +309,7 @@ void PrintAllComplaints(const std::string &FILENAME)
     {
         throw FileException("Could not open file 'Complaints.bin' during reading.");
     }
-    file.seekg(sizeof(int), std::ios::beg);
+
     Complaint complaint;
     int recordCount = 0;
     int batchSize = 10;
@@ -321,18 +317,18 @@ void PrintAllComplaints(const std::string &FILENAME)
     int choice = 1;
 
     std::cout << std::left
-            << std::setw(5) << " "
+            << std::setw(6) << " "
             << std::setw(10) << "ID"
             << std::setw(31) << "Description"
             << std::setw(12) << "Date"
             << std::setw(10) << "Change"
-            << std::setw(9) << "Release"
+            << std::setw(10) << "Release"
             << std::setw(11) << "Customer" << std::endl;
     std::cout << std::string(77, '-') << std::endl;
 
     while (file.read(reinterpret_cast<char *>(&complaint), sizeof(Complaint)))
     {
-        std::cout << std::setw(5) << recordCount + 1 << " ";
+            std::cout << std::setw(6) << recordCount + 1 << " ";
         complaint.DisplayDetails(std::cout);
         recordCount++;
 
@@ -354,7 +350,7 @@ void PrintAllComplaints(const std::string &FILENAME)
                     << std::setw(31) << "Description"
                     << std::setw(12) << "Date"
                     << std::setw(10) << "Change"
-                    << std::setw(9) << "Release"
+                    << std::setw(10) << "Release"
                     << std::setw(11) << "Customer" << std::endl;
             std::cout << std::string(77, '-') << std::endl;
         }
@@ -386,6 +382,7 @@ bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint,
         throw FileException("Could not open file 'Complaints.bin' for reading when updating a change.");
         return false;
     }
+
     Complaint currentComplaint;
     bool found = false;
     std::streampos position;

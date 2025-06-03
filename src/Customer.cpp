@@ -32,7 +32,7 @@ Customer::Customer(const char *custID, const char *name, const char *email, cons
     else
     {
         // Assuming IDGenerator returns a char*
-        char *generatedID = IDGenerator('0', 10);
+        char *generatedID = IDGenerator('1', 10);
         safeStrCopy(this->custID, generatedID, sizeof(this->custID));
         delete[] generatedID;
     }
@@ -40,8 +40,6 @@ Customer::Customer(const char *custID, const char *name, const char *email, cons
     safeStrCopy(this->name, name, sizeof(this->name));
     safeStrCopy(this->email, email, sizeof(this->email));
     safeStrCopy(this->phone, phone, sizeof(this->phone));
-        cout << this->custID << endl;
-
 }
 
 
@@ -95,7 +93,12 @@ No algorithm or data structure used.
 --------------------------------------------------------------------*/
 void Customer::DisplayDetails(std::ostream &out) const
 {
-    
+    if (name[0] == '\0' || email[0] == '\0' || phone[0] == '\0')
+    {
+        throw InvalidDataException("One or more fields of Customer record has invalid data.");
+    }
+    else
+    {
         out.width(15);
         out << std::left << custID;
         out << std::right << std::setw(10);
@@ -105,7 +108,7 @@ void Customer::DisplayDetails(std::ostream &out) const
         out << std::left << email;
         out.width(15);
         out << std::left << phone << std::endl;
-    
+    }
 }
 
 /*
@@ -142,22 +145,15 @@ Uses the unsorted records data structure to add the Complaint object.
 --------------------------------------------------------------------*/
 void CommitCustomer(const Customer &customer, std::streampos &startPos, const std::string &FILENAME)
 {
-    std::fstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file)
     {
         throw FileException("Could not open file 'Customers.bin' for writing when adding a Customer record to the file.");
     }
-    int recordCount;
-    file.read(reinterpret_cast<char *>(&recordCount), sizeof(int));
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&customer), sizeof(Customer));
     startPos = file.tellp();
-    recordCount++;
-    file.seekp(0, std::ios::beg);
-    file.write(reinterpret_cast<const char *>(&recordCount), sizeof(int));
-
-    file.close();
 }
 
 /*
@@ -171,13 +167,9 @@ Customer GetCustomerDetails(std::streampos &startPos, const std::string &FILENAM
     {
         throw FileException("Could not open file 'Customers.bin' for reading a record.");
     }
-    // startPos += sizeof(int);
     file.seekg(startPos);
     Customer customer;
-    if (!file.read(reinterpret_cast<char *>(&customer), sizeof(Customer)))
-    {
-        throw NoRecordFound("FileReadFailed: There was an error in reading the file.");
-    }
+    file.read(reinterpret_cast<char *>(&customer), sizeof(Customer));
     startPos = file.tellg();
     return customer;
 }
@@ -193,7 +185,7 @@ void PrintAllCustomers(const std::string &FILENAME)
     {
         throw FileException("Could not open file 'Customers.bin' for printing records.");
     }
-    file.seekg(sizeof(int), std::ios::beg);
+
     Customer customer;
     int recordCount = 0;
     int batchSize = 10;
@@ -201,7 +193,7 @@ void PrintAllCustomers(const std::string &FILENAME)
     int choice = 1;
 
     std::cout << std::left
-              << std::setw(12) << "CustomerID"
+              << std::setw(13) << "Customer ID"
               << std::setw(31) << "Name"
               << std::setw(31) << "Email"
               << std::setw(15) << "Phone" << std::endl;
@@ -231,9 +223,9 @@ void PrintAllCustomers(const std::string &FILENAME)
             else if (choice)
             {
                 std::cout << std::left
-                          << std::setw(5) << " "
+                          << std::setw(6) << " "
 
-                          << std::setw(12) << "CustomerID"
+                          << std::setw(12) << "Customer ID"
                           << std::setw(31) << "Name"
                           << std::setw(31) << "Email"
                           << std::setw(15) << "Phone" << std::endl;
@@ -289,6 +281,7 @@ int ValidateCustomer(const char *name, const char *email, const char *phone)
     // Validate phone number [1]6041231234
     if ((strlen(phone) == 11 && phone[0] == '1') || (strlen(phone) == 10 && isdigit(phone[0])))
     {
+
         for (int i = 0; i < int(strlen(phone)); i++)
         {
             if (!isdigit(phone[i]))
@@ -306,18 +299,18 @@ int ValidateCustomer(const char *name, const char *email, const char *phone)
     {
         throw FileException("Could not open file 'Customers.bin' for reading records during validation.");
     }
-    file.seekg(sizeof(int), std::ios::beg);
+
     Customer temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Customer)))
     {
         // read through the file
-        if (strcmp(temp.getEmail(), email) == 0 && strcmp(temp.getPhone(), phone) == 0)
+        if (strcmp(temp.getEmail(), email) == 0 || strcmp(temp.getPhone(), phone) == 0)
         {
             throw DuplicateRecordException("Duplicate Customer record found.");
         }
     }
 
-    std::cout << "Validation of data for 'Customer' record succeeded!" << std::endl;
+    std::cout << std::endl << "Validation of data for 'Customer' record succeeded!" << std::endl;
     return 1;
 }
 
@@ -330,9 +323,8 @@ bool checkDup(const char *otherCustID)
     std::ifstream file(FILENAMES[0], std::ios::binary);
     if (!file)
     {
-        throw FileException("Could not open file 'Customers.bin' for checking duplicate customerID.");
+        throw FileException("Could not open file 'Customers.bin' for checking duplicate customer ID.");
     }
-    file.seekg(sizeof(int), std::ios::beg);
     Customer temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Customer)))
     {
@@ -360,9 +352,6 @@ int InitCustomer()
         }
         else
         {
-            int initialCount = 0;
-            file.write(reinterpret_cast<const char *>(&initialCount), sizeof(int)); // Reserve space for the record count
-
             file.close();
             return 1;
         }

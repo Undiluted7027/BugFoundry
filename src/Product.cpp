@@ -21,9 +21,6 @@ Product::Product() : releaseID{0}, releaseDate{0}
 {
     memset(productName, 0, sizeof(productName));
 }
-/*
-The default constructor of Product class
----------------------------------------------------------------------*/
 
 /*
 Parameterized constructor for Product class.
@@ -43,7 +40,7 @@ Product::Product(const char *releaseID, const char *productName, const char *Rel
     else
     {
         // Assuming IDGenerator returns a char*
-        char *generatedID = IDGenerator('3', 9);
+        char *generatedID = IDGenerator('4', 9);
         safeStrCopy(this->releaseID, generatedID, sizeof(this->releaseID));
         delete[] generatedID;
     }
@@ -56,13 +53,9 @@ No algorithm or data structure used.
 void Product::DisplayDetails(std::ostream &out) const
 {
     out << std::left
-        << std::setw(11) << productName
-        << std::right
-
-        << std::setw(19) << releaseID
-                  << std::right
-
-        << std::setw(24) << releaseDate << std::endl;
+        << std::setw(15) << productName
+        << std::setw(25) << releaseID
+        << std::setw(30) << releaseDate << std::endl;
 }
 
 /*
@@ -128,7 +121,6 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
         std::cerr << "Error: Could not open file for reading" << std::endl;
         return -1;
     }
-    file.seekg(sizeof(int), std::ios::beg);
 
     Product currentProduct;
     while (file.read(reinterpret_cast<char *>(&currentProduct), sizeof(Product)))
@@ -141,7 +133,7 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
     }
 
     file.close();
-    std::cout << "Validation of data for 'Product' record succeeded!" << std::endl;
+    std::cout << std::endl << "Validation of data for 'Product' record succeeded!" << std::endl;
 
     return 1;
 }
@@ -162,11 +154,12 @@ Uses the unsorted records data structure to add the Product object.
 --------------------------------------------------------------------*/
 void CommitProduct(const Product &product, std::streampos &startPos, const std::string &FILENAME)
 {
-    std::fstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
+    std::ofstream file(FILENAME, std::ios::binary | std::ios::in | std::ios::out);
     if (!file)
     {
         throw FileException("Could not open file 'Products.bin' for writing when adding a Change record to the file.");
     }
+
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&product), sizeof(Product));
@@ -189,7 +182,7 @@ Product GetProductDetails(std::streampos startPos, const std::string &FILENAME)
     {
         throw std::runtime_error("FileReadFailed: Could not open file for reading");
     }
-    
+
     file.seekg(startPos);
     Product product;
 
@@ -211,7 +204,7 @@ void PrintAllProducts(const std::string &FILENAME)
     {
         throw FileException("Could not open file 'Products.bin' during reading.");
     }
-    file.seekg(sizeof(int), std::ios::beg);
+
     Product product;
     int recordCount = 0;
     int batchSize = 10;
@@ -219,9 +212,9 @@ void PrintAllProducts(const std::string &FILENAME)
     int choice = 1;
 
     std::cout << std::left
-              << std::setw(5) << " "
+              << std::setw(6) << " "
               << std::setw(13) << "Product Name"
-              << std::setw(31) << "ReleaseID/AnticipatedReleaseID"
+              << std::setw(31) << "ReleaseID"
               << std::setw(12) << "ReleaseDate"
               << std::endl;
     std::cout << std::string(94, '-') << std::endl;
@@ -229,7 +222,7 @@ void PrintAllProducts(const std::string &FILENAME)
     while (file.read(reinterpret_cast<char *>(&product), sizeof(product)))
     {
         std::cout << std::left
-                  << std::setw(5) << recordCount + 1 << " "
+                  << std::setw(6) << recordCount + 1 << " "
                   << std::setw(13) << product.getProductName()
                   << std::setw(31) << product.getReleaseID()
                   << std::setw(12) << product.getReleaseDate()
@@ -255,7 +248,7 @@ void PrintAllProducts(const std::string &FILENAME)
             {
                 std::cout << std::left
                           << std::setw(13) << "Product Name"
-                          << std::setw(31) << "ReleaseID/AnticipatedReleaseID"
+                          << std::setw(31) << "ReleaseID"
                           << std::setw(12) << "ReleaseDate"
                           << std::endl;
                 std::cout << std::string(89, '-') << std::endl;
@@ -264,7 +257,7 @@ void PrintAllProducts(const std::string &FILENAME)
     }
 
     std::cout << std::string(89, '-') << std::endl;
-    std::cout << "Total records Displayed: " << recordCount << std::endl << std::endl;
+    std::cout << "Total records Displayed: " << recordCount + 1 << std::endl;
 
     if (file.eof())
     {
@@ -289,7 +282,6 @@ bool checkDupProduct(const char *otherReleaseID)
     {
         throw FileException("Could not open file 'Products.bin' for checking duplicate releaseID.");
     }
-    file.seekg(sizeof(int), std::ios::beg);
     Product temp;
     while (file.read(reinterpret_cast<char *>(&temp), sizeof(Product)))
     {
@@ -317,14 +309,8 @@ int InitProduct()
         {
             throw FileException("Startup failed while creating 'Products.bin' file.");
         }
-        int initialCount = 0;
-        file.write(reinterpret_cast<const char*>(&initialCount), sizeof(int)); // Reserve space for the record count
-
         file.close();
         return 1;
     }
     return 0;
 }
-/*
-Initialize the Product module with product file and the product file pointer
--------------------------------------------------------------------*/

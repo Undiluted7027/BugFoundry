@@ -125,24 +125,21 @@ int CreateNewComplaint()
     std::string desc;
     std::string product;
 
-    std::cout << "===Creating a Complaint===" << std::endl;
-
+    std::cout << std::endl << "===Creating a Complaint===" << std::endl;
     std::cin.ignore();
     PrintAllCustomers(FILENAMES[0]);
-
-    std::cout << "Enter your UserID (9 digits)";
+    std::cout << "Enter your UserID (9 digits): ";
     std::getline(std::cin, userID);
     std::cout << "Enter the Product the bug was found on: ";
     std::getline(std::cin, product);
-    std::cout << "Enter the product ReleaseID that the bug was found on (8 letters) ";
+    std::cout << "Enter the Product ReleaseID that the bug was found on (8 letters): ";
     std::getline(std::cin, relID);
-    std::cout << "Enter the description of your complaint (30 max characters) ";
+    std::cout << "Enter Description of your complaint (30 max characters): ";
     std::getline(std::cin, desc);
 
     char choice;
-    std::cout << "Comfirm to create complaint (Y/N): ";
+    std::cout << "Confirm to create complaint (Y/N): ";
     std::cin >> choice;
-
     if (choice == 'N')
     {
         std::cout << "Complaint Creation Canceled" << std::endl;
@@ -283,7 +280,7 @@ int CreateNewProductRel()
     std::string releaseDate;
     std::string releaseID;
     PrintAllProducts(FILENAMES[3]);
-    std::cout << "===Create Product Release===" << std::endl;
+    std::cout << std::endl << "===Create Product Release===" << std::endl;
     std::cin.ignore();
     std::cout << "Enter the product name (10 max characters): ";
     std::getline(std::cin, productName);
@@ -346,13 +343,14 @@ int UpdateSpecificChange()
 
     std::cout << "===Update Specific Change===" << std::endl;
 
+    // Display changes in a paginated manner
     do
     {
         pos = CHANGEFILEPOINTER;
-        std::cout << "AVAILABLE CHANGES" << std::endl
+        std::cout << std::endl << "AVAILABLE CHANGES" << std::endl
                   << std::endl;
         std::cout << std::left
-                  << std::setw(5) << " "
+                  << std::setw(7) << " "
                   << std::setw(10) << "ChangeID"
                   << std::setw(15) << "Product Name"
                   << std::setw(32) << "Description"
@@ -368,19 +366,22 @@ int UpdateSpecificChange()
             try
             {
                 change = GetChangeDetails(pos, FILENAMES[1]);
-                std::cout << std::setw(5) << i + 1 << " ";
+                std::cout << std::setw(6) << i + 1 << " ";
                 change.DisplayDetails(std::cout);
                 std::cout << std::string(123, '-') << std::endl;
+
+                pos += sizeof(Change);
+                hasMoreChanges = true;
             }
-            catch(const NoRecordFound &e)
+            catch (const NoRecordFound &e)
             {
                 hasMoreChanges = false;
             }
-            catch(const AppException &e)
+            catch (const AppException &e)
             {
                 LogException(e);
                 return -1;
-            }        
+            }
         }
 
         if (hasMoreChanges)
@@ -426,7 +427,7 @@ int UpdateSpecificChange()
         start = end;
         end += 10;
     } while (choice != '0');
-    
+
     return 0;
 }
 
@@ -446,7 +447,7 @@ int ListAndSelectChange()
               << std::endl;
 
     std::cout << std::left
-              << std::setw(5) << " "
+              << std::setw(6) << " "
               << std::setw(10) << "ChangeID"
               << std::setw(15) << "Product Name"
               << std::setw(32) << "Description"
@@ -464,8 +465,7 @@ int ListAndSelectChange()
             try
             {
                 Change change = GetChangeDetails(pos, FILENAMES[1]);
-                std::cout << std::setw(5) << i + 1 << " ";
-                // Display the details of the change (assuming you have a method to do so)
+                std::cout << std::setw(6) << i + 1 << " ";
                 change.DisplayDetails(std::cout);
                 std::cout << std::string(118, '-') << std::endl;
 
@@ -492,39 +492,31 @@ int ListAndSelectChange()
                 break;
             }
         }
-
         if (hasMoreChanges)
             std::cout << "Type the number to select a change, 'N' to show the next list, '0' to quit: ";
         else
             std::cout << "Type the number to select a change, '0' to quit: ";
         do
         {
+            // std::cin.ignore();
             std::getline(std::cin, input);
             choice = char(input[0]);
-
-            if ((choice == 'N' || choice == 'n'))
+            if (choice == 'N' && !hasMoreChanges)
             {
-                if (!hasMoreChanges)
-                {
-                    std::cout << "No more changes to show. Can't use 'N'" << std::endl;
-                    continue;
-                }
+                std::cout << "No more changes to show. Can't use 'N'" << std::endl;
+                std::cout << "Type the number to select a change, '0' to quit: ";
             }
-            else if (choice == '0' || choice == 'N')
-            {
-                break; // Exit the loop
-            }
-
+            else if (choice == 'N' || choice == '0')
+                break;
         } while (choice < '0' || choice > '9');
-        
+
         if (choice != 'N' && choice != '0')
         {
             int selectedIndex = choice - '0';
 
             if (selectedIndex > 0 && selectedIndex <= (end - start))
             {
-                std::streampos selectedPos = CHANGEFILEPOINTER + static_cast<std::streamoff>((selectedIndex - 1 + start) * sizeof(Change));
-
+                std::streampos selectedPos = CHANGEFILEPOINTER + static_cast<std::streamoff>((selectedIndex - 1) * sizeof(Change));
                 try
                 {
                     Change selectedChange = GetChangeDetails(selectedPos, FILENAMES[1]);
@@ -542,7 +534,6 @@ int ListAndSelectChange()
         end += 10;
     } while (choice != '0');
 
-    std::cout << endl << "Change Update Successful" << endl;
     return 0;
 }
 
@@ -556,34 +547,32 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
     std::fstream file(FILENAMES[1], std::ios::in | std::ios::out | std::ios::binary);
     if (!file)
     {
-        std::cerr << "Error: could not open file for reading and writing" << std::endl;
+        std::cerr << "Error: could not open file for reading" << std::endl;
         return -1;
     }
-
     Change currentChange;
     bool changeFound = false;
-
     while (file.read(reinterpret_cast<char *>(&currentChange), sizeof(Change)))
     {
         if (strcmp(currentChange.getChangeID(), changeID) == 0)
         {
+            // cout << "Change found!" << endl;
             changeFound = true;
             break;
         }
     }
-
     if (changeFound)
     {
         std::string description, releaseID, productName, status, priority_input;
         char priority = '\0';
 
-        cout << "Updating Change with ChangeID: " << changeID << endl;
+        cout << endl << "Updating Change with ChangeID: " << changeID << endl;
         cout << "Current Description: " << currentChange.change_displayDesc() << endl;
         cout << "Enter new Description (or press Enter to keep current): ";
         std::getline(std::cin, description);
         if (description == "")
             description = currentChange.change_displayDesc();
-        cout << "Current Status: " << currentChange.change_displayStatus() << endl;
+        cout << endl << "Current Status: " << currentChange.change_displayStatus() << endl;
         cout << "Enter new Status (P/X/-) (or press Enter to keep current): ";
         std::getline(std::cin, status);
         if (status.empty())
@@ -599,13 +588,11 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
                 break;
             priority = priority_input[0];
         } while (priority < 48 || priority > 54);
-        
         if (priority == '\0')
             priority = currentChange.change_displayPriority();
-        cout << "Current ReleaseID: " << currentChange.change_displayRelID() << endl;
+        cout << endl << "Current ReleaseID: " << currentChange.change_displayRelID() << endl;
         cout << "Enter new ReleaseID (or press Enter to keep current): ";
         // std::getline(std::cin, releaseID);
-        
         do
         {
             // cout << "Product doesn't exist." << endl;
@@ -615,36 +602,39 @@ int UpdateChangeInfo(const char *changeID, std::streampos position)
                 break;
         } while (checkDupProduct(releaseID.data()));
 
-        if (releaseID.empty()) releaseID = currentChange.change_displayRelID();
+        if (releaseID.empty())
+            releaseID = currentChange.change_displayRelID();
         try
         {
             char date[11];
+            // Get current date in format YYYY-MM-DD
             time_t now = time(0);
             strftime(date, sizeof(date), "%Y-%m-%d", localtime(&now));
             currentChange.UpdateChange(currentChange.getChangeID(), description.data(), status[0], priority, releaseID.data(), date);
             CommitUpdatedChange(currentChange, FILENAMES[1]);
         }
-        catch(const FileException &e)
+        catch (const FileException &e)
         {
             LogException(e);
             return -1;
         }
-        catch(const InvalidDataException &e)
+        catch (const InvalidDataException &e)
         {
             LogException(e);
             return -1;
         }
-        catch(const DuplicateRecordException &e)
+        catch (const DuplicateRecordException &e)
         {
             LogException(e);
             return 0;
         }
-        catch(const NoRecordFound &e)
+        catch (const NoRecordFound &e)
         {
             LogException(e);
             return 0;
         }
     }
+
     return 1;
 }
 
@@ -668,13 +658,10 @@ int ProductOnChange()
         std::cout << "AVAILABLE PRODUCTS" << std::endl
                   << std::endl;
         std::cout << std::left
-                  << std::setw(5) << " "
-                  << std::setw(12) << "Product Name"
-                  << std::right
-                  << std::setw(31) << "ReleaseID/AnticipatedReleaseID"
-                  << std::right
-
-                  << std::setw(12) << "ReleaseDate" << std::endl;
+                  << std::setw(6) << " "
+                  << std::setw(15) << "Product Name"
+                  << std::setw(25) << "ReleaseID"
+                  << std::setw(18) << "ReleaseDate" << std::endl;
         std::cout << std::string(123, '-') << std::endl;
         bool hasMoreProducts = false;
 
@@ -683,7 +670,7 @@ int ProductOnChange()
             try
             {
                 product = GetProductDetails(pos, FILENAMES[3]);
-                std::cout << std::setw(5) << i + 1 << " ";
+                std::cout << i + 1 << std::setw(5) << " ";
                 product.DisplayDetails(std::cout);
                 std::cout << std::string(123, '-') << std::endl;
 
@@ -761,15 +748,16 @@ int UserOnChange()
     int end = 10;
     string input;
     char choice;
-    std::streampos pos = CHANGEFILEPOINTER + static_cast<std::streamoff>(sizeof(int)); // Skip total records field
+    std::streampos pos;
     Change change;
 
     do
     {
+        pos = CHANGEFILEPOINTER;
         std::cout << "AVAILABLE CHANGES" << std::endl
                   << std::endl;
         std::cout << std::left
-                  << std::setw(5) << " "
+                  << std::setw(7) << " "
                   << std::setw(10) << "ChangeID"
                   << std::setw(15) << "Product Name"
                   << std::setw(32) << "Description"
@@ -778,15 +766,13 @@ int UserOnChange()
                   << std::setw(10) << "Priority"
                   << std::setw(32) << "ReleaseID" << std::endl;
         std::cout << std::string(123, '-') << std::endl;
-
-        bool hasMoreChanges = true;
-
+        bool do10 = true;
         for (int i = start; i < end; i++)
         {
             try
             {
                 change = GetChangeDetails(pos, FILENAMES[1]);
-                std::cout << std::setw(5) << i + 1 << " ";
+                std::cout << std::setw(6) << i + 1 << " ";
                 change.DisplayDetails(std::cout);
                 std::cout << std::string(123, '-') << std::endl;
 
@@ -809,50 +795,33 @@ int UserOnChange()
             }
             catch (const NoRecordFound &e)
             {
-                hasMoreChanges = false;
-                break;
+                do10 = false;
             }
         }
-
-        if (hasMoreChanges)
-        {
+        if (do10)
             std::cout << "Type the number to select a change, 'N' to show the next list, '0' to quit: ";
-        }
         else
-        {
-            std::cout << "No more changes to show. Type the number to select a change, '0' to quit: ";
-        }
-        std::cin.ignore();
-        std::getline(std::cin, input);
-        if (input.empty())
-        {
-            std::cout << "Invalid input, please try again." << std::endl;
-            continue;
-        }
+            std::cout << "Type the number to select a change, '0' to quit: ";
 
-        choice = input[0];
-
-        if (choice == 'N' || choice == 'n')
+        do
         {
-            if (!hasMoreChanges)
+            std::getline(std::cin, input);
+            choice = input[0];
+            if (choice == 'N' && !do10)
             {
-                std::cout << "No more changes to show. Can't use 'N'" << std::endl;
-                continue;
+                std::cout << "No more products to show. Can't use 'N'" << std::endl;
+                std::cout << "Type the number to select a product, '0' to quit: ";
             }
-        }
-        else if (choice == '0')
-        {
-            break; // Exit the loop
-        }
-        else if (isdigit(choice))
+            else if (choice == 'N')
+                break;
+        } while (choice < '0' || choice > '9');
+        if (choice != 'N' && choice != '0')
         {
             cc = choice - '0';
 
             if (cc > 0 && cc <= (end - start))
             {
-                std::streampos p = CHANGEFILEPOINTER + static_cast<std::streamoff>(sizeof(int)); // Skipping total records
-
-                std::streampos selectedPos = p + static_cast<std::streamoff>((cc - 1 + start) * sizeof(Change));
+                std::streampos selectedPos = CHANGEFILEPOINTER + static_cast<std::streamoff>((cc - 1) * sizeof(Change));
                 try
                 {
                     Change selectedChange = GetChangeDetails(selectedPos, FILENAMES[1]);
@@ -866,15 +835,9 @@ int UserOnChange()
                     return -1;
                 }
             }
-            else
-            {
-                std::cout << "Invalid selection, please try again." << std::endl;
-            }
         }
         else
-        {
-            std::cout << "Invalid input, please enter a number or 'N'." << std::endl;
-        }
+            break;
 
         start = end;
         end += 10;

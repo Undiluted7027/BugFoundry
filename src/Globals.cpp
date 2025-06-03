@@ -35,12 +35,12 @@ char* IDGenerator(const char &type, const int &precision)
                 id[i] = '0' + (rand() % 10);;
             break;
         case '3': // Example: 'co' (2 characters)
-            id[1] = '1';
+            id[0] = '1';
             for (int i = 1; i < precision; i++)
                 id[i] = '0' + (rand() % 10);;
             break;
         default:
-            for (int i = 1; i < precision; i++)
+            for (int i = 0; i < precision; i++)
                 id[i] = '0' + (rand() % 10);;
     }
     id[precision] = '\0';

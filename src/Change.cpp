@@ -42,7 +42,7 @@ Change::Change(const char *changeID, const char *description, const char &status
     // Generate a new changeID if not provided
     else
     {
-        char *generatedID = IDGenerator('1', 7); // Assuming IDGenerator function is used to generate IDs
+        char *generatedID = IDGenerator('3', 7); // Assuming IDGenerator function is used to generate IDs
         safeStrCopy(this->changeID, generatedID, sizeof(this->changeID));
         delete[] generatedID;
     }
@@ -105,7 +105,7 @@ int PrintAllChanges(const std::string &FILENAME)
     {
         throw FileException("Could not open file '" + FILENAME + "' during reading.");
     }
-    file.seekg(sizeof(int), std::ios::beg);
+
     Change change;
     int recordCount = 0;
     int batchSize = 10;
@@ -113,7 +113,7 @@ int PrintAllChanges(const std::string &FILENAME)
     int choice = 1;
 
     std::cout << std::left
-              << std::setw(5) << " "
+              << std::setw(6) << " "
               << std::setw(10) << "ChangeID"
               << std::setw(15) << "Product Name"
               << std::setw(32) << "Description"
@@ -149,7 +149,7 @@ int PrintAllChanges(const std::string &FILENAME)
             {
                 std::cout << std::endl;
                 std::cout << std::left
-                          << std::setw(5) << " "
+                          << std::setw(6) << " "
                           << std::setw(10) << "ChangeID"
                           << std::setw(15) << "Product Name"
                           << std::setw(32) << "Description"
@@ -163,7 +163,7 @@ int PrintAllChanges(const std::string &FILENAME)
     }
 
     std::cout << std::string(123, '-') << std::endl;
-    std::cout << "Total Records Displayed: " << recordCount << std::endl << std::endl;
+    std::cout << "Total Records Displayed: " << recordCount << std::endl;
 
     if (file.eof())
     {
@@ -297,7 +297,7 @@ int ValidateChange(const char *description, const char &status, const char &prio
         throw FileException("Could not open file 'Changes.bin' for reading during validation.");
     }
 
-    file.seekg(sizeof(int), std::ios::beg);
+    // This part already gets done in complaint.cpp
     Change currentChange;
     while (file.read(reinterpret_cast<char *>(&currentChange), sizeof(Change)))
     {
@@ -338,9 +338,9 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
     {
         throw FileException("Could not open file 'Changes.bin' for reading when creating anticipated changes for product report.");
     }
-    std::cout << std::endl;
+    std::cout << endl;
     std::cout << std::left
-              << std::setw(5) << " "
+              << std::setw(6) << " "
               << std::setw(10) << "ChangeID"
               << std::setw(15) << "Product Name"
               << std::setw(32) << "Description"
@@ -383,14 +383,14 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
                 {
                     std::cout << std::endl;
                     std::cout << std::left
-                              << std::setw(5) << " "
+                              << std::setw(6) << " "
                               << std::setw(10) << "ChangeID"
                               << std::setw(15) << "Product Name"
                               << std::setw(32) << "Description"
                               << std::setw(12) << "Last Update"
                               << std::setw(7) << "Status"
                               << std::setw(10) << "Priority"
-                              << std::setw(32) << "ReleaseID/Anticipated ReleaseID" << std::endl;
+                              << std::setw(32) << "ReleaseID" << std::endl;
                     std::cout << std::string(123, '-') << std::endl;
                 }
             }
@@ -398,7 +398,7 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
     }
 
     std::cout << std::string(123, '-') << std::endl;
-    std::cout << "Total Records Displayed: " << recordCount << std::endl << std::endl;
+    std::cout << "Total Records Displayed: " << recordCount << std::endl;
 
     if (file.eof())
     {
@@ -411,10 +411,6 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
 
     file.close();
 }
-/*
-CreateAnticipatedChangesProduct displays 10 latest reported change for a specific product
-Displays 10 changes at a time. User can make a choice to display the next 10 changes.
---------------------------------------------------------------*/
 
 // void UpdateLatestChange(const char *description, const char &status, const char &priority, const char *releaseID, const char *lastUpdate){
 //     Change lastChange = readRecord<Change>(FILENAMES[1], CHANGEFILEPOINTER);
@@ -440,7 +436,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     {
         throw FileException("Could not open file 'Changes.bin' for reading.");
     }
-    changeFile.seekg(sizeof(int), std::ios::beg);
+
     Change change;
     bool changeFound = false;
     while (changeFile.read(reinterpret_cast<char *>(&change), sizeof(Change)))
@@ -464,7 +460,6 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     {
         throw FileException("Could not open file 'Complaints.bin' for reading.");
     }
-    complaintFile.seekg(sizeof(int), std::ios::beg);
 
     std::set<std::string> uniqueCustomerIDs;
     Complaint complaint;
@@ -488,10 +483,8 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     {
         throw FileException("Could not open file 'Customers.bin' for reading.");
     }
-    std::cout << std::endl;
-    std::cout << "Customers to be informed about Change ID " << changeID << ":" << std::endl;
-    std::cout << std::string(91, '-') << std::endl;
-    customerFile.seekg(sizeof(int), std::ios::beg);
+
+    std::cout << std::endl << "Customers to be informed about Change ID " << changeID << ":" << std::endl << std::endl;
 
     Customer customer;
     int count = 0;
@@ -499,21 +492,21 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     char input[3];
     int choice = 1;
     std::cout << std::left
-              << std::setw(5) << " "
+              << std::setw(7) << " "
               << std::setw(15) << "Customer ID"
               << std::right
 
               << std::setw(10) << "Name"
               << std::setw(24) << "Email"
               << std::right
-              << std::setw(5) << " "
+              << std::setw(6) << " "
               << std::setw(15) << "Phone" << std::endl;
     std::cout << std::string(91, '-') << std::endl;
     while (customerFile.read(reinterpret_cast<char *>(&customer), sizeof(Customer)))
     {
         if (uniqueCustomerIDs.find(customer.getCustID()) != uniqueCustomerIDs.end())
         {
-            std::cout << std::setw(5) << count + 1 << " ";
+            std::cout << count + 1 << std::setw(6) << " ";
 
             customer.DisplayDetails(std::cout);
             count++;
@@ -536,13 +529,13 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
                 else if (choice == 1)
                 {
                     std::cout << std::left
-                              << std::setw(5) << " "
+                              << std::setw(6) << " "
                               << std::setw(15) << "Customer ID"
                               << std::right
                               << std::setw(10) << "Name"
                               << std::setw(24) << "Email"
                               << std::right
-                              << std::setw(5) << " "
+                              << std::setw(6) << " "
                               << std::setw(15) << "Phone" << std::endl;
                     std::cout << std::string(91, '-') << std::endl;
                 }
@@ -552,7 +545,7 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     customerFile.close();
 
     std::cout << std::string(91, '-') << std::endl;
-    std::cout << "Total customers to be informed: " << count << std::endl << std::endl;
+    std::cout << "Total customers to be informed: " << count << std::endl;
 }
 
 /*
@@ -608,7 +601,6 @@ Change GetChangeDetails(std::streampos startPos, const std::string &FILENAME)
     {
         throw FileException("Could not open file for reading");
     }
-    // startPos += sizeof(int);
     file.seekg(startPos);
     Change change;
     if (!file.read(reinterpret_cast<char *>(&change), sizeof(Change)))
@@ -632,11 +624,11 @@ int InitChange()
         {
             throw FileException("Startup failed while creating 'Changes.bin' file.");
         }
-        int initialCount = 0;
-        file.write(reinterpret_cast<const char*>(&initialCount), sizeof(int)); // Reserve space for the record count
-
+        else
+        {
+            return 1;
+        }
         file.close();
-        return 1;
     }
     return 0;
 }
