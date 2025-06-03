@@ -115,11 +115,7 @@ int ActivateUI()
                 Report_Menu();
                 break;
             case 0:
-<<<<<<< HEAD:UI.cpp
-                cout << "Thank you for using Bug Foundry." << endl;
-=======
                 cout << "Thank you for using Bug Foundry. :)" << endl;
->>>>>>> pr/64:src/UI.cpp
                 break;
             default:
                 cout << "Error: Your option is not an available choice" << endl;

@@ -32,7 +32,7 @@ Customer::Customer(const char *custID, const char *name, const char *email, cons
     else
     {
         // Assuming IDGenerator returns a char*
-        char *generatedID = IDGenerator('0', FILENAMES[0], 10);
+        char *generatedID = IDGenerator('0', 10);
         safeStrCopy(this->custID, generatedID, sizeof(this->custID));
         delete[] generatedID;
     }
@@ -44,20 +44,12 @@ Customer::Customer(const char *custID, const char *name, const char *email, cons
 
 }
 
-<<<<<<< HEAD:Customer.cpp
-// Constructor: Copy
-Customer::Customer(
-    const Customer& other // in
-                          // Another Customer object to copy from
-) {
-=======
 
 /*
 Copy constructor for Customer class
 ------------------------------------------------------------------------------------*/
 Customer::Customer(const Customer &other)
 {
->>>>>>> pr/64:src/Customer.cpp
     safeStrCopy(this->custID, other.custID, sizeof(this->custID));
     safeStrCopy(this->name, other.name, sizeof(this->name));
     safeStrCopy(this->email, other.email, sizeof(this->email));
@@ -120,30 +112,13 @@ void Customer::DisplayDetails(std::ostream &out) const
 Create new Customer object and also validates it.
 Performs linear search to look for a duplicate Customer in the Customer data file.
 --------------------------------------------------------------------*/
-<<<<<<< HEAD:Customer.cpp
-// CreateCustomer
-Customer CreateCustomer(
-    const char* name,  // in
-                       // Customer name
-    const char* email, // in
-                       // Customer email
-    const char* phone  // in
-                       // Customer phone number
-) {
-=======
 Customer CreateCustomer(const char *name, const char *email, const char *phone)
 {
->>>>>>> pr/64:src/Customer.cpp
     int validationResult = ValidateCustomer(name, email, phone);
     if (validationResult == 1)
     {
         // Generate a new customer ID
-<<<<<<< HEAD:Customer.cpp
-        char *generatedID = IDGenerator('0', FILENAMES[0], 10);
-
-=======
         char *generatedID = IDGenerator('0', 10);
->>>>>>> pr/64:src/Customer.cpp
         // Create the customer object
         Customer newCustomer(generatedID, name, email, phone);
         // Clean up the generated ID
@@ -314,12 +289,7 @@ int ValidateCustomer(const char *name, const char *email, const char *phone)
     // Validate phone number [1]6041231234
     if ((strlen(phone) == 11 && phone[0] == '1') || (strlen(phone) == 10 && isdigit(phone[0])))
     {
-
-<<<<<<< HEAD:Customer.cpp
-        for (size_t i = 0; i < strlen(phone); i++)
-=======
         for (int i = 0; i < int(strlen(phone)); i++)
->>>>>>> pr/64:src/Customer.cpp
         {
             if (!isdigit(phone[i]))
                 return -1;
@@ -375,19 +345,11 @@ bool checkDup(const char *otherCustID)
 }
 
 /*
-<<<<<<< HEAD:Customer.cpp
-Validates that the Customer object attributes are acceptable and makes sure no duplicate Customer records exists.
-A linear search algorithm is used to iterate through the Customer records.
---------------------------------------------------------------------*/
-// InitCustomer
-int InitCustomer() {
-=======
 Initialization for Customer class.
 Creates data file for storing Customer objects and its file descriptor if they do not exists.
 ---------------------------------------------------------------------*/
 int InitCustomer()
 {
->>>>>>> pr/64:src/Customer.cpp
     std::filesystem::create_directory(DIRECTORY);
     if (!std::filesystem::exists(FILENAMES[0]))
     {
@@ -407,6 +369,3 @@ int InitCustomer()
     }
     return 0;
 }
-/*
-Initializes customer module with customer file and customer file pointer
------------------------------------------------------------------------*/

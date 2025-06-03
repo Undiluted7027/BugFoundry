@@ -17,34 +17,20 @@ It also mentions the coding convention used in this assignment.
 
 using namespace std;
 
-<<<<<<< HEAD:Main.cpp
 //-----------------------------------------------------------------------
-=======
-//---------------------------------------------------------------------
-
-/* 
-int Startup(const string FILENAMES[]) checks if binary files exist in the DIRECTORY 
-to essentially check if the program is being run for the first time. 
-If they do, then it returns 0, if they don't then the files are created. 
-If files were created successfully, it returns 1 else -1. The function does not fail.
-----------------------------------------------------------------------*/
->>>>>>> pr/64:main/Main.cpp
 int Startup()
 {
     return InitControl();
 }
-<<<<<<< HEAD:Main.cpp
 /* 
 int Startup(const string FILENAMES[]) checks if binary files exist in the DIRECTORY 
 to essentially check if the program is being run for the first time. 
 If they do, then it returns 0, if they don't then the files are created. 
 If files were created successfully, it returns 1 else -1. The function does not fail.
-=======
 
 /*
 Runs StartUp to run all initialization.
 If successful, start the program.
->>>>>>> pr/64:main/Main.cpp
 ----------------------------------------------------------------------*/
 int main()
 {

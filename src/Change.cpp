@@ -42,7 +42,7 @@ Change::Change(const char *changeID, const char *description, const char &status
     // Generate a new changeID if not provided
     else
     {
-        char *generatedID = IDGenerator('1', FILENAMES[1], 7); // Assuming IDGenerator function is used to generate IDs
+        char *generatedID = IDGenerator('1', 7); // Assuming IDGenerator function is used to generate IDs
         safeStrCopy(this->changeID, generatedID, sizeof(this->changeID));
         delete[] generatedID;
     }
@@ -179,15 +179,9 @@ int PrintAllChanges(const std::string &FILENAME)
 }
 
 /*
-<<<<<<< HEAD:Change.cpp
-DisplayDetails method to display change details
-Print the attribute details of the Change object to the console.
-No noticeable algorithm or data structure used.
-=======
 Accessor methods for Change class attributes.
 Gets the changeID of a Change object.
 No algorithm or data structure used.
->>>>>>> pr/64:src/Change.cpp
 --------------------------------------------------------------------*/
 const char *Change::getChangeID() const
 {
@@ -195,14 +189,6 @@ const char *Change::getChangeID() const
         throw InvalidDataException("ChangeID field is null");
     return changeID;
 }
-<<<<<<< HEAD:Change.cpp
-/*
-Accessor methods for Change class attributes
-Get the changeID of a Change object.
-No noticeable algorithm or data structure used.
---------------------------------------------------------------------*/
-=======
->>>>>>> pr/64:src/Change.cpp
 
 /*
 Print the productName of the Change object to the console.
@@ -216,14 +202,8 @@ const char *Change::change_displayProductName() const
 }
 
 /*
-<<<<<<< HEAD:Change.cpp
-Accessor methods for Change class attributes
-Get the productname of a Change object.
-No noticeable algorithm or data structure used.
-=======
 Print the description of the Change object to the console.
 No algorithm or data structure used.
->>>>>>> pr/64:src/Change.cpp
 --------------------------------------------------------------------*/
 const char *Change::change_displayDesc() const
 {
@@ -244,14 +224,8 @@ char Change::change_displayStatus() const
 }
 
 /*
-<<<<<<< HEAD:Change.cpp
-Accessor methods for Change class attributes
-Get the status of a Change object.
-No noticeable algorithm or data structure used.
-=======
 Print the priority of the Change object to the console.
 No algorithm or data structure used.
->>>>>>> pr/64:src/Change.cpp
 --------------------------------------------------------------------*/
 char Change::change_displayPriority() const
 {
@@ -261,14 +235,8 @@ char Change::change_displayPriority() const
 }
 
 /*
-<<<<<<< HEAD:Change.cpp
-Accessor methods for Change class attributes
-Get the priority of a Change object.
-No noticeable algorithm or data structure used.
-=======
 Print the releaseID of the Change object to the console.
 No algorithm or data structure used.
->>>>>>> pr/64:src/Change.cpp
 --------------------------------------------------------------------*/
 const char *Change::change_displayRelID() const
 {
@@ -278,36 +246,20 @@ const char *Change::change_displayRelID() const
 }
 
 /*
-<<<<<<< HEAD:Change.cpp
-Accessor methods for Change class attributes
-Get the releaseID of a Change object.
-No noticeable algorithm or data structure used.
-=======
 Create new Change object and also validates it.
 No -algorithm or data structure used.
->>>>>>> pr/64:src/Change.cpp
 --------------------------------------------------------------------*/
 Change CreateChange(const char *description, const char &status, const char &priority,
                     const char *lastUpdate, const char *releaseID, const char *changeID)
 {
     // Validate change data before creating a new Change object
-<<<<<<< HEAD:Change.cpp
-
-=======
->>>>>>> pr/64:src/Change.cpp
     ValidateChange(description, status, priority, lastUpdate, releaseID);
     return Change("", description, status, priority, releaseID, lastUpdate, changeID);
 }
 
 /*
-<<<<<<< HEAD:Change.cpp
-CreateChange function to create a new Change object
-Create new Change object and also validates it.
-No noticeable algorithm or data structure used.
-=======
 Validates that the Change object attributes are acceptable and makes sure no duplicate Change records exists.
 A linear search algorithm is used to iterate through the Change records.
->>>>>>> pr/64:src/Change.cpp
 --------------------------------------------------------------------*/
 int ValidateChange(const char *description, const char &status, const char &priority,
                    const char *lastUpdate, const char *releaseID)
@@ -360,21 +312,6 @@ int ValidateChange(const char *description, const char &status, const char &prio
     std::cout << "Validation of data for 'Change' record succeeded!" << std::endl;
     return 1;
 }
-<<<<<<< HEAD:Change.cpp
-/*
-ValidateChange function to validate change data
-Validates that the Change object attributes are acceptable and makes sure no duplicate Change records exists.
-A linear search algorithm is used to iterate through the Change records.
---------------------------------------------------------------------*/
-// void UpdateLatestChange(const char *description, const char &status, const char &priority,
-//                         const char *releaseID, const char *lastUpdate)
-// {
-//     // Implementation depends on how you want to identify the latest change
-//     // This is a placeholder implementation
-//     std::cout << "UpdateLatestChange: Not implemented" << std::endl;
-// }
-=======
->>>>>>> pr/64:src/Change.cpp
 
 /*
 Creates a report of all changes by displaying a list of Change objects
@@ -401,11 +338,7 @@ void CreateAnticipatedChangesProduct(const char *releaseID)
     {
         throw FileException("Could not open file 'Changes.bin' for reading when creating anticipated changes for product report.");
     }
-<<<<<<< HEAD:Change.cpp
-    file.seekg(sizeof(int), std::ios::beg);
-=======
     std::cout << std::endl;
->>>>>>> pr/64:src/Change.cpp
     std::cout << std::left
               << std::setw(5) << " "
               << std::setw(10) << "ChangeID"
@@ -622,13 +555,6 @@ void CreateUsersInformedOnUpdateReport(const char *changeID)
     std::cout << "Total customers to be informed: " << count << std::endl << std::endl;
 }
 
-<<<<<<< HEAD:Change.cpp
-// CommitChange function to commit a Change object to file
-void CommitChange(const Change& change, std::streampos& startPos, const std::string& FILENAME) {
-    std::ofstream file( FILENAME, std::ios::binary | std::ios::in | std::ios::out);
-    if (!file) {
-        throw std::runtime_error("Could not open file for writing");
-=======
 /*
 Apply the update made to a Change attributes by
 overwriting the information on the data file
@@ -664,29 +590,16 @@ void CommitChange(const Change &change, std::streampos &startPos, const std::str
     if (!file)
     {
         throw FileException("Could not open file 'Changes.bin' for writing when adding a Change record to the file.");
->>>>>>> pr/64:src/Change.cpp
     }
-    int recordCount;
-    file.read(reinterpret_cast<char*>(&recordCount), sizeof(int));
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&change), sizeof(Change));
     startPos = file.tellp();
-    recordCount++;
-    file.seekp(0, std::ios::beg);
-    file.write(reinterpret_cast<const char*>(&recordCount), sizeof(int));
-    file.close();
 }
 
 /*
-<<<<<<< HEAD:Change.cpp
-CommitChange function to commit a Change object to file
-Writes a Change object to a specified file at a given position.
-Uses the unsorted records data structure to add the Change object.
-=======
 Reads a Change object from a specified file at a given position and returns it.
 Uses the unsorted records data structure to read the Change object.
->>>>>>> pr/64:src/Change.cpp
 --------------------------------------------------------------------*/
 Change GetChangeDetails(std::streampos startPos, const std::string &FILENAME)
 {
@@ -704,19 +617,11 @@ Change GetChangeDetails(std::streampos startPos, const std::string &FILENAME)
     }
     return change;
 }
-<<<<<<< HEAD:Change.cpp
-/*
-GetChangeDetails function to retrieve Change details from file
-Reads a Change object from a specified file at a given position and returns it.
-Uses the unsorted records data structure to read the Change object.
---------------------------------------------------------------------*/
-=======
 
 /* int InitChange() uses the global variables streampos CHANGEFILEPOINTER and FILENAMES[1] 
 to check if binary file "Changes.bin" exist in the DIRECTORY to essentially check if the program is being run for the first time. 
 If it does, then it returns 0, if it doesn't then the files is created. If file was created successfully, it returns 1 else -1. The function does not fail.
 ----------------------------------------------------------------------*/
->>>>>>> pr/64:src/Change.cpp
 int InitChange()
 {
     filesystem::create_directory(DIRECTORY);
@@ -735,10 +640,3 @@ int InitChange()
     }
     return 0;
 }
-<<<<<<< HEAD:Change.cpp
-/* 
-Initialize the Change module with change file and the change file pointer
-----------------------------------------------------------------------*/
-=======
-
->>>>>>> pr/64:src/Change.cpp

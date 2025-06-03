@@ -22,18 +22,11 @@ Complaint::Complaint()
     memset(releaseID, 0, sizeof(releaseID));
     memset(custID, 0, sizeof(custID));
 }
-<<<<<<< HEAD:Complaint.cpp
-/*
-Default constructor for Complaint class
-No noticeable algorithm or data structure used.
---------------------------------------------------------------------------*/
-=======
 
 /*
 Create Complaint object using attrbibutes provided.
 No algorithm or data structure used.
 -----------------------------------------------------------------------------------------------------------------------*/
->>>>>>> pr/64:src/Complaint.cpp
 Complaint::Complaint(const char *complaintID, const char *description, const char *dateOfComplaint, const char *changeID,
                      const char *releaseID, const char *custID)
 {
@@ -44,7 +37,7 @@ Complaint::Complaint(const char *complaintID, const char *description, const cha
     else
     {
         // Assuming IDGenerator returns a char*
-        char *generatedID = IDGenerator('2', FILENAMES[2], 7);
+        char *generatedID = IDGenerator('2', 7);
         safeStrCopy(this->complaintID, generatedID, sizeof(this->complaintID));
         delete[] generatedID;
     }
@@ -68,39 +61,22 @@ Complaint::Complaint(const Complaint &other)
     safeStrCopy(this->releaseID, other.releaseID, sizeof(this->releaseID));
     safeStrCopy(this->custID, other.custID, sizeof(this->custID));
 }
-<<<<<<< HEAD:Complaint.cpp
-/*
-Copy constructor for Complaint class
-No noticeable algorithm or data structure used.
---------------------------------------------------------------------------*/
-=======
 
 /*
 Assign operator overloader for the Complaint class
 -----------------------------------------------------------------------------------------------------------------------*/
->>>>>>> pr/64:src/Complaint.cpp
 Complaint &Complaint::operator=(const Complaint &other)
 {
     if (this != &other)
     {
-<<<<<<< HEAD:Complaint.cpp
-        if (other.complaintID[0] != '\0' || other.complaintID != nullptr)
-
-=======
         if (strlen(other.complaintID) != 0)
->>>>>>> pr/64:src/Complaint.cpp
         {
             safeStrCopy(complaintID, other.complaintID, sizeof(this->complaintID));
         }
         else
         {
             // Assuming IDGenerator returns a char*
-<<<<<<< HEAD:Complaint.cpp
-
-            char *generatedID = IDGenerator('2', FILENAMES[2], 7);
-=======
             char *generatedID = IDGenerator('1', 7);
->>>>>>> pr/64:src/Complaint.cpp
             safeStrCopy(complaintID, generatedID, sizeof(this->complaintID));
             delete[] generatedID;
         }
@@ -113,20 +89,12 @@ Complaint &Complaint::operator=(const Complaint &other)
     }
     return *this;
 }
-<<<<<<< HEAD:Complaint.cpp
-/*
-Assigning operator overload for Complaint
-Assign the other complaint to this complaint.
-No noticeable algorithm or data structure used. 
---------------------------------------------------------------------------*/
-=======
 
 /* 
 Equality operator overloader for Complaint class.
 Checks if two Complaint objects are equal based on complaintID or description or dateOfComplaint.
 No algorithm or data structure used.
 -----------------------------------------------------------------------------------------------------*/
->>>>>>> pr/64:src/Complaint.cpp
 bool Complaint::operator==(const Complaint &other) const
 {
     return (strcmp(complaintID, other.complaintID) == 0);
@@ -139,18 +107,11 @@ Complaint::~Complaint()
 {
     // No dynamic allocation, so nothing to delete
 }
-<<<<<<< HEAD:Complaint.cpp
-/*
-Default destructor for Complaint class
-No noticeable algorithm or data structure used.
---------------------------------------------------------------------------*/
-=======
 
 /*
 Print the attribute details of the Complaint object to the console.
 No algorithm or data structure used.
 -----------------------------------------------------------------------------------------------------*/
->>>>>>> pr/64:src/Complaint.cpp
 void Complaint::DisplayDetails(std::ostream &out) const
 {
     out << std::left
@@ -264,17 +225,9 @@ No noticeable algorithm or data structure used.
 Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
                           const char *releaseID, const char *custID, const char *productName)
 {
-<<<<<<< HEAD:Complaint.cpp
-
     ValidateComplaint(description, dateOfComplaint, releaseID, custID);
     bool changeExists = false;
     std::ifstream changeFile(FILENAMES[1], std::ios::binary);
-    changeFile.seekg(sizeof(int), std::ios::beg);
-=======
-    ValidateComplaint(description, dateOfComplaint, releaseID, custID);
-    bool changeExists = false;
-    std::ifstream changeFile(FILENAMES[1], std::ios::binary);
->>>>>>> pr/64:src/Complaint.cpp
 
     Change change;
     if (changeFile)
@@ -313,15 +266,6 @@ Complaint CreateComplaint(const char *description, const char *dateOfComplaint,
     }
     return Complaint();
 }
-<<<<<<< HEAD:Complaint.cpp
-/*
-Create new Complaint object and also validates it.
-No noticeable algorithm or data structure used.
---------------------------------------------------------------------*/
-void CommitComplaint(const Complaint &complaint, std::streampos &startPos, const std::string &FILENAME)
-{
-    std::fstream file(FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
-=======
 
 /*
 Writes a Complaint object to a specified file at a given position.
@@ -330,41 +274,10 @@ Uses the unsorted records data structure to add the Complaint object.
 void CommitComplaint(const Complaint &complaint, std::streampos &startPos, const std::string &FILENAME)
 {
     std::ofstream file(FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
->>>>>>> pr/64:src/Complaint.cpp
     if (!file)
     {
         throw FileException("Could not open file 'Complaints.bin' for writing when adding a Complaint record to the file.");
     }
-<<<<<<< HEAD:Complaint.cpp
-    int recordCount;
-    file.read(reinterpret_cast<char *>(&recordCount), sizeof(int));
-    file.seekp(0, std::ios::end);
-    startPos = file.tellp();
-    file.write(reinterpret_cast<const char *>(&complaint), sizeof(Complaint));
-    if (file.fail())
-    {
-        throw FileException("Could not write complaint to 'Complaints.bin'.");
-    }
-    startPos = file.tellp();
-    recordCount++;
-    file.seekp(0, std::ios::beg);
-    file.write(reinterpret_cast<const char *>(&recordCount), sizeof(int));
-
-    file.close();
-}
-/*
-Writes a Complaint object to a specified file at a given position.
-Uses the unsorted records data structure to add the Complaint object.
---------------------------------------------------------------------*/
-Complaint GetComplaintDetails(std::streampos &startPos, const std::string &FILENAME)
-{
-    std::ifstream file(FILENAMES[2], std::ios::binary);
-    if (!file)
-    {
-        throw std::runtime_error("Could not open file for reading");
-    }
-    startPos += sizeof(int);
-=======
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&complaint), sizeof(Complaint));
@@ -382,25 +295,17 @@ Complaint GetComplaintDetails(std::streampos & startPos, const std::string &FILE
     {
         throw std::runtime_error("Could not open file for reading");
     }
->>>>>>> pr/64:src/Complaint.cpp
     file.seekg(startPos);
     Complaint complaint;
     file.read(reinterpret_cast<char *>(&complaint), sizeof(Complaint));
     startPos = file.tellg();
     return complaint;
 }
-<<<<<<< HEAD:Complaint.cpp
-/*
-Reads a Complaint object from a specified file at a given position and returns it.
-Uses the unsorted records data structure to read the Complaint object.
---------------------------------------------------------------------*/
-=======
 
 /*
 Displays all Complaints objects with their attributes information.
 Uses the unsorted records data structure to read the Complaint object.
 ------------------------------------------------------------------------------------------*/
->>>>>>> pr/64:src/Complaint.cpp
 void PrintAllComplaints(const std::string &FILENAME)
 {
     std::ifstream file(FILENAMES[2], std::ios::binary);
@@ -469,17 +374,10 @@ void PrintAllComplaints(const std::string &FILENAME)
 
     file.close();
 }
-<<<<<<< HEAD:Complaint.cpp
-/*
-Prints all complaint objects
-Uses the unsorted records data structure to read the Complaint object.
---------------------------------------------------------------------------*/
-=======
 
 /*
 Updates the attribute information for a specific Complaint object
 ---------------------------------------------------------------------------------------------------------------------*/
->>>>>>> pr/64:src/Complaint.cpp
 bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint, const std::string &FILENAME)
 {
     std::fstream file(FILENAMES[2], std::ios::binary | std::ios::in | std::ios::out);
@@ -488,11 +386,6 @@ bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint,
         throw FileException("Could not open file 'Complaints.bin' for reading when updating a change.");
         return false;
     }
-<<<<<<< HEAD:Complaint.cpp
-    file.seekg(sizeof(int), std::ios::beg);
-=======
-
->>>>>>> pr/64:src/Complaint.cpp
     Complaint currentComplaint;
     bool found = false;
     std::streampos position;
@@ -531,18 +424,11 @@ bool UpdateComplaint(const char *complaintID, const Complaint &updatedComplaint,
         return false;
     }
 }
-<<<<<<< HEAD:Complaint.cpp
-/*
-Update the complaint in file by writing the new complaint over the old complaint.
-Uses the unsorted records data structure to check the Complaint object.
---------------------------------------------------------------------------*/
-=======
 
 /*
 Initialization for Complaint class.
 Creates the data file and its file descriptor if they haven't been initialized before
 --------------------------------------------------------------------------------------------------------*/
->>>>>>> pr/64:src/Complaint.cpp
 int InitComplaint()
 {
     std::filesystem::create_directory(DIRECTORY);
@@ -553,19 +439,8 @@ int InitComplaint()
         {
             throw FileException("Startup failed while creating 'Complaints.bin' file.");
         }
-<<<<<<< HEAD:Complaint.cpp
-        int initialCount = 0;
-        file.write(reinterpret_cast<const char *>(&initialCount), sizeof(int)); // Reserve space for the record count
-=======
->>>>>>> pr/64:src/Complaint.cpp
         file.close();
         return 1;
     }
     return 0;
 }
-<<<<<<< HEAD:Complaint.cpp
-/*
-Initializes the complaint module with the complaint file and complaint file pointer
---------------------------------------------------------------------------*/
-=======
->>>>>>> pr/64:src/Complaint.cpp

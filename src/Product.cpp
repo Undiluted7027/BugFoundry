@@ -43,7 +43,7 @@ Product::Product(const char *releaseID, const char *productName, const char *Rel
     else
     {
         // Assuming IDGenerator returns a char*
-        char *generatedID = IDGenerator('3',FILENAMES[3], 9);
+        char *generatedID = IDGenerator('3', 9);
         safeStrCopy(this->releaseID, generatedID, sizeof(this->releaseID));
         delete[] generatedID;
     }
@@ -105,14 +105,9 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
         throw InvalidDataException("ReleaseDate field can only have value in the format of YYYY-MM-DD.");
     }
 
-<<<<<<< HEAD:Product.cpp
-    if ((year % 4 != 0 && month == 02 && day > 30) || (year % 4 == 0 &&month == 2 && day > 29)){
-        throw InvalidDataException("ReleaseDate field has invalid YYYY-MM-DD.");
-=======
     if ((year % 4 != 0 && month == 02 && day > 30) || (year % 4 == 0 &&month == 2 && day > 29))
     {
         throw InvalidDataException("Invalid date");
->>>>>>> pr/64:src/Product.cpp
     }
     if (day > 30)
     {
@@ -151,15 +146,6 @@ int ValidateProduct(const char *productName, const char *ReleaseID, const char *
     return 1;
 }
 
-<<<<<<< HEAD:Product.cpp
-Product CreateProduct(const char *productName, const char *ReleaseID, const char *ReleaseDate)
-{
-
-  ValidateProduct(productName, ReleaseID, ReleaseDate);
-    return Product(ReleaseID, productName, ReleaseDate);
-}
-=======
->>>>>>> pr/64:src/Product.cpp
 /*
 Create new Product object and also validates it.
 No noticeable algorithm or data structure used.
@@ -181,12 +167,6 @@ void CommitProduct(const Product &product, std::streampos &startPos, const std::
     {
         throw FileException("Could not open file 'Products.bin' for writing when adding a Change record to the file.");
     }
-<<<<<<< HEAD:Product.cpp
-    int recordCount;
-    file.read(reinterpret_cast<char*>(&recordCount), sizeof(int));
-=======
-
->>>>>>> pr/64:src/Product.cpp
     file.seekp(0, std::ios::end);
     startPos = file.tellp();
     file.write(reinterpret_cast<const char *>(&product), sizeof(Product));
@@ -196,10 +176,6 @@ void CommitProduct(const Product &product, std::streampos &startPos, const std::
         throw FileException("Could not open file 'Products.bin' for writing when adding a Change record to the file.");
     }
     startPos = file.tellp();
-    recordCount++;
-    file.seekp(0, std::ios::beg);
-    file.write(reinterpret_cast<const char*>(&recordCount), sizeof(int));
-    file.close();
 }
 
 /*
@@ -213,11 +189,7 @@ Product GetProductDetails(std::streampos startPos, const std::string &FILENAME)
     {
         throw std::runtime_error("FileReadFailed: Could not open file for reading");
     }
-<<<<<<< HEAD:Product.cpp
-    // startPos += sizeof(int);
-=======
-
->>>>>>> pr/64:src/Product.cpp
+    
     file.seekg(startPos);
     Product product;
 
@@ -292,11 +264,7 @@ void PrintAllProducts(const std::string &FILENAME)
     }
 
     std::cout << std::string(89, '-') << std::endl;
-<<<<<<< HEAD:Product.cpp
-    std::cout << "Total records Displayed: " << recordCount << std::endl;
-=======
     std::cout << "Total records Displayed: " << recordCount << std::endl << std::endl;
->>>>>>> pr/64:src/Product.cpp
 
     if (file.eof())
     {
